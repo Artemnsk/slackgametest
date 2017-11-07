@@ -1,0 +1,23 @@
+{
+  "name": "slackgametest",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Artemnsk/slackgametest.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Artemnsk/slackgametest/issues"
+  },
+  "homepage": "https://github.com/Artemnsk/slackgametest#readme",
+  "dependencies": {
+    "@slack/client": "^3.14.1",
+    "express": "^4.16.2"
+  }
+}
