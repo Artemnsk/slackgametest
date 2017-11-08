@@ -4,6 +4,7 @@ const uiRoutes = [];
 uiRoutes.push(require('./mainmenu'));
 uiRoutes.push(require('./shop'));
 uiRoutes.push(require('./spellbook'));
+uiRoutes.push(require('./spellinfo'));
 
 module.exports = getUIMessage;
 

@@ -4,6 +4,7 @@ const Route = require('route-parser');
 const UIMessage = require('../uimessage/uimessage');
 const privateCredentials = require('../../../credentials/private');
 const statisticsTitle = require('../partials/statstitle');
+const spellBookBody = require('../partials/spellbook');
 
 module.exports = {
     route: new Route('/mainmenu'),
@@ -24,8 +25,9 @@ function routeCallback(actionData, args) {
             var uiMessage = new UIMessage();
             var uiAttachments = [];
             uiAttachments.push(statisticsTitle(40, 30, 432));
+            uiAttachments.push(spellBookBody("/mainmenu/spellbook"));
             uiAttachments.push({
-                text: "*Spellbook*",
+                text: '',
                 color: "#3AA3E3",
                 attachment_type: "default",
                 callback_id: "/mainmenu/spellbook",

@@ -24,6 +24,7 @@ router.post('/commands', function(req, res) {
             color: "#3AA3E3",
             attachment_type: "default",
             callback_id: "/mainmenu",
+            text: 'Main menu',
             actions: [
                 {
                     name: "spellbook",
