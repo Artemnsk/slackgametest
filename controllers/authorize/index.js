@@ -11,6 +11,7 @@ const privateCredentials = require('../../credentials/private');
 const authRedirectURL = url.format({
     protocol: publicCredentials.protocol,
     hostname: publicCredentials.host,
+    port: 8080,
     pathname: '/slackgametest/authorize/complete'
 });
 
@@ -29,7 +30,7 @@ function authorizeRequest(req, res, next) {
         pathname: "oauth/authorize",
         query: {
             "client_id": publicCredentials.client_id,
-            "scope": 'commands',
+            "scope": 'commands,bot,chat:write:bot',
             "redirect_uri": authRedirectURL
         }
     });
@@ -70,7 +71,7 @@ function authorizeComplete(req, res, next) {
                 responseMessage += chunk;
             });
             response.on('end', function() {
-                // TODO: save token.
+                // TODO: save access and bot tokens.
                 res.render(__dirname + '/../../views/authorizationcompleted');
             });
         });

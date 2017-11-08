@@ -6,6 +6,7 @@ const bodyParser = require('body-parser');
 
 router.use(bodyParser.urlencoded());
 router.use('/', require('./authorize'));
-router.use('/', require('./api'));
+router.use('/', require('./commands'));
+router.use('/', require('./actions'));
 
 module.exports = router;
