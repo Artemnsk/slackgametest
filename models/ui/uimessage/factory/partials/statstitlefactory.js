@@ -1,8 +1,8 @@
 "use strict";
 
-module.exports = getStatsTitle;
+module.exports = statsTitleFactory;
 
-function getStatsTitle(hp, mana, gold) {
+function statsTitleFactory(hp, mana, gold) {
     return {
         text: `:heart:${hp}/40 :large_blue_diamond:${mana}/30 :moneybag:${gold}`,
         color: "#950001",

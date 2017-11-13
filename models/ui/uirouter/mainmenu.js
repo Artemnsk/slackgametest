@@ -1,10 +1,8 @@
 "use strict";
 
 const Route = require('route-parser');
-const UIMessage = require('../uimessage/uimessage');
-const privateCredentials = require('../../../credentials/private');
-const statisticsTitle = require('../partials/statstitle');
-const spellBookBody = require('../partials/spellbook');
+const spellBookFactory = require('../uimessage/factory/spellbookfactory');
+const shopFactory = require('../uimessage/factory/shopfactory');
 
 module.exports = {
     route: new Route('/mainmenu'),
@@ -13,7 +11,7 @@ module.exports = {
 
 /**
  * @param {Object} actionData - payload action data.
- * @param {null|Object} args - arguments for this UI route retrieved from route path. TODO: null or something else?
+ * @param {Object} args - arguments for this UI route retrieved from route path. Empty object if no args passed.
  * @return {null|UIMessage}
  */
 function routeCallback(actionData, args) {
@@ -22,63 +20,10 @@ function routeCallback(actionData, args) {
     let action = actionData.actions[0];
     switch (action.name) {
         case 'spellbook':
-            var uiMessage = new UIMessage();
-            var uiAttachments = [];
-            uiAttachments.push(statisticsTitle(40, 30, 432));
-            uiAttachments.push(spellBookBody("/mainmenu/spellbook"));
-            uiAttachments.push({
-                text: '',
-                color: "#3AA3E3",
-                attachment_type: "default",
-                callback_id: "/mainmenu/spellbook",
-                actions: [
-                    {
-                        name: "back",
-                        text: ":back:",
-                        type: "button",
-                        value: "back"
-                    }
-                ]
-            });
-            uiMessage.setUIAttachments(uiAttachments);
-            var sendParameters = {
-                method: 'chat.update',
-                as_user: true,
-                ts: actionData.original_message.ts,
-                icon_url: "http://lorempixel.com/48/48",
-                channel: privateCredentials.sandboxChannelId
-            };
-            uiMessage.setSendParameters(sendParameters);
-            return uiMessage;
+            return spellBookFactory(actionData.original_message.ts, 20, 20, 321);
             break;
         case 'shop':
-            var uiMessage = new UIMessage();
-            var uiAttachments = [];
-            uiAttachments.push(statisticsTitle(40, 30, 432));
-            uiAttachments.push({
-                    text: "*Shop*",
-                    color: "#3AA3E3",
-                    attachment_type: "default",
-                    callback_id: "/mainmenu/shop",
-                    actions: [
-                        {
-                            name: "back",
-                            text: ":back:",
-                            type: "button",
-                            value: "back"
-                        }
-                    ]
-                });
-            uiMessage.setUIAttachments(uiAttachments);
-            var sendParameters = {
-                method: 'chat.update',
-                as_user: true,
-                ts: actionData.original_message.ts,
-                icon_url: "http://lorempixel.com/48/48",
-                channel: privateCredentials.sandboxChannelId
-            };
-            uiMessage.setSendParameters(sendParameters);
-            return uiMessage;
+            return shopFactory(actionData.original_message.ts, 20, 20, 321);
             break;
     }
     return null;

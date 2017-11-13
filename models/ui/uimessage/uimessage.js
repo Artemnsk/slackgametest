@@ -23,7 +23,7 @@ class UIMessage {
      * @param {Object} params
      */
     setSendParameters(params) {
-        this.sendParameters = params;
+        Object.assign(this.sendParameters, params);
     }
 
     /**
