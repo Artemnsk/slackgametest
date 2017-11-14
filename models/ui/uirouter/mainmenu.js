@@ -20,10 +20,10 @@ function routeCallback(actionData, args) {
     let action = actionData.actions[0];
     switch (action.name) {
         case 'spellbook':
-            return spellBookFactory(actionData.original_message.ts, 20, 20, 321);
+            return spellBookFactory(20, 20, 321);
             break;
         case 'shop':
-            return shopFactory(actionData.original_message.ts, 20, 20, 321);
+            return shopFactory(20, 20, 321);
             break;
     }
     return null;

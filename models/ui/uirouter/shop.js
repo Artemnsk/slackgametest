@@ -19,7 +19,7 @@ function routeCallback(actionData, args) {
     let action = actionData.actions[0];
     switch (action.name) {
         case 'back':
-            return mainMenuFactory(actionData.original_message.ts, 30, 40, 402);
+            return mainMenuFactory(30, 40, 402);
             break;
     }
     return null;

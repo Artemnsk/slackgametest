@@ -1,16 +1,14 @@
 "use strict";
 
-const privateCredentials = require('../../../../credentials/private');
 const UIMessage = require('../uimessage');
 const statsTitleFactory = require('./partials/statstitlefactory');
 const spells = require('../../../../storage/spells/spells');
 
 /**
  * Provides with spell UI element.
- * @param {number} ts
  * @return {UIMessage}
  */
-function spellFactory(ts, hp, mana, gold, spell_id) {
+function spellFactory(hp, mana, gold, spell_id) {
     const spellUIMessage = new UIMessage();
     let uiAttachments = [];
     uiAttachments.push(statsTitleFactory(hp, mana, gold));
@@ -46,14 +44,6 @@ function spellFactory(ts, hp, mana, gold, spell_id) {
         ]
     });
     spellUIMessage.setUIAttachments(uiAttachments);
-    let sendParameters = {
-        method: 'chat.update',
-        as_user: true,
-        ts: ts,
-        icon_url: "http://lorempixel.com/48/48",
-        channel: privateCredentials.sandboxChannelId
-    };
-    spellUIMessage.setSendParameters(sendParameters);
     return spellUIMessage;
 }
 

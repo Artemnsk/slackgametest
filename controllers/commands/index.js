@@ -3,7 +3,7 @@
 const express = require('express');
 const router = express.Router();
 const tokenVerification = require('../../middlewares/tokenverification');
-const privateCredentials = require('../../credentials/private');
+const request = require('request');
 
 const mainMenuFactory = require('../../models/ui/uimessage/factory/mainmenufactory');
 
@@ -16,16 +16,19 @@ router.post('/commands', function(req, res) {
     var text = req.body.text;
     if (text === 'menu' || !text) {
         res.status(200).send('');
-        const mainMenuUIMessage = mainMenuFactory(null, 20, 30, 123);
+        const mainMenuUIMessage = mainMenuFactory(20, 30, 123);
         let sendParameters = {
-            as_user: false,
-            token: privateCredentials.sandboxBotUserId,
-            username: 'slackgametestbot',
-            method: 'chat.postMessage',
-            ts: null
+            response_type: 'ephemeral'
         };
         mainMenuUIMessage.setSendParameters(sendParameters);
-        mainMenuUIMessage.send();
+        request(req.body.response_url, {
+            uri: req.body.response_url,
+            method: 'POST',
+            json: mainMenuUIMessage.toJSON(),
+            headers: {
+                'Content-type': 'application/json'
+            },
+        });
     } else {
         res.status(500).send('Error');
     }

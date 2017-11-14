@@ -29,10 +29,10 @@ class UIMessage {
     /**
      * Sends UIMessage to Slack.
      */
-    send() {
+    toJSON() {
         let json = Object.assign({}, this.sendParameters);
-        json.attachments = JSON.stringify(this.uiAttachments);
-        return slack.api(this.sendParameters.method, json);
+        json.attachments = this.uiAttachments;
+        return json;
     }
 }
 

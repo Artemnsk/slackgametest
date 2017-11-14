@@ -19,6 +19,7 @@
   "dependencies": {
     "@slack/client": "^3.14.1",
     "express": "^4.16.2",
+    "request": "^2.83.0",
     "route-parser": "0.0.5",
     "slack-node": "^0.1.8"
   }

@@ -1,15 +1,13 @@
 "use strict";
 
-const privateCredentials = require('../../../../credentials/private');
 const UIMessage = require('../uimessage');
 const statsTitleFactory = require('./partials/statstitlefactory');
 
 /**
  * Provides with shop UI element.
- * @param {number} ts
  * @return {UIMessage}
  */
-function shopFactory(ts, hp, mana, gold) {
+function shopFactory(hp, mana, gold) {
     const shopUIMessage = new UIMessage();
     let uiAttachments = [];
     uiAttachments.push(statsTitleFactory(hp, mana, gold));
@@ -28,14 +26,6 @@ function shopFactory(ts, hp, mana, gold) {
         ]
     });
     shopUIMessage.setUIAttachments(uiAttachments);
-    let sendParameters = {
-        method: 'chat.update',
-        as_user: true,
-        ts: ts,
-        icon_url: "http://lorempixel.com/48/48",
-        channel: privateCredentials.sandboxChannelId
-    };
-    shopUIMessage.setSendParameters(sendParameters);
     return shopUIMessage;
 }
 
