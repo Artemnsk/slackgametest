@@ -22,6 +22,8 @@
     "greenlock-express": "^2.0.12",
     "pug": "^2.0.0-rc.4",
     "redirect-https": "^1.1.4",
+    "redux": "^3.7.2",
+    "redux-logger": "^3.0.6",
     "request": "^2.83.0",
     "route-parser": "0.0.5",
     "slack-node": "^0.1.8"

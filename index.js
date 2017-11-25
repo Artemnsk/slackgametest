@@ -4,6 +4,12 @@ const express = require('express');
 const app = express();
 const publicCredentials = require('./credentials/public');
 
+// Start game.
+const startGame = require('./models/game/game');
+startGame();
+const randomizer = require('./models/game/actionsrandomizer');
+// randomizer(300);
+
 app.set('view engine', 'pug');
 app.use('/slacktestgame', require('./controllers'));
 
