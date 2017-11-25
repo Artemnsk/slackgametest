@@ -12,7 +12,7 @@ const authRedirectURL = url.format({
     protocol: publicCredentials.protocol,
     hostname: publicCredentials.host,
     port: 8080,
-    pathname: '/slackgametest/authorize/complete'
+    pathname: '/slacktestgame/authorize/complete'
 });
 
 router.get('/authorize/request', authorizeRequest);
