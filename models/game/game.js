@@ -33,7 +33,7 @@ var gameStore;
  * Main function which starts the game.
  * @return {Promise<void>}
  */
-module.exports = function () {
+module.exports = () => {
   // Load initial state from DB.
   return getState()
     .then((initialState) => {

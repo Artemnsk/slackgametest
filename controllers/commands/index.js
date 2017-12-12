@@ -12,7 +12,7 @@ const mainMenuFactory = require('../../models/ui/uimessage/factory/mainmenufacto
 
 router.use('/commands', tokenVerification);
 
-router.post('/commands', function (req, res) {
+router.post('/commands', (req, res) => {
   var text = req.body.text;
   if (text === 'menu' || !text) {
     res.status(200).send('');

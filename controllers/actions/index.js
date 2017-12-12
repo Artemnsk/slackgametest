@@ -5,7 +5,7 @@ const router = express.Router();
 const uiRouter = require('../../models/ui/uirouter/uirouter');
 const request = require('request');
 
-router.post('/actions', function (req, res) {
+router.post('/actions', (req, res) => {
   const payload = req.body.payload;
   if (payload) {
     const data = JSON.parse(payload);

@@ -64,13 +64,13 @@ function authorizeComplete(req, res, next) {
       }
     };
     // Send request to Slack.
-    var request = https.request(options, function (response) {
+    var request = https.request(options, (response) => {
       let responseMessage = "";
       response.setEncoding('utf8');
-      response.on('data', function (chunk) {
+      response.on('data', (chunk) => {
         responseMessage += chunk;
       });
-      response.on('end', function () {
+      response.on('end', () => {
         // TODO: save access and bot tokens.
         res.render(__dirname + '/../../views/authorizationcompleted');
       });

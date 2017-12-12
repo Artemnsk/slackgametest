@@ -5,7 +5,7 @@ const ACTION_TYPES = require('../action/action').ACTION_TYPES;
  * Generates random actions with specified frequency.
  * @param {number} frequency - ms.
  */
-module.exports = function(frequency) {
+module.exports = (frequency) => {
   setInterval(() => {
     let /** ActionFirebaseValue */ actionValue = {
       type: ACTION_TYPES.ACTION_TYPE_ADD,
