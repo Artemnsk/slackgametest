@@ -3,7 +3,10 @@ const config = require("../credentials/private");
 
 const /** @type admin.app.App */ firebaseApp = admin.initializeApp({
     credential: admin.credential.cert(config.firebase.serviceAccount),
-    databaseURL: config.firebase.databaseURL
+    databaseURL: config.firebase.databaseURL,
+    databaseAuthVariableOverride: {
+        uid: "game-webserver"
+    }
 });
 
 module.exports = firebaseApp;

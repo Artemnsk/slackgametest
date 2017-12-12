@@ -4,3 +4,6 @@ node_modules
 # Ignore all credential file except examples.
 credentials/*
 !credentials/example
+# Firebase data
+/firebase-debug.log
+/.firebaserc
