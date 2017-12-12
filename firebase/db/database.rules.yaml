@@ -1,6 +1,8 @@
 functions:
   # User is webserver.
   - webserverUser(): auth.uid === 'game-webserver'
+  - workspaceExists(workspaceKey): root.workspaces[workspaceKey].exists()
+  - channelExists(channelKey): root.channels[channelKey].exists()
 
 schema:
   type: object
@@ -15,35 +17,86 @@ schema:
           type: boolean
         version:
           type: boolean
-    # State.
-    state:
+    # Store information about workspaces this app installed on.
+    workspaces:
       type: object
-      additionalProperties: false
-      properties:
-        number:
-          type: number
+      $workspaceKey:
+        type: object
+        additionalProperties: false
+        required: ['name', 'active']
+        properties:
+          active:
+            type: boolean
+          name:
+            type: string
+          tokens:
+            type: object
+            $tokenId:
+              type: boolean
+    # Stores information about workspace channels this app used in.
+    channels:
+      type: object
+      indexOn: ['workspaceKey']
+      $channelKey:
+        type: object
+        additionalProperties: false
+        required: ['workspaceKey']
+        properties:
+          workspaceKey:
+            type: string
+            constraint: workspaceExists(next)
+          name:
+            type: string
+    # Stores information about game states in channels.
+    states:
+      type: object
+      $channelKey:
+        type: object
+        constraint: channelExists($channelKey)
+        additionalProperties: false
+        properties:
+          number:
+            type: number
     # Actions.
     actions:
       type: object
-      indexOn: ['startAt']
-      $actionKey:
+      $channelKey:
         type: object
-        additionalProperties: false
-        required: ['type', 'startAt', 'number']
-        properties:
-          type:
-            type: string
-          startAt:
-            type: number
-          number:
-            type: number
+        constraint: channelExists($channelKey)
+        indexOn: ['startAt']
+        $actionKey:
+          type: object
+          additionalProperties: false
+          required: ['type', 'startAt', 'number']
+          properties:
+            type:
+              type: string
+            startAt:
+              type: number
+            number:
+              type: number
 
 access:
   - location: /state
     read: webserverUser()
     write: webserverUser()
 
+  - location: /workspaces
+    read: webserverUser()
+  - location: /workspaces/$workspaceKey
+    write: webserverUser()
+
+  - location: /channels
+    read: webserverUser()
+  - location: /channels/$channelKey
+    write: webserverUser()
+
+  - location: /states
+    read: webserverUser()
+  - location: /states/$channelKey
+    write: webserverUser()
+
   - location: /actions
     read: webserverUser()
-  - location: /actions/$actionId
+  - location: /actions/$channelKey/$actionKey
     write: webserverUser()

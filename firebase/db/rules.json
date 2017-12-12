@@ -14,36 +14,91 @@
         ".read":"false"
       }
     },
-    "state": {
-      ".write":"((root.child('system').child('maintenance').val()!==true&&(!newData.exists()||newData.hasChildren())&&(!newData.child('number').exists()||newData.child('number').isNumber())&&auth.uid==='game-webserver'))",
-      ".read":"(auth.uid==='game-webserver')",
-      "number": {
-        ".write":"((root.child('system').child('maintenance').val()!==true&&(!newData.exists()||newData.isNumber())&&auth.uid==='game-webserver'))",
-        ".read":"(auth.uid==='game-webserver')"
-      },
-      "$other":{".validate":"false"}
-    },
-    "actions": {
-      ".indexOn": ["startAt"],
+    "workspaces": {
       ".write":"false",
       ".read":"(auth.uid==='game-webserver')",
-      "$actionKey": {
-        ".write":"((root.child('system').child('maintenance').val()!==true&&(!newData.exists()||newData.hasChildren())&&(newData.val()==null||newData.child('type').exists()&&newData.child('startAt').exists()&&newData.child('number').exists())&&(!newData.child('type').exists()||newData.child('type').isString())&&(!newData.child('startAt').exists()||newData.child('startAt').isNumber())&&(!newData.child('number').exists()||newData.child('number').isNumber())&&auth.uid==='game-webserver'))",
+      "$workspaceKey": {
+        ".write":"false",
         ".read":"((auth.uid==='game-webserver'))",
-        "type": {
-          ".write":"((root.child('system').child('maintenance').val()!==true&&(newData.parent().val()==null||newData.parent().child('type').exists()&&newData.parent().child('startAt').exists()&&newData.parent().child('number').exists())&&(!newData.exists()||newData.isString())&&auth.uid==='game-webserver'))",
+        "active": {
+          ".write":"((root.child('system').child('maintenance').val()!==true&&(newData.parent().val()==null||newData.parent().child('name').exists()&&newData.parent().child('active').exists())&&(!newData.exists()||newData.isBoolean())&&auth.uid==='game-webserver'))",
           ".read":"((auth.uid==='game-webserver'))"
         },
-        "startAt": {
-          ".write":"((root.child('system').child('maintenance').val()!==true&&(newData.parent().val()==null||newData.parent().child('type').exists()&&newData.parent().child('startAt').exists()&&newData.parent().child('number').exists())&&(!newData.exists()||newData.isNumber())&&auth.uid==='game-webserver'))",
+        "name": {
+          ".write":"((root.child('system').child('maintenance').val()!==true&&(newData.parent().val()==null||newData.parent().child('name').exists()&&newData.parent().child('active').exists())&&(!newData.exists()||newData.isString())&&auth.uid==='game-webserver'))",
           ".read":"((auth.uid==='game-webserver'))"
         },
-        "number": {
-          ".write":"((root.child('system').child('maintenance').val()!==true&&(newData.parent().val()==null||newData.parent().child('type').exists()&&newData.parent().child('startAt').exists()&&newData.parent().child('number').exists())&&(!newData.exists()||newData.isNumber())&&auth.uid==='game-webserver'))",
+        "tokens": {
+          ".write":"false",
+          ".read":"((auth.uid==='game-webserver'))",
+          "$tokenId": {
+            ".write":"((root.child('system').child('maintenance').val()!==true&&(newData.parent().parent().val()==null||newData.parent().parent().child('name').exists()&&newData.parent().parent().child('active').exists())&&(!newData.exists()||newData.isBoolean())&&auth.uid==='game-webserver'))",
+            ".read":"((auth.uid==='game-webserver'))"
+          }
+        },
+        "$other":{".validate":"false"}
+      }
+    },
+    "channels": {
+      ".indexOn": ["workspaceKey"],
+      ".write":"false",
+      ".read":"(auth.uid==='game-webserver')",
+      "$channelKey": {
+        ".write":"((root.child('system').child('maintenance').val()!==true&&(!newData.exists()||newData.hasChildren())&&(newData.val()==null||newData.child('workspaceKey').exists())&&root.child('workspaces').child(newData.child('workspaceKey').val()).exists()&&(!newData.child('workspaceKey').exists()||newData.child('workspaceKey').isString())&&(!newData.child('name').exists()||newData.child('name').isString())&&auth.uid==='game-webserver'))",
+        ".read":"((auth.uid==='game-webserver'))",
+        "workspaceKey": {
+          ".write":"((root.child('system').child('maintenance').val()!==true&&(newData.parent().val()==null||newData.parent().child('workspaceKey').exists())&&root.child('workspaces').child(newData.val()).exists()&&(!newData.exists()||newData.isString())&&auth.uid==='game-webserver'))",
+          ".read":"((auth.uid==='game-webserver'))"
+        },
+        "name": {
+          ".write":"((root.child('system').child('maintenance').val()!==true&&(newData.parent().val()==null||newData.parent().child('workspaceKey').exists())&&(!newData.exists()||newData.isString())&&auth.uid==='game-webserver'))",
           ".read":"((auth.uid==='game-webserver'))"
         },
         "$other":{".validate":"false"}
       }
+    },
+    "states": {
+      ".write":"false",
+      ".read":"(auth.uid==='game-webserver')",
+      "$channelKey": {
+        ".write":"((root.child('system').child('maintenance').val()!==true&&root.child('channels').child($channelKey).exists()&&(!newData.exists()||newData.hasChildren())&&(!newData.child('number').exists()||newData.child('number').isNumber())&&auth.uid==='game-webserver'))",
+        ".read":"((auth.uid==='game-webserver'))",
+        "number": {
+          ".write":"((root.child('system').child('maintenance').val()!==true&&root.child('channels').child($channelKey).exists()&&(!newData.exists()||newData.isNumber())&&auth.uid==='game-webserver'))",
+          ".read":"((auth.uid==='game-webserver'))"
+        },
+        "$other":{".validate":"false"}
+      }
+    },
+    "actions": {
+      ".write":"false",
+      ".read":"(auth.uid==='game-webserver')",
+      "$channelKey": {
+        ".indexOn": ["startAt"],
+        ".write":"false",
+        ".read":"(auth.uid==='game-webserver')",
+        "$actionKey": {
+          ".write":"((root.child('system').child('maintenance').val()!==true&&root.child('channels').child($channelKey).exists()&&(!newData.exists()||newData.hasChildren())&&(newData.val()==null||newData.child('type').exists()&&newData.child('startAt').exists()&&newData.child('number').exists())&&(!newData.child('type').exists()||newData.child('type').isString())&&(!newData.child('startAt').exists()||newData.child('startAt').isNumber())&&(!newData.child('number').exists()||newData.child('number').isNumber())&&auth.uid==='game-webserver'))",
+          ".read":"((auth.uid==='game-webserver'))",
+          "type": {
+            ".write":"((root.child('system').child('maintenance').val()!==true&&root.child('channels').child($channelKey).exists()&&(newData.parent().val()==null||newData.parent().child('type').exists()&&newData.parent().child('startAt').exists()&&newData.parent().child('number').exists())&&(!newData.exists()||newData.isString())&&auth.uid==='game-webserver'))",
+            ".read":"((auth.uid==='game-webserver'))"
+          },
+          "startAt": {
+            ".write":"((root.child('system').child('maintenance').val()!==true&&root.child('channels').child($channelKey).exists()&&(newData.parent().val()==null||newData.parent().child('type').exists()&&newData.parent().child('startAt').exists()&&newData.parent().child('number').exists())&&(!newData.exists()||newData.isNumber())&&auth.uid==='game-webserver'))",
+            ".read":"((auth.uid==='game-webserver'))"
+          },
+          "number": {
+            ".write":"((root.child('system').child('maintenance').val()!==true&&root.child('channels').child($channelKey).exists()&&(newData.parent().val()==null||newData.parent().child('type').exists()&&newData.parent().child('startAt').exists()&&newData.parent().child('number').exists())&&(!newData.exists()||newData.isNumber())&&auth.uid==='game-webserver'))",
+            ".read":"((auth.uid==='game-webserver'))"
+          },
+          "$other":{".validate":"false"}
+        }
+      }
+    },
+    "state": {
+      ".write":"((root.child('system').child('maintenance').val()!==true&&auth.uid==='game-webserver'))",
+      ".read":"(auth.uid==='game-webserver')"
     },
     "$other":{".validate":"false"}
   }
