@@ -1,17 +1,17 @@
 "use strict";
 
 class Usable {
-    constructor(data) {
-        this.emoji = data.emoji;
-    }
+  constructor(data) {
+    this.emoji = data.emoji;
+  }
 
-    /**
-     * Returns Form for usage.
-     * @return {Object}
-     */
-    useForm() {
-        return {};
-    }
+  /**
+   * Returns Form for usage.
+   * @return {Object}
+   */
+  useForm() {
+    return {};
+  }
 
 
 }

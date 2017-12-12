@@ -6,7 +6,7 @@ const publicCredentials = require('./credentials/public');
 const startGame = require('./models/game/game');
 startGame();
 const randomizer = require('./models/game/actionsrandomizer');
-randomizer(1600);
+// randomizer(1600);
 
 app.set('view engine', 'pug');
 app.use('/slacktestgame', require('./controllers'));

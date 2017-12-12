@@ -4,8 +4,8 @@ const Route = require('route-parser');
 const spellBookFactory = require('../uimessage/factory/spellbookfactory');
 
 module.exports = {
-    route: new Route('/mainmenu/spellbook/spellinfo'),
-    callback: routeCallback
+  route: new Route('/mainmenu/spellbook/spellinfo'),
+  callback: routeCallback
 };
 
 /**
@@ -14,12 +14,12 @@ module.exports = {
  * @return {null|UIMessage}
  */
 function routeCallback(actionData, args) {
-    // Parse submitted actions to know which window to render.
-    let action = actionData.actions[0];
-    switch (action.name) {
-        case 'back':
-            return spellBookFactory(20, 20, 321);
-            break;
-    }
-    return null;
+  // Parse submitted actions to know which window to render.
+  let action = actionData.actions[0];
+  switch (action.name) {
+    case 'back':
+      return spellBookFactory(20, 20, 321);
+      break;
+  }
+  return null;
 }

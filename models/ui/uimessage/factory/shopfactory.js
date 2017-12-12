@@ -8,25 +8,25 @@ const statsTitleFactory = require('./partials/statstitlefactory');
  * @return {UIMessage}
  */
 function shopFactory(hp, mana, gold) {
-    const shopUIMessage = new UIMessage();
-    let uiAttachments = [];
-    uiAttachments.push(statsTitleFactory(hp, mana, gold));
-    uiAttachments.push({
-        text: "*Shop*",
-        color: "#3AA3E3",
-        attachment_type: "default",
-        callback_id: "/mainmenu/shop",
-        actions: [
-            {
-                name: "back",
-                text: ":back:",
-                type: "button",
-                value: "back"
-            }
-        ]
-    });
-    shopUIMessage.setUIAttachments(uiAttachments);
-    return shopUIMessage;
+  const shopUIMessage = new UIMessage();
+  let uiAttachments = [];
+  uiAttachments.push(statsTitleFactory(hp, mana, gold));
+  uiAttachments.push({
+    text: "*Shop*",
+    color: "#3AA3E3",
+    attachment_type: "default",
+    callback_id: "/mainmenu/shop",
+    actions: [
+      {
+        name: "back",
+        text: ":back:",
+        type: "button",
+        value: "back"
+      }
+    ]
+  });
+  shopUIMessage.setUIAttachments(uiAttachments);
+  return shopUIMessage;
 }
 
 module.exports = shopFactory;

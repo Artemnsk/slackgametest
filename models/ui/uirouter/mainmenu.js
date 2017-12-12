@@ -5,8 +5,8 @@ const spellBookFactory = require('../uimessage/factory/spellbookfactory');
 const shopFactory = require('../uimessage/factory/shopfactory');
 
 module.exports = {
-    route: new Route('/mainmenu'),
-    callback: routeCallback
+  route: new Route('/mainmenu'),
+  callback: routeCallback
 };
 
 /**
@@ -15,16 +15,16 @@ module.exports = {
  * @return {null|UIMessage}
  */
 function routeCallback(actionData, args) {
-    // Parse submitted actions to know which window to render.
-    // TODO:
-    let action = actionData.actions[0];
-    switch (action.name) {
-        case 'spellbook':
-            return spellBookFactory(20, 20, 321);
-            break;
-        case 'shop':
-            return shopFactory(20, 20, 321);
-            break;
-    }
-    return null;
+  // Parse submitted actions to know which window to render.
+  // TODO:
+  let action = actionData.actions[0];
+  switch (action.name) {
+    case 'spellbook':
+      return spellBookFactory(20, 20, 321);
+      break;
+    case 'shop':
+      return shopFactory(20, 20, 321);
+      break;
+  }
+  return null;
 }
