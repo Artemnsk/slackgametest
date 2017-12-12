@@ -1,0 +1,50 @@
+{
+  "rules":{
+    ".write":"false",
+    ".read":"false",
+    "system": {
+      ".write":"false",
+      ".read":"false",
+      "maintenance": {
+        ".write":"false",
+        ".read":"false"
+      },
+      "version": {
+        ".write":"false",
+        ".read":"false"
+      }
+    },
+    "state": {
+      ".write":"((root.child('system').child('maintenance').val()!==true&&(!newData.exists()||newData.hasChildren())&&(!newData.child('number').exists()||newData.child('number').isNumber())&&auth.uid==='game-webserver'))",
+      ".read":"(auth.uid==='game-webserver')",
+      "number": {
+        ".write":"((root.child('system').child('maintenance').val()!==true&&(!newData.exists()||newData.isNumber())&&auth.uid==='game-webserver'))",
+        ".read":"(auth.uid==='game-webserver')"
+      },
+      "$other":{".validate":"false"}
+    },
+    "actions": {
+      ".indexOn": ["startAt"],
+      ".write":"false",
+      ".read":"(auth.uid==='game-webserver')",
+      "$actionKey": {
+        ".write":"((root.child('system').child('maintenance').val()!==true&&(!newData.exists()||newData.hasChildren())&&(newData.val()==null||newData.child('type').exists()&&newData.child('startAt').exists()&&newData.child('number').exists())&&(!newData.child('type').exists()||newData.child('type').isString())&&(!newData.child('startAt').exists()||newData.child('startAt').isNumber())&&(!newData.child('number').exists()||newData.child('number').isNumber())&&auth.uid==='game-webserver'))",
+        ".read":"((auth.uid==='game-webserver'))",
+        "type": {
+          ".write":"((root.child('system').child('maintenance').val()!==true&&(newData.parent().val()==null||newData.parent().child('type').exists()&&newData.parent().child('startAt').exists()&&newData.parent().child('number').exists())&&(!newData.exists()||newData.isString())&&auth.uid==='game-webserver'))",
+          ".read":"((auth.uid==='game-webserver'))"
+        },
+        "startAt": {
+          ".write":"((root.child('system').child('maintenance').val()!==true&&(newData.parent().val()==null||newData.parent().child('type').exists()&&newData.parent().child('startAt').exists()&&newData.parent().child('number').exists())&&(!newData.exists()||newData.isNumber())&&auth.uid==='game-webserver'))",
+          ".read":"((auth.uid==='game-webserver'))"
+        },
+        "number": {
+          ".write":"((root.child('system').child('maintenance').val()!==true&&(newData.parent().val()==null||newData.parent().child('type').exists()&&newData.parent().child('startAt').exists()&&newData.parent().child('number').exists())&&(!newData.exists()||newData.isNumber())&&auth.uid==='game-webserver'))",
+          ".read":"((auth.uid==='game-webserver'))"
+        },
+        "$other":{".validate":"false"}
+      }
+    },
+    "$other":{".validate":"false"}
+  }
+}

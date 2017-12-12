@@ -10,7 +10,7 @@ module.exports = function(frequency) {
     let /** ActionFirebaseValue */ actionValue = {
       type: ACTION_TYPES.ACTION_TYPE_ADD,
       number: Math.round(Math.random() * 100),
-      startAt: Date.now() + 10000
+      startAt: Date.now()/* + 10000*/
     };
     addAction(actionValue);
   }, frequency);

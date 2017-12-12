@@ -18,7 +18,7 @@ const setState = require('../state/states').setState;
 const aReducer = (state, action) => {
   switch (action.type) {
     case ACTION_TYPES.ACTION_TYPE_ADD:
-      return Object.assign(state, {
+      return Object.assign({}, state, {
         number: state.number + action.number
       });
       break;
@@ -51,7 +51,8 @@ function gameLoop() {
         // If no action provided let's wait for some time and repeat loop.
         setTimeout(gameLoop, 2000);
       } else {
-        gameStore.dispatch(action.getFirebaseValue());
+        let actionSimpleObject = action.getFirebaseValue();
+        gameStore.dispatch(actionSimpleObject);
         // Remove this action now.
         removeAction(action.$key)
           .then(() => {

@@ -1,0 +1,49 @@
+functions:
+  # User is webserver.
+  - webserverUser(): auth.uid === 'game-webserver'
+
+schema:
+  type: object
+  additionalProperties: false
+  constraint: (root.system.maintenance !== true)
+  properties:
+    # Stores information about system. Is not accessible, just for usage via Admin SDK.
+    system:
+      type: object
+      properties:
+        maintenance:
+          type: boolean
+        version:
+          type: boolean
+    # State.
+    state:
+      type: object
+      additionalProperties: false
+      properties:
+        number:
+          type: number
+    # Actions.
+    actions:
+      type: object
+      indexOn: ['startAt']
+      $actionKey:
+        type: object
+        additionalProperties: false
+        required: ['type', 'startAt', 'number']
+        properties:
+          type:
+            type: string
+          startAt:
+            type: number
+          number:
+            type: number
+
+access:
+  - location: /state
+    read: webserverUser()
+    write: webserverUser()
+
+  - location: /actions
+    read: webserverUser()
+  - location: /actions/$actionId
+    write: webserverUser()

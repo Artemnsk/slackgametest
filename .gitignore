@@ -7,3 +7,4 @@ credentials/*
 # Firebase data
 /firebase-debug.log
 /.firebaserc
+/firebase/db/rules.json
