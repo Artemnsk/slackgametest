@@ -21,6 +21,7 @@
     "express": "^4.16.2",
     "firebase-admin": "^5.5.1",
     "greenlock-express": "^2.0.12",
+    "inquirer": "^4.0.1",
     "pug": "^2.0.0-rc.4",
     "redirect-https": "^1.1.4",
     "redux": "^3.7.2",
