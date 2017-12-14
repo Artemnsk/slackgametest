@@ -62,17 +62,17 @@ function getTeams(active) {
 }
 
 /**
- * Adds new team into DB.
+ * Sets team data into DB.
  * @param {TeamFirebaseValue} teamValues
  * @param {string} teamId
  * @return Promise.<any,Error>
  */
-function addTeam(teamValues, teamId) {
+function setTeam(teamValues, teamId) {
   return firebaseApp.database().ref('/teams/' + teamId).set(teamValues);
 }
 
 module.exports = {
-  addTeam,
+  setTeam,
   getTeams,
   getTeam
 };

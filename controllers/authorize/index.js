@@ -7,7 +7,7 @@ const https = require('https');
 const queryString = require('querystring');
 const publicCredentials = require('../../credentials/public');
 const privateCredentials = require('../../credentials/private');
-const addTeam = require('../../models/team/teams').addTeam;
+const setTeam = require('../../models/team/teams').setTeam;
 // This URL is used as redirect_uri in OAuth process.
 const authRedirectURL = url.format({
   protocol: publicCredentials.protocol,
@@ -98,7 +98,7 @@ function authorizeComplete(req, res, next) {
             botId: responseJSON.bot.bot_user_id,
             botToken: responseJSON.bot.bot_access_token
           };
-          addTeam(teamFirebaseValue, responseJSON.team_id)
+          setTeam(teamFirebaseValue, responseJSON.team_id)
             .then(() => {
               res.render(__dirname + '/../../views/authorizationcompleted');
             }, (error) => {
