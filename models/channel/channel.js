@@ -9,6 +9,7 @@ class Channel {
   constructor(values) {
     this.active = values.active;
     this.name = values.name;
+    this.timeStep = values.timeStep;
     if (values.$key) {
       this.$key = values.$key;
     }
@@ -22,6 +23,7 @@ class Channel {
     return Object.assign({}, {
       active: this.active,
       name: this.name,
+      timeStep: this.timeStep
     });
   }
 }

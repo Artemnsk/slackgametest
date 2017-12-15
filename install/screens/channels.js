@@ -48,7 +48,7 @@ function channelsRoute(args, router) {
         helpers.clearConsole();
         switch(answers.channel) {
           case NEW_CHANNEL:
-            // TODO:
+            router.channelCreateRoute(args, router);
             break;
           case LIST_BACK:
             router.teamRoute({ teamKey: args.team.$key }, router);

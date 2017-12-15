@@ -6,6 +6,7 @@ const Channel = require('./channel').Channel;
  * @typedef {Object} ChannelFirebaseValue
  * @property {boolean} active
  * @property {string} name
+ * @property {number} timeStep - minimum time between player steps
  */
 
 /**
@@ -60,17 +61,18 @@ function getChannels(teamId, active) {
 }
 
 /**
- * Adds new channel into DB.
+ * Sets channel in DB.
  * @param {ChannelFirebaseValue} channelValues
- * @param {string} channelId
+ * @param {string} teamKey
+ * @param {string} channelKey
  * @return Promise.<any,Error>
  */
-function addChannel(channelValues, channelId) {
-  return firebaseApp.database().ref('/channels/' + channelId).set(channelValues);
+function setChannel(channelValues, teamKey, channelKey) {
+  return firebaseApp.database().ref('/channels/' + teamKey + '/' + channelKey).set(channelValues);
 }
 
 module.exports = {
-  addChannel,
+  setChannel,
   getChannels,
   getChannel
 };
