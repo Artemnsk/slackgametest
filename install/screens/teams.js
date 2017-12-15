@@ -2,7 +2,6 @@
 
 const inquirer = require('inquirer');
 const getTeams = require('../../models/team/teams').getTeams;
-const teamRoute = require('./team');
 const helpers = require('../helpers');
 
 const LIST_EXIT = 'Exit';
@@ -13,8 +12,9 @@ module.exports = teamsRoute;
 
 /**
  * @typedef {Function} TeamsRoute
+ * @param {InstallationRouter} router
  */
-function teamsRoute() {
+function teamsRoute(router) {
   var loadingScreen = helpers.loadingScreen();
   getTeams()
     .then((teams) => {
@@ -39,25 +39,25 @@ function teamsRoute() {
         }
         let teamAnswerRegExp = /^.*\[(.*)\].*$/;
         if (!teamAnswerRegExp.test(answers.team)) {
-          _errorCallback('Invalid option chosen.');
+          _errorCallback('Invalid option chosen.', router);
         } else {
           let teamKey = answers.team.replace(teamAnswerRegExp, '$1');
           // Load team screen.
-          teamRoute({ teamKey }, { teamsRoute });
+          router.teamRoute({ teamKey }, router);
         }
       });
     }, (error) => {
       clearInterval(loadingScreen);
-      _errorCallback(error.message);
+      _errorCallback(error.message, router);
     });
 }
 
 /**
  *
  * @param {string} message
- * @private
+ * @param {InstallationRouter} router
  */
-function _errorCallback(message) {
+function _errorCallback(message, router) {
   helpers.clearConsole();
   inquirer.prompt([
     {
@@ -69,7 +69,7 @@ function _errorCallback(message) {
   ]).then((/** {option: string} */ answers) => {
     switch(answers.option) {
       case ERROR_TRY_AGAIN:
-        return teamsRoute();
+        return router.teamsRoute(router);
         break;
       case ERROR_EXIT:
         process.exit(0);

@@ -4,7 +4,6 @@ const stdout = process.stdout;
 const inquirer = require('inquirer');
 const getTeam = require('../../models/team/teams').getTeam;
 const helpers = require('../helpers');
-const teamEditRoute = require('./teamedit');
 
 const TEAM_EDIT = 'Edit';
 const TEAM_CHANNELS = 'View Channels';
@@ -17,9 +16,9 @@ module.exports = teamRoute;
 /**
  * @typedef {Function} TeamRoute
  * @param {{teamKey: string}} args
- * @param {{teamsRoute: TeamsRoute}} previousRoutes
+ * @param {InstallationRouter} router
  */
-function teamRoute(args, previousRoutes) {
+function teamRoute(args, router) {
   var loadingScreen = helpers.loadingScreen();
   getTeam(args.teamKey)
     .then((team) => {
@@ -44,19 +43,19 @@ function teamRoute(args, previousRoutes) {
         helpers.clearConsole();
         switch(answers.option) {
           case TEAM_EDIT:
-            teamEditRoute({ team }, Object.assign(previousRoutes, { teamRoute }));
+            router.teamEditRoute({ team }, router);
             break;
           case TEAM_CHANNELS:
             // TODO:
             break;
           case TEAM_BACK:
-            previousRoutes.teamsRoute();
+            router.teamsRoute(router);
             break;
         }
       });
     }, (error) => {
       clearInterval(loadingScreen);
-      _errorCallback(error.message, args, previousRoutes);
+      _errorCallback(error.message, args, router);
     });
 }
 
@@ -64,10 +63,9 @@ function teamRoute(args, previousRoutes) {
  *
  * @param {string} message
  * @param {{teamKey: string}} args
- * @param {{teamsRoute: TeamsRoute}} previousRoutes
- * @private
+ * @param {InstallationRouter} router
  */
-function _errorCallback(message, args, previousRoutes) {
+function _errorCallback(message, args, router) {
   helpers.clearConsole();
   inquirer.prompt([
     {
@@ -79,10 +77,10 @@ function _errorCallback(message, args, previousRoutes) {
   ]).then((/** {option: string} */ answers) => {
     switch(answers.option) {
       case ERROR_TRY_AGAIN:
-        teamRoute(args, previousRoutes);
+        router.teamRoute(args, router);
         break;
       case ERROR_BACK:
-        previousRoutes.teamsRoute();
+        router.teamsRoute(router);
         break;
     }
   });

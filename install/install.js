@@ -1,7 +1,7 @@
 "use strict";
 
 const helpers = require('./helpers');
-const teamsRoute = require('./screens/teams');
+const router = require('./router');
 
 helpers.clearConsole();
-teamsRoute();
+router.teamsRoute(router);

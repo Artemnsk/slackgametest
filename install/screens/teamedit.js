@@ -15,11 +15,11 @@ const ERROR_BACK = 'Back';
 module.exports = teamEditRoute;
 
 /**
- *
+ * @typedef {Function} TeamEditRoute
  * @param {{team: Team}} args
- * @param {{teamsRoute: TeamsRoute, teamRoute: TeamRoute}} previousRoutes
+ * @param {InstallationRouter} router
  */
-function teamEditRoute(args, previousRoutes) {
+function teamEditRoute(args, router) {
   helpers.clearConsole();
   stdout.write('TEAM INFO\n');
   stdout.write('$key: ' + args.team.$key + '\n');
@@ -53,14 +53,14 @@ function teamEditRoute(args, previousRoutes) {
           .then(() => {
             clearInterval(loadingScreen);
             helpers.clearConsole();
-            previousRoutes.teamRoute({ teamKey: args.team.$key }, { teamsRoute: previousRoutes.teamsRoute });
+            router.teamRoute({ teamKey: args.team.$key }, router);
           }, (error) => {
             clearInterval(loadingScreen);
-            _errorCallback(error.message, args, previousRoutes);
+            _errorCallback(error.message, args, router);
           });
         break;
       case TEAM_EDIT_CANCEL:
-        previousRoutes.teamRoute({ teamKey: args.team.$key }, { teamsRoute: previousRoutes.teamsRoute });
+        router.teamRoute({ teamKey: args.team.$key }, router);
         break;
     }
   });
@@ -72,10 +72,9 @@ function teamEditRoute(args, previousRoutes) {
  *
  * @param {string} message
  * @param {{team: Team}} args
- * @param {{teamsRoute: TeamsRoute, teamRoute: TeamRoute}} previousRoutes
- * @private
+ * @param {InstallationRouter} router
  */
-function _errorCallback(message, args, previousRoutes) {
+function _errorCallback(message, args, router) {
   helpers.clearConsole();
   inquirer.prompt([
     {
@@ -87,10 +86,10 @@ function _errorCallback(message, args, previousRoutes) {
   ]).then((/** {option: string} */ answers) => {
     switch(answers.option) {
       case ERROR_TRY_AGAIN:
-        teamEditRoute(args, previousRoutes);
+        teamEditRoute(args, router);
         break;
       case ERROR_BACK:
-        previousRoutes.teamRoute({ teamKey: args.team.$key }, { teamsRoute: previousRoutes.teamsRoute });
+        router.teamRoute({ teamKey: args.team.$key }, router);
         break;
     }
   });
