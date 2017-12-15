@@ -46,7 +46,7 @@ function teamRoute(args, router) {
             router.teamEditRoute({ team }, router);
             break;
           case TEAM_CHANNELS:
-            // TODO:
+            router.channelsRoute({ team }, router);
             break;
           case TEAM_BACK:
             router.teamsRoute(router);

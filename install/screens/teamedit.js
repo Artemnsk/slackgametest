@@ -86,7 +86,7 @@ function _errorCallback(message, args, router) {
   ]).then((/** {option: string} */ answers) => {
     switch(answers.option) {
       case ERROR_TRY_AGAIN:
-        teamEditRoute(args, router);
+        router.teamEditRoute(args, router);
         break;
       case ERROR_BACK:
         router.teamRoute({ teamKey: args.team.$key }, router);

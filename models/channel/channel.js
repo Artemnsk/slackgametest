@@ -9,6 +9,9 @@ class Channel {
   constructor(values) {
     this.active = values.active;
     this.name = values.name;
+    if (values.$key) {
+      this.$key = values.$key;
+    }
   }
 
   /**

@@ -69,7 +69,7 @@ function _errorCallback(message, router) {
   ]).then((/** {option: string} */ answers) => {
     switch(answers.option) {
       case ERROR_TRY_AGAIN:
-        return router.teamsRoute(router);
+        router.teamsRoute(router);
         break;
       case ERROR_EXIT:
         process.exit(0);
