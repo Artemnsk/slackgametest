@@ -68,6 +68,7 @@ schema:
         constraint: channelExists($teamKey, $channelKey)
         $channelKey:
           type: object
+          indexOn: ['active']
           $playerKey:
             type: object
             additionalProperties: false
