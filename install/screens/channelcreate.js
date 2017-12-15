@@ -96,7 +96,7 @@ function channelCreateRoute(args, router) {
         router.channelsRoute(args, router);
         break;
       default:
-        process.exit(0);
+        process.exit(1);
         break;
     }
   });
@@ -123,7 +123,7 @@ function _errorCallback(message, args, router) {
         router.channelsRoute(args, router);
         break;
       default:
-        process.exit(0);
+        process.exit(1);
         break;
     }
   });

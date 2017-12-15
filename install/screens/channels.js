@@ -61,7 +61,7 @@ function channelsRoute(args, router) {
             } else {
               let channelKey = answers.channel.replace(channelAnswerRegExp, '$1');
               // Load channel screen.
-              // TODO:
+              router.channelRoute({ team: args.team, channelKey }, router);
             }
             break;
         }
