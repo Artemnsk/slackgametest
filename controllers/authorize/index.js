@@ -7,6 +7,7 @@ const https = require('https');
 const queryString = require('querystring');
 const publicCredentials = require('../../credentials/public');
 const privateCredentials = require('../../credentials/private');
+const setTeam = require('../../models/team/teams').setTeam;
 // This URL is used as redirect_uri in OAuth process.
 const authRedirectURL = url.format({
   protocol: publicCredentials.protocol,
@@ -23,14 +24,14 @@ module.exports = router;
 /**
  * Simply redirects on Slack's authorize app page with needed data provided (like client_id).
  */
-function authorizeRequest(req, res, next) {
+function authorizeRequest(req, res) {
   const redirectURL = url.format({
     protocol: "https",
     hostname: "slack.com",
     pathname: "oauth/authorize",
     query: {
       "client_id": publicCredentials.client_id,
-      "scope": 'commands,bot,chat:write:bot',
+      "scope": 'commands,bot,chat:write:bot,groups:write',
       "redirect_uri": authRedirectURL
     }
   });
@@ -38,6 +39,21 @@ function authorizeRequest(req, res, next) {
 }
 
 /**
+ * @typedef {Object} SuccessfulAuthorizationResponseBot
+ * @property {string} bot_user_id
+ * @property {string} bot_access_token
+ */
+
+/**
+ * @typedef {Object} SuccessfulAuthorizationResponse
+ * @property {boolean} ok
+ * @property {string} access_token
+ * @property {string} scope - permissions for this token
+ * @property {string} user_id
+ * @property {string} team_name
+ * @property {string} team_id
+ * @property {SuccessfulAuthorizationResponseBot} bot
+ *
  * Exchanges "code" string got from Slack on access_token:
  * 1. That will actually install app in workspace as requested by user.
  * 2. access_token then will be used to make Slack API calls which being allowed by this access_token.
@@ -71,8 +87,27 @@ function authorizeComplete(req, res, next) {
         responseMessage += chunk;
       });
       response.on('end', () => {
-        // TODO: save access and bot tokens.
-        res.render(__dirname + '/../../views/authorizationcompleted');
+        const /** @type SuccessfulAuthorizationResponse */ responseJSON = JSON.parse(responseMessage);
+        if (responseJSON.ok === true) {
+          // Save access and bot tokens into database now.
+          let /** @type TeamFirebaseValue */ teamFirebaseValue = {
+            active: true,
+            name: responseJSON.team_name,
+            token: responseJSON.access_token,
+            userId: responseJSON.user_id,
+            botId: responseJSON.bot.bot_user_id,
+            botToken: responseJSON.bot.bot_access_token
+          };
+          setTeam(teamFirebaseValue, responseJSON.team_id)
+            .then(() => {
+              res.render(__dirname + '/../../views/authorizationcompleted');
+            }, (error) => {
+              let errorTitle = 'Something went wrong. Despite the fact app being installed in your team it probably will not work properly. Better to reinstall it. Error: ' + error.message;
+              res.send(errorTitle);
+            });
+        } else {
+          res.send('Something went wrong');
+        }
       });
     });
     request.write(data);

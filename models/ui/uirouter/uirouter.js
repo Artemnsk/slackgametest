@@ -6,7 +6,35 @@ uiRoutes.push(require('./shop'));
 uiRoutes.push(require('./spellbook'));
 uiRoutes.push(require('./spellinfo'));
 
-module.exports = getUIMessage;
+class UIRouter {
+  /**
+   * @param {Team} team
+   * @param {Channel} channel
+   * @param {?Player} player
+   * @constructor
+   * @property {Team} team
+   * @property {Channel} channel
+   * @property {?Player} player
+   */
+  constructor(team, channel, player) {
+    this.team = team;
+    this.channel = channel;
+    this.player = player
+  }
+
+  static getUIMessage(route, actionData) {
+    let args;
+    // TODO: better loop.
+    for (let i = 0; i < uiRoutes.length; i++) {
+      args = uiRoutes[i].route.match(route);
+      // TODO: check type; e.g. no args case but still match.
+      if (args) {
+        return uiRoutes[i].callback(actionData, args);
+      }
+    }
+    return null;
+  }
+}
 
 /**
  *
@@ -25,3 +53,5 @@ function getUIMessage(route, actionData) {
   }
   return null;
 }
+
+module.exports = getUIMessage;

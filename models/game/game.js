@@ -7,6 +7,8 @@ const getRecentAction = require('../action/actions').getRecentAction;
 const removeAction = require('../action/actions').removeAction;
 const getState = require('../state/states').getState;
 const setState = require('../state/states').setState;
+const getTeams = require('../team/teams').getTeams;
+const getChannels = require('../channel/channels').getChannels;
 
 // TODO: Our big reducer with game logic.
 /**
@@ -34,12 +36,25 @@ var gameStore;
  * @return {Promise<void>}
  */
 module.exports = () => {
-  // Load initial state from DB.
-  return getState()
-    .then((initialState) => {
-      gameStore = createStore(aReducer, initialState, applyMiddleware(loggerMiddleware));
-      // Finally start the game.
-      gameLoop();
+  // Load all active teams.
+  return getTeams(true)
+    .then((teams) => {
+      // TODO: spawn separate child process for each team?
+      teams.map((team) => {
+        // Load all active channels for this team.
+        getChannels(team.$key, true)
+          .then((channels) => {
+            var a = 1;
+            // TODO: load game loop for each of these channels.
+            // TODO: maybe game loop get all these objects as parameters. And outside this package we are tracking for changes in team/channel.
+          });
+      });
+      // return getState()
+      //   .then((initialState) => {
+      //     gameStore = createStore(aReducer, initialState, applyMiddleware(loggerMiddleware));
+      //     // Finally start the game.
+      //     gameLoop();
+      //   });
     });
 };
 

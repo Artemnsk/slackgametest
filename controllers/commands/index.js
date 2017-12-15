@@ -3,19 +3,18 @@
 const express = require('express');
 const router = express.Router();
 const tokenVerification = require('../../middlewares/tokenverification');
+const setGameData = require('../../middlewares/slackcommands').setGameData;
 const request = require('request');
-
 const mainMenuFactory = require('../../models/ui/uimessage/factory/mainmenufactory');
-
-// const userRegexp = /<@[0-9A-Z]+(\|.+)?>/i;
-// const commandRegexp = /^('|")([^'^"]*)(?:\1)\s(.*)$/i;
 
 router.use('/commands', tokenVerification);
 
-router.post('/commands', (req, res) => {
+router.post('/commands', setGameData, (/** SlackCommandRequest */ req, res) => {
   var text = req.body.text;
   if (text === 'menu' || !text) {
     res.status(200).send('');
+    // TODO: Check game phase and load Game or display break menu.
+    // TODO: any errors must respond to Slack.
     const mainMenuUIMessage = mainMenuFactory(20, 30, 123);
     let sendParameters = {
       response_type: 'ephemeral'

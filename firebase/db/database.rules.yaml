@@ -1,6 +1,8 @@
 functions:
   # User is webserver.
   - webserverUser(): auth.uid === 'game-webserver'
+  - teamExists(teamKey): root.teams[teamKey].exists()
+  - channelExists(teamKey, channelKey): root.channels[teamKey][channelKey].exists()
 
 schema:
   type: object
@@ -15,35 +17,129 @@ schema:
           type: boolean
         version:
           type: boolean
-    # State.
-    state:
+    # Store information about teams this app installed on.
+    teams:
       type: object
-      additionalProperties: false
-      properties:
-        number:
-          type: number
+      indexOn: ['active']
+      $teamKey:
+        type: object
+        additionalProperties: false
+        constraint: next.active === false || (next.token.exists() && next.userId.exists() && next.botId.exists() && next.botToken.exists())
+        required: ['name', 'active']
+        properties:
+          active:
+            type: boolean
+          name:
+            type: string
+          token:
+            type: string
+          # User who installed this app.
+          userId:
+            type: string
+          botId:
+            type: string
+          botToken:
+            type: string
+    # Stores information about team channels this app used in.
+    channels:
+      type: object
+      constraint: teamExists($teamKey)
+      $teamKey:
+        type: object
+        indexOn: ['active']
+        $channelKey:
+          type: object
+          additionalProperties: false
+          constraint: next.timeStep > 0
+          required: ['active', 'name', 'timeStep']
+          properties:
+            active:
+              type: boolean
+            name:
+              type: string
+            timeStep:
+              type: number
+    # Stores information about players: channel users who created character in game channel.
+    players:
+      type: object
+      constraint: teamExists($teamKey)
+      $teamKey:
+        type: object
+        constraint: channelExists($teamKey, $channelKey)
+        $channelKey:
+          type: object
+          indexOn: ['active']
+          $playerKey:
+            type: object
+            additionalProperties: false
+            # TODO:
+            # constraint: true
+            required: ['active', 'name']
+            properties:
+              active:
+                type: boolean
+              name:
+                type: string
+
+    # TODO:
+    # Stores information about game states in channels.
+    states:
+      type: object
+      $channelKey:
+        type: object
+        constraint: channelExists($channelKey)
+        additionalProperties: false
+        properties:
+          number:
+            type: number
     # Actions.
     actions:
       type: object
-      indexOn: ['startAt']
-      $actionKey:
+      constraint: teamExists($teamKey)
+      $teamKey:
         type: object
-        additionalProperties: false
-        required: ['type', 'startAt', 'number']
-        properties:
-          type:
-            type: string
-          startAt:
-            type: number
-          number:
-            type: number
+        $channelKey:
+          type: object
+          constraint: channelExists($channelKey)
+          indexOn: ['startAt']
+          $actionKey:
+            type: object
+            additionalProperties: false
+            required: ['type', 'startAt', 'number']
+            properties:
+              type:
+                type: string
+              startAt:
+                type: number
+              number:
+                type: number
 
 access:
+  - location: /teams
+    read: webserverUser()
+  - location: /teams/$teamKey
+    write: webserverUser()
+
+  - location: /channels/$teamKey
+    read: webserverUser()
+  - location: /channels/$teamKey/$channelKey
+    write: webserverUser()
+
+  - location: /players/$teamKey/$channelKey/
+    read: webserverUser()
+  - location: /players/$teamKey/$channelKey/$playerKey
+    write: webserverUser()
+
   - location: /state
     read: webserverUser()
     write: webserverUser()
 
+  - location: /states
+    read: webserverUser()
+  - location: /states/$channelKey
+    write: webserverUser()
+
   - location: /actions
     read: webserverUser()
-  - location: /actions/$actionId
+  - location: /actions/$channelKey/$actionKey
     write: webserverUser()
