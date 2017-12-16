@@ -1,6 +1,7 @@
 "use strict";
 
 const /** @type UIRoute */ rootUIRoute = require('./root');
+const /** @type UIRoute */ newplayerUIRoute = require('./newplayer');
 const /** @type UIRoute */ mainmenuUIRoute = require('./mainmenu');
 const /** @type UIRoute */ shopUIRoute = require('./shop');
 const /** @type UIRoute */ spellbookUIRoute = require('./spellbook');
@@ -24,6 +25,7 @@ class UIRouter {
   }
 
   rootUIRoute() { return rootUIRoute }
+  newplayerUIRoute() { return newplayerUIRoute }
   mainmenuUIRoute() { return mainmenuUIRoute }
   shopUIRoute() { return shopUIRoute }
   spellbookUIRoute() { return spellbookUIRoute }
@@ -40,6 +42,8 @@ class UIRouter {
     var args;
     if (args = this.rootUIRoute().route.match(path)) {
       return this.rootUIRoute().processActions(this, parsedPayload, args);
+    } else if (args = this.newplayerUIRoute().route.match(path)) {
+      return this.newplayerUIRoute().processActions(this, parsedPayload, args);
     } else if (args = this.mainmenuUIRoute().route.match(path)) {
       return this.mainmenuUIRoute().processActions(this, parsedPayload, args);
     } else if (args = this.shopUIRoute().route.match(path)) {

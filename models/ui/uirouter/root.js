@@ -28,6 +28,9 @@ const mainMenuFactory = require('../uimessage/factory/mainmenufactory');
 const /** @type UIRouteProcessActions */ processActions = (uiRouter, parsedPayload, args) => {
   // TODO: from commands parsedpayload is empty.
   if (!parsedPayload || !parsedPayload.actions || parsedPayload.actions.length === 0) {
+    if (!uiRouter.player) {
+      return uiRouter.newplayerUIRoute().getUIMessage(uiRouter, {});
+    }
     return uiRouter.mainmenuUIRoute().getUIMessage(uiRouter, {});
   }
   // TODO: detect game phase and respond with appropriate UI.
