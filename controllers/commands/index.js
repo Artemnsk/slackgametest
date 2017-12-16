@@ -13,7 +13,7 @@ router.post('/commands', setGameData, (/** SlackCommandRequest */ req, res) => {
   var text = req.body.text;
   if (text === 'menu' || !text) {
     res.status(200).send('');
-    // TODO: Check game phase and load Game or display break menu.
+    // TODO: Check game phase and load Game or display break menu. So use UIRouter with root ('/') route.
     // TODO: any errors must respond to Slack.
     const mainMenuUIMessage = mainMenuFactory(20, 30, 123);
     let sendParameters = {

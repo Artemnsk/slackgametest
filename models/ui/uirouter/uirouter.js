@@ -22,14 +22,21 @@ class UIRouter {
     this.player = player
   }
 
-  static getUIMessage(route, actionData) {
+  /**
+   *
+   * @param {string} route
+   * @param {ParsedSlackActionPayload} parsedPayload
+   * // TODO: respond with error message, not null!
+   * @return {null}
+   */
+  getUIMessage(route, parsedPayload) {
     let args;
     // TODO: better loop.
     for (let i = 0; i < uiRoutes.length; i++) {
       args = uiRoutes[i].route.match(route);
       // TODO: check type; e.g. no args case but still match.
       if (args) {
-        return uiRoutes[i].callback(actionData, args);
+        return uiRoutes[i].callback(parsedPayload, args);
       }
     }
     return null;
@@ -54,4 +61,4 @@ function getUIMessage(route, actionData) {
   return null;
 }
 
-module.exports = getUIMessage;
+module.exports = UIRouter;
