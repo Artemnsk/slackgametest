@@ -1,13 +1,12 @@
 "use strict";
 
-const Route = require('route-parser');
-
 const /** @type UIRoute */ rootUIRoute = require('./root');
 const /** @type UIRoute */ mainmenuUIRoute = require('./mainmenu');
 const /** @type UIRoute */ shopUIRoute = require('./shop');
 const /** @type UIRoute */ spellbookUIRoute = require('./spellbook');
 const /** @type UIRoute */ spellinfoUIRoute = require('./spellinfo');
 
+// TODO: actually we can make prototype which can be used with reassigning game data for better performance.
 class UIRouter {
   /**
    * @param {Team} team
@@ -24,6 +23,12 @@ class UIRouter {
     this.player = player
   }
 
+  rootUIRoute() { return rootUIRoute }
+  mainmenuUIRoute() { return mainmenuUIRoute }
+  shopUIRoute() { return shopUIRoute }
+  spellbookUIRoute() { return spellbookUIRoute }
+  spellinfoUIRoute() { return spellinfoUIRoute }
+
   /**
    *
    * @param {string} path
@@ -32,16 +37,17 @@ class UIRouter {
    * @return {UIMessage}
    */
   getUIMessage(path, parsedPayload) {
-    if (rootUIRoute.route.match(path)) {
-      return rootUIRoute.getUIMessage(this, parsedPayload);
-    } else if (mainmenuUIRoute.route.match(path)) {
-      return mainmenuUIRoute.getUIMessage(this, parsedPayload);
-    } else if (shopUIRoute.route.match(path)) {
-      return shopUIRoute.getUIMessage(this, parsedPayload);
-    } else if (spellbookUIRoute.route.match(path)) {
-      return spellbookUIRoute.getUIMessage(this, parsedPayload);
-    } else if (spellinfoUIRoute.route.match(path)) {
-      return spellinfoUIRoute.getUIMessage(this, parsedPayload);
+    var args;
+    if (args = this.rootUIRoute().route.match(path)) {
+      return this.rootUIRoute().processActions(this, parsedPayload, args);
+    } else if (args = this.mainmenuUIRoute().route.match(path)) {
+      return this.mainmenuUIRoute().processActions(this, parsedPayload, args);
+    } else if (args = this.shopUIRoute().route.match(path)) {
+      return this.shopUIRoute().processActions(this, parsedPayload, args);
+    } else if (args = this.spellbookUIRoute().route.match(path)) {
+      return this.spellbookUIRoute().processActions(this, parsedPayload);
+    } else if (args = this.spellinfoUIRoute().route.match(path)) {
+      return this.spellinfoUIRoute().processActions(this, parsedPayload, args);
     } else {
       // TODO: error.
     }

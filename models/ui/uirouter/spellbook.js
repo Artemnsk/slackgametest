@@ -4,7 +4,7 @@ const Route = require('route-parser');
 const mainMenuFactory = require('../uimessage/factory/mainmenufactory');
 const spellFactory = require('../uimessage/factory/spellfactory');
 
-const /** @type UIRouteGetUIMessage */ getUIMessage = (uiRouter, parsedPayload) => {
+const /** @type UIRouteProcessActions */ processActions = (uiRouter, parsedPayload, args) => {
   // Parse submitted actions to know which window to render.
   // TODO:
   let action = parsedPayload.actions[0];
@@ -21,7 +21,7 @@ const /** @type UIRouteGetUIMessage */ getUIMessage = (uiRouter, parsedPayload) 
 
 const /** @type UIRoute */ uiRoute = {
   route: new Route('/mainmenu/spellbook'),
-  getUIMessage
+  processActions
 };
 
 module.exports = uiRoute;
