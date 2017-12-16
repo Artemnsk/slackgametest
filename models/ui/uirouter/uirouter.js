@@ -1,10 +1,12 @@
 "use strict";
 
-const uiRoutes = [];
-uiRoutes.push(require('./mainmenu'));
-uiRoutes.push(require('./shop'));
-uiRoutes.push(require('./spellbook'));
-uiRoutes.push(require('./spellinfo'));
+const Route = require('route-parser');
+
+const /** @type UIRoute */ rootUIRoute = require('./root');
+const /** @type UIRoute */ mainmenuUIRoute = require('./mainmenu');
+const /** @type UIRoute */ shopUIRoute = require('./shop');
+const /** @type UIRoute */ spellbookUIRoute = require('./spellbook');
+const /** @type UIRoute */ spellinfoUIRoute = require('./spellinfo');
 
 class UIRouter {
   /**
@@ -24,41 +26,26 @@ class UIRouter {
 
   /**
    *
-   * @param {string} route
-   * @param {ParsedSlackActionPayload} parsedPayload
+   * @param {string} path
+   * @param {ParsedSlackActionPayload} [parsedPayload]
    * // TODO: respond with error message, not null!
-   * @return {null}
+   * @return {UIMessage}
    */
-  getUIMessage(route, parsedPayload) {
-    let args;
-    // TODO: better loop.
-    for (let i = 0; i < uiRoutes.length; i++) {
-      args = uiRoutes[i].route.match(route);
-      // TODO: check type; e.g. no args case but still match.
-      if (args) {
-        return uiRoutes[i].callback(parsedPayload, args);
-      }
-    }
-    return null;
-  }
-}
-
-/**
- *
- * @param {String} route
- * @return {null|UIMessage}
- */
-function getUIMessage(route, actionData) {
-  let args;
-  // TODO: better loop.
-  for (let i = 0; i < uiRoutes.length; i++) {
-    args = uiRoutes[i].route.match(route);
-    // TODO: check type; e.g. no args case but still match.
-    if (args) {
-      return uiRoutes[i].callback(actionData, args);
+  getUIMessage(path, parsedPayload) {
+    if (rootUIRoute.route.match(path)) {
+      return rootUIRoute.getUIMessage(this, parsedPayload);
+    } else if (mainmenuUIRoute.route.match(path)) {
+      return mainmenuUIRoute.getUIMessage(this, parsedPayload);
+    } else if (shopUIRoute.route.match(path)) {
+      return shopUIRoute.getUIMessage(this, parsedPayload);
+    } else if (spellbookUIRoute.route.match(path)) {
+      return spellbookUIRoute.getUIMessage(this, parsedPayload);
+    } else if (spellinfoUIRoute.route.match(path)) {
+      return spellinfoUIRoute.getUIMessage(this, parsedPayload);
+    } else {
+      // TODO: error.
     }
   }
-  return null;
 }
 
 module.exports = UIRouter;
