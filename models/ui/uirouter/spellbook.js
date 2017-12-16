@@ -1,8 +1,7 @@
 "use strict";
 
 const Route = require('route-parser');
-const mainMenuFactory = require('../uimessage/factory/mainmenufactory');
-const spellFactory = require('../uimessage/factory/spellfactory');
+const spellBookFactory = require('../uimessage/factory/spellbookfactory');
 
 const /** @type UIRouteProcessActions */ processActions = (uiRouter, parsedPayload, args) => {
   // Parse submitted actions to know which window to render.
@@ -10,18 +9,23 @@ const /** @type UIRouteProcessActions */ processActions = (uiRouter, parsedPaylo
   let action = parsedPayload.actions[0];
   switch (action.name) {
     case 'spell':
-      return spellFactory(20, 22, 1234, action.value);
+      return uiRouter.spellinfoUIRoute().getUIMessage(uiRouter, { spellName: action.value });
       break;
     case 'back':
-      return mainMenuFactory(20, 22, 1230);
+      return uiRouter.mainmenuUIRoute().getUIMessage(uiRouter, {});
       break;
   }
   return null;
 };
 
+const /** @type UIRouteGetUIMessage */ getUIMessage = (uiRouter, args) => {
+  return spellBookFactory(20, 20, 321);
+};
+
 const /** @type UIRoute */ uiRoute = {
   route: new Route('/mainmenu/spellbook'),
-  processActions
+  processActions,
+  getUIMessage
 };
 
 module.exports = uiRoute;
