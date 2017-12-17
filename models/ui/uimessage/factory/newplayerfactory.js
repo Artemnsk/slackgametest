@@ -1,6 +1,8 @@
 "use strict";
 
 const UIMessage = require('../uimessage');
+// TODO: import this variable from uirouter/newplayer.
+const CREATE_NEW_PLAYER_YES = 'yes';
 
 /**
  * Provides with new player UI element.
@@ -17,14 +19,9 @@ function newPlayerFactory() {
     actions: [
       {
         name: "option",
-        text: "No",
+        text: "Create new player!",
         type: "button",
-        value: "no"
-      }, {
-        name: "option",
-        text: "Yes",
-        type: "button",
-        value: "yes"
+        value: CREATE_NEW_PLAYER_YES
       }
     ]
   });

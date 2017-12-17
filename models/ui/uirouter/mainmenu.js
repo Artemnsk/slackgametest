@@ -2,8 +2,14 @@
 
 const Route = require('route-parser');
 const mainMenuFactory = require('../uimessage/factory/mainmenufactory');
+const informationMessageFactory = require('../uimessage/factory/informationmessagefactory');
+
+const INFORMATION_MESSAGE_OK = 'ok';
 
 const /** @type UIRouteProcessActions */ processActions = (uiRouter, parsedPayload, args) => {
+  if (!uiRouter.player) {
+    return informationMessageFactory('Error: Cannot find your player.', '/', INFORMATION_MESSAGE_OK, INFORMATION_MESSAGE_OK);
+  }
   // Parse submitted actions to know which window to render.
   // TODO:
   let action = parsedPayload.actions[0];
@@ -19,6 +25,9 @@ const /** @type UIRouteProcessActions */ processActions = (uiRouter, parsedPaylo
 };
 
 const /** @type UIRouteGetUIMessage */ getUIMessage = (uiRouter, args) => {
+  if (!uiRouter.player) {
+    return informationMessageFactory('Error: Cannot find your player.', '/', INFORMATION_MESSAGE_OK, INFORMATION_MESSAGE_OK);
+  }
   return mainMenuFactory(30, 40, 402);
 };
 

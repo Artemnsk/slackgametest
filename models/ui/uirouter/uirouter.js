@@ -36,7 +36,7 @@ class UIRouter {
    * @param {string} path
    * @param {ParsedSlackActionPayload} [parsedPayload]
    * // TODO: respond with error message, not null!
-   * @return {UIMessage}
+   * @return {UIMessage|Promise.<UIMessage,Error>}
    */
   getUIMessage(path, parsedPayload) {
     var args;

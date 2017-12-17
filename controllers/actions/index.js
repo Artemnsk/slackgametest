@@ -10,18 +10,24 @@ router.post('/actions', setGameData, (/** SlackActionRequest */ req, res) => {
   res.status(200).send('');
   // TODO: display error route UI if there is no route.
   const uiRouter = new UIRouter(req.slackData.team, req.slackData.channel, req.slackData.player);
-  const uiMessage = uiRouter.getUIMessage(req.slackData.parsedPayload.callback_id, req.slackData.parsedPayload);
-  let sendParameters = {
-    response_type: 'ephemeral'
-  };
-  uiMessage.setSendParameters(sendParameters);
-  request(req.slackData.parsedPayload.response_url, {
-    uri: req.slackData.parsedPayload.response_url,
-    method: 'POST',
-    json: uiMessage.toJSON(),
-    headers: {
-      'Content-type': 'application/json'
-    },
+  var uiMessage = uiRouter.getUIMessage(req.slackData.parsedPayload.callback_id, req.slackData.parsedPayload);
+  // Convert uiMessage to Promise if not a promise.
+  if (uiMessage.then === undefined) {
+    uiMessage = Promise.resolve(uiMessage);
+  }
+  uiMessage.then((message) => {
+    let sendParameters = {
+      response_type: 'ephemeral'
+    };
+    message.setSendParameters(sendParameters);
+    request(req.slackData.parsedPayload.response_url, {
+      uri: req.slackData.parsedPayload.response_url,
+      method: 'POST',
+      json: message.toJSON(),
+      headers: {
+        'Content-type': 'application/json'
+      },
+    });
   });
 });
 
