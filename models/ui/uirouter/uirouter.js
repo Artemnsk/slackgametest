@@ -1,11 +1,13 @@
 "use strict";
 
-const uiRoutes = [];
-uiRoutes.push(require('./mainmenu'));
-uiRoutes.push(require('./shop'));
-uiRoutes.push(require('./spellbook'));
-uiRoutes.push(require('./spellinfo'));
+const /** @type UIRoute */ rootUIRoute = require('./root');
+const /** @type UIRoute */ newplayerUIRoute = require('./newplayer');
+const /** @type UIRoute */ mainmenuUIRoute = require('./mainmenu');
+const /** @type UIRoute */ shopUIRoute = require('./shop');
+const /** @type UIRoute */ spellbookUIRoute = require('./spellbook');
+const /** @type UIRoute */ spellinfoUIRoute = require('./spellinfo');
 
+// TODO: actually we can make prototype which can be used with reassigning game data for better performance.
 class UIRouter {
   /**
    * @param {Team} team
@@ -22,36 +24,38 @@ class UIRouter {
     this.player = player
   }
 
-  static getUIMessage(route, actionData) {
-    let args;
-    // TODO: better loop.
-    for (let i = 0; i < uiRoutes.length; i++) {
-      args = uiRoutes[i].route.match(route);
-      // TODO: check type; e.g. no args case but still match.
-      if (args) {
-        return uiRoutes[i].callback(actionData, args);
-      }
+  rootUIRoute() { return rootUIRoute }
+  newplayerUIRoute() { return newplayerUIRoute }
+  mainmenuUIRoute() { return mainmenuUIRoute }
+  shopUIRoute() { return shopUIRoute }
+  spellbookUIRoute() { return spellbookUIRoute }
+  spellinfoUIRoute() { return spellinfoUIRoute }
+
+  /**
+   *
+   * @param {string} path
+   * @param {ParsedSlackActionPayload} [parsedPayload]
+   * // TODO: respond with error message, not null!
+   * @return {UIMessage|Promise.<UIMessage,Error>}
+   */
+  getUIMessage(path, parsedPayload) {
+    var args;
+    if (args = this.rootUIRoute().route.match(path)) {
+      return this.rootUIRoute().processActions(this, parsedPayload, args);
+    } else if (args = this.newplayerUIRoute().route.match(path)) {
+      return this.newplayerUIRoute().processActions(this, parsedPayload, args);
+    } else if (args = this.mainmenuUIRoute().route.match(path)) {
+      return this.mainmenuUIRoute().processActions(this, parsedPayload, args);
+    } else if (args = this.shopUIRoute().route.match(path)) {
+      return this.shopUIRoute().processActions(this, parsedPayload, args);
+    } else if (args = this.spellbookUIRoute().route.match(path)) {
+      return this.spellbookUIRoute().processActions(this, parsedPayload);
+    } else if (args = this.spellinfoUIRoute().route.match(path)) {
+      return this.spellinfoUIRoute().processActions(this, parsedPayload, args);
+    } else {
+      // TODO: error.
     }
-    return null;
   }
 }
 
-/**
- *
- * @param {String} route
- * @return {null|UIMessage}
- */
-function getUIMessage(route, actionData) {
-  let args;
-  // TODO: better loop.
-  for (let i = 0; i < uiRoutes.length; i++) {
-    args = uiRoutes[i].route.match(route);
-    // TODO: check type; e.g. no args case but still match.
-    if (args) {
-      return uiRoutes[i].callback(actionData, args);
-    }
-  }
-  return null;
-}
-
-module.exports = getUIMessage;
+module.exports = UIRouter;

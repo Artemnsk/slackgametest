@@ -1,9 +1,5 @@
 "use strict";
 
-const privateCredentials = require('../../../credentials/private');
-const Slack = require('slack-node');
-const slack = new Slack(privateCredentials.sandboxAccessToken);
-
 class UIMessage {
   constructor() {
     this.sendParameters = {};

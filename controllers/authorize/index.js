@@ -31,7 +31,7 @@ function authorizeRequest(req, res) {
     pathname: "oauth/authorize",
     query: {
       "client_id": publicCredentials.client_id,
-      "scope": 'commands,bot,chat:write:bot,groups:write',
+      "scope": 'commands,bot,chat:write:bot,groups:write,users:read',
       "redirect_uri": authRedirectURL
     }
   });
