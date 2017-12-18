@@ -12,6 +12,9 @@ class Team {
     if (values.token) {
       this.token = values.token;
     }
+    if (values.admin) {
+      this.admin = values.admin;
+    }
     if (values.userId) {
       this.userId = values.userId;
     }
@@ -34,6 +37,7 @@ class Team {
     return Object.assign({}, {
       active: this.active,
       name: this.name,
+      admin: this.admin,
       token: this.token,
       userId: this.userId,
       botId: this.botId,
