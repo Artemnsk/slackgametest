@@ -8,6 +8,7 @@ const queryString = require('querystring');
 const publicCredentials = require('../../credentials/public');
 const privateCredentials = require('../../credentials/private');
 const setTeam = require('../../models/team/teams').setTeam;
+const getTeam = require('../../models/team/teams').getTeam;
 // This URL is used as redirect_uri in OAuth process.
 const authRedirectURL = url.format({
   protocol: publicCredentials.protocol,
@@ -89,21 +90,31 @@ function authorizeComplete(req, res, next) {
       response.on('end', () => {
         const /** @type SuccessfulAuthorizationResponse */ responseJSON = JSON.parse(responseMessage);
         if (responseJSON.ok === true) {
-          // Save access and bot tokens into database now.
-          let /** @type TeamFirebaseValue */ teamFirebaseValue = {
-            active: true,
-            name: responseJSON.team_name,
-            token: responseJSON.access_token,
-            userId: responseJSON.user_id,
-            botId: responseJSON.bot.bot_user_id,
-            botToken: responseJSON.bot.bot_access_token
-          };
-          setTeam(teamFirebaseValue, responseJSON.team_id)
-            .then(() => {
-              res.render(__dirname + '/../../views/authorizationcompleted');
+          // At first get team info in app.
+          getTeam(responseJSON.team_id)
+            .then((team) => {
+              if (team && team.admin && team.admin !== responseJSON.user_id) {
+                res.status(500).send("App is already installed by admin and you are not app admin so we won't replace admin token with yours.");
+              } else {
+                // Save access and bot tokens into database now.
+                let /** @type TeamFirebaseValue */ teamFirebaseValue = {
+                  active: true,
+                  name: responseJSON.team_name,
+                  token: responseJSON.access_token,
+                  userId: responseJSON.user_id,
+                  botId: responseJSON.bot.bot_user_id,
+                  botToken: responseJSON.bot.bot_access_token
+                };
+                setTeam(teamFirebaseValue, responseJSON.team_id)
+                  .then(() => {
+                    res.render(__dirname + '/../../views/authorizationcompleted');
+                  }, (error) => {
+                    let errorTitle = 'Something went wrong. Despite the fact app being installed in your team it probably will not work properly. Better to reinstall it. Error: ' + error.message;
+                    res.send(errorTitle);
+                  });
+              }
             }, (error) => {
-              let errorTitle = 'Something went wrong. Despite the fact app being installed in your team it probably will not work properly. Better to reinstall it. Error: ' + error.message;
-              res.send(errorTitle);
+              res.status(500).send(error.message);
             });
         } else {
           res.send('Something went wrong');
