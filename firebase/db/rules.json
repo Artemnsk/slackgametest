@@ -19,7 +19,7 @@
       ".write":"false",
       ".read":"(auth.uid==='game-webserver')",
       "$teamKey": {
-        ".write":"((root.child('system').child('maintenance').val()!==true&&(newData.child('active').val()===false||newData.child('token').exists()&&newData.child('userId').exists()&&newData.child('botId').exists()&&newData.child('botToken').exists())&&(!newData.exists()||newData.hasChildren())&&(newData.val()==null||newData.child('name').exists()&&newData.child('active').exists())&&(!newData.child('active').exists()||newData.child('active').isBoolean())&&(!newData.child('name').exists()||newData.child('name').isString())&&(!newData.child('token').exists()||newData.child('token').isString())&&(!newData.child('userId').exists()||newData.child('userId').isString())&&(!newData.child('botId').exists()||newData.child('botId').isString())&&(!newData.child('botToken').exists()||newData.child('botToken').isString())&&auth.uid==='game-webserver'))",
+        ".write":"((root.child('system').child('maintenance').val()!==true&&(newData.child('active').val()===false||newData.child('token').exists()&&newData.child('userId').exists()&&newData.child('botId').exists()&&newData.child('botToken').exists())&&(!newData.exists()||newData.hasChildren())&&(newData.val()==null||newData.child('name').exists()&&newData.child('active').exists())&&(!newData.child('active').exists()||newData.child('active').isBoolean())&&(!newData.child('name').exists()||newData.child('name').isString())&&(!newData.child('token').exists()||newData.child('token').isString())&&(!newData.child('userId').exists()||newData.child('userId').isString())&&(!newData.child('admin').exists()||newData.child('admin').isString())&&(!newData.child('botId').exists()||newData.child('botId').isString())&&(!newData.child('botToken').exists()||newData.child('botToken').isString())&&auth.uid==='game-webserver'))",
         ".read":"((auth.uid==='game-webserver'))",
         "active": {
           ".write":"((root.child('system').child('maintenance').val()!==true&&(newData.parent().child('active').val()===false||newData.parent().child('token').exists()&&newData.parent().child('userId').exists()&&newData.parent().child('botId').exists()&&newData.parent().child('botToken').exists())&&(newData.parent().val()==null||newData.parent().child('name').exists()&&newData.parent().child('active').exists())&&(!newData.exists()||newData.isBoolean())&&auth.uid==='game-webserver'))",
@@ -34,6 +34,10 @@
           ".read":"((auth.uid==='game-webserver'))"
         },
         "userId": {
+          ".write":"((root.child('system').child('maintenance').val()!==true&&(newData.parent().child('active').val()===false||newData.parent().child('token').exists()&&newData.parent().child('userId').exists()&&newData.parent().child('botId').exists()&&newData.parent().child('botToken').exists())&&(newData.parent().val()==null||newData.parent().child('name').exists()&&newData.parent().child('active').exists())&&(!newData.exists()||newData.isString())&&auth.uid==='game-webserver'))",
+          ".read":"((auth.uid==='game-webserver'))"
+        },
+        "admin": {
           ".write":"((root.child('system').child('maintenance').val()!==true&&(newData.parent().child('active').val()===false||newData.parent().child('token').exists()&&newData.parent().child('userId').exists()&&newData.parent().child('botId').exists()&&newData.parent().child('botToken').exists())&&(newData.parent().val()==null||newData.parent().child('name').exists()&&newData.parent().child('active').exists())&&(!newData.exists()||newData.isString())&&auth.uid==='game-webserver'))",
           ".read":"((auth.uid==='game-webserver'))"
         },
@@ -81,6 +85,7 @@
         ".write":"false",
         ".read":"false",
         "$channelKey": {
+          ".indexOn": ["active"],
           ".write":"false",
           ".read":"(auth.uid==='game-webserver')",
           "$playerKey": {

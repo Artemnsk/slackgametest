@@ -36,6 +36,9 @@ schema:
           # User who installed this app.
           userId:
             type: string
+          # Admin of the app. Separately set via prompt.
+          admin:
+            type: string
           botId:
             type: string
           botToken:

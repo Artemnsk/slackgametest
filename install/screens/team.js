@@ -5,6 +5,8 @@ const inquirer = require('inquirer');
 const getTeam = require('../../models/team/teams').getTeam;
 const helpers = require('../helpers');
 
+const Slack = require('slack-node');
+
 const TEAM_EDIT = 'Edit';
 const TEAM_CHANNELS = 'View Channels';
 const TEAM_BACK = 'Back';
@@ -22,41 +24,73 @@ function teamRoute(args, router) {
   var loadingScreen = helpers.loadingScreen();
   getTeam(args.teamKey)
     .then((team) => {
-      clearInterval(loadingScreen);
-      helpers.clearConsole();
-      stdout.write('TEAM INFO\n');
-      stdout.write('$key: ' + team.$key + '\n');
-      stdout.write('name: ' + team.name + '\n');
-      stdout.write('token: ' + team.token + '\n');
-      stdout.write('userId: ' + team.userId + '\n');
-      stdout.write('botId: ' + team.botId + '\n');
-      stdout.write('botToken: ' + team.botToken + '\n');
-      stdout.write('active: ' + (team.active === true ? 'true' : 'false') + '\n');
-      inquirer.prompt([
-        {
-          type: 'list',
-          name: 'option',
-          message: helpers.separator,
-          choices: [TEAM_EDIT, TEAM_CHANNELS, TEAM_BACK]
-        }
-      ]).then((/** {option: string} */ answers) => {
+      if (team.admin) {
+        let apiCallArgs = {
+          user: team.admin,
+          // TODO:
+          include_locale: false
+        };
+        const slack = new Slack(team.token);
+        slack.api("users.info", apiCallArgs, (err, /** SlackUserInfoResponse */ response) => {
+          if (err || response.ok !== true) {
+            clearInterval(loadingScreen);
+            helpers.clearConsole();
+            teamViewPart(args, router, team, team.admin + ' ERROR: ' + (err ? err.error : 'MAYBE THIS USER DOESN\'T EXIST ANYMORE'));
+          } else if(response.ok === true) {
+            clearInterval(loadingScreen);
+            helpers.clearConsole();
+            teamViewPart(args, router, team, response.user.profile.real_name + ' [' + response.user.id + ']');
+          }
+        });
+      } else {
+        clearInterval(loadingScreen);
         helpers.clearConsole();
-        switch(answers.option) {
-          case TEAM_EDIT:
-            router.teamEditRoute({ team }, router);
-            break;
-          case TEAM_CHANNELS:
-            router.channelsRoute({ team }, router);
-            break;
-          case TEAM_BACK:
-            router.teamsRoute(router);
-            break;
-        }
-      });
+        teamViewPart(args, router, team, 'WARNING! NOT SET!');
+      }
     }, (error) => {
       clearInterval(loadingScreen);
       _errorCallback(error.message, args, router);
     });
+}
+
+/**
+ * Used to build team info depends on different team admin values.
+ * @param {{teamKey: string}} args
+ * @param {InstallationRouter} router
+ * @param {Team} team
+ * @param {string} teamAdminLabel
+ */
+function teamViewPart(args, router, team, teamAdminLabel) {
+  stdout.write('TEAM INFO\n');
+  stdout.write('$key: ' + team.$key + '\n');
+  stdout.write('name: ' + team.name + '\n');
+  stdout.write('token: ' + team.token + '\n');
+  stdout.write('userId: ' + team.userId + '\n');
+  stdout.write('botId: ' + team.botId + '\n');
+  stdout.write('botToken: ' + team.botToken + '\n');
+  stdout.write('admin: ' + teamAdminLabel + '\n');
+  stdout.write('active: ' + (team.active === true ? 'true' : 'false') + '\n');
+  inquirer.prompt([
+    {
+      type: 'list',
+      name: 'option',
+      message: helpers.separator,
+      choices: [TEAM_EDIT, TEAM_CHANNELS, TEAM_BACK]
+    }
+  ]).then((/** {option: string} */ answers) => {
+    helpers.clearConsole();
+    switch(answers.option) {
+      case TEAM_EDIT:
+        router.teamEditRoute({ team }, router);
+        break;
+      case TEAM_CHANNELS:
+        router.channelsRoute({ team }, router);
+        break;
+      case TEAM_BACK:
+        router.teamsRoute(router);
+        break;
+    }
+  });
 }
 
 /**

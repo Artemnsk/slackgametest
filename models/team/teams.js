@@ -6,6 +6,7 @@ const Team = require('./team').Team;
  * @typedef {Object} TeamFirebaseValue
  * @property {boolean} active
  * @property {string} name
+ * @property {string} [admin]
  * @property {string} [token]
  * @property {string} [userId]
  * @property {string} [botId]
