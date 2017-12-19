@@ -6,7 +6,7 @@ const informationMessageFactory = require('../uimessage/factory/informationmessa
 
 const INFORMATION_MESSAGE_OK = 'ok';
 
-const /** @type UIRouteProcessActions */ processActions = (uiRouter, parsedPayload, args) => {
+function processActions(uiRouter, parsedPayload, args) {
   if (!uiRouter.player) {
     return informationMessageFactory('Error: Cannot find your player.', '/', INFORMATION_MESSAGE_OK, INFORMATION_MESSAGE_OK);
   }
@@ -22,14 +22,14 @@ const /** @type UIRouteProcessActions */ processActions = (uiRouter, parsedPaylo
       break;
   }
   return null;
-};
+}
 
-const /** @type UIRouteGetUIMessage */ getUIMessage = (uiRouter, args) => {
+function getUIMessage(uiRouter, args) {
   if (!uiRouter.player) {
     return informationMessageFactory('Error: Player already exists.', '/', INFORMATION_MESSAGE_OK, INFORMATION_MESSAGE_OK);
   }
   return spellBookFactory(20, 20, 321);
-};
+}
 
 const /** @type UIRoute */ uiRoute = {
   route: new Route('/mainmenu/spellbook'),

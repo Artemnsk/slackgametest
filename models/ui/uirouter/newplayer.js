@@ -9,7 +9,7 @@ const Slack = require('slack-node');
 const CREATE_NEW_PLAYER_YES = 'yes';
 const INFORMATION_MESSAGE_OK = 'ok';
 
-const /** @type UIRouteProcessActions */ processActions = (uiRouter, parsedPayload, args) => {
+function processActions(uiRouter, parsedPayload, args) {
   // Parse submitted actions to know which window to render.
   // TODO: that is actually bad.
   let action = parsedPayload.actions[0];
@@ -75,14 +75,14 @@ const /** @type UIRouteProcessActions */ processActions = (uiRouter, parsedPaylo
       break;
   }
   return null;
-};
+}
 
-const /** @type UIRouteGetUIMessage */ getUIMessage = (uiRouter, args) => {
+function getUIMessage(uiRouter, args) {
   if (uiRouter.player) {
     return informationMessageFactory('Error: Player already exists.', '/', INFORMATION_MESSAGE_OK, INFORMATION_MESSAGE_OK);
   }
   return newPlayerFactory();
-};
+}
 
 const /** @type UIRoute */ uiRoute = {
   route: new Route('/newplayer'),

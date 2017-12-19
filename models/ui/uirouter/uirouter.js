@@ -40,6 +40,7 @@ class UIRouter {
    */
   getUIMessage(path, parsedPayload) {
     var args;
+    // TODO: simply foreach.
     if (args = this.rootUIRoute().route.match(path)) {
       return this.rootUIRoute().processActions(this, parsedPayload, args);
     } else if (args = this.newplayerUIRoute().route.match(path)) {
