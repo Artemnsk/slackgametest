@@ -10,6 +10,7 @@ const Channel = require('./channel').Channel;
  * @property {number} breakTime - break time in ms
  * @property {string} phase
  * @property {number} [nextGame]
+ * @property {string} [currentGame]
  */
 
 /**

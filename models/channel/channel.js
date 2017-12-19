@@ -20,6 +20,9 @@ class Channel {
     if (values.nextGame) {
       this.nextGame = values.nextGame;
     }
+    if (values.currentGame) {
+      this.currentGame = values.currentGame;
+    }
     if (values.$key) {
       this.$key = values.$key;
     }
@@ -36,7 +39,8 @@ class Channel {
       timeStep: this.timeStep,
       phase: this.phase,
       breakTime: this.breakTime,
-      nextGame: this.nextGame ? this.nextGame : null
+      nextGame: this.nextGame ? this.nextGame : null,
+      currentGame: this.currentGame ? this.currentGame : null
     });
   }
 }

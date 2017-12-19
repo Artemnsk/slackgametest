@@ -25,12 +25,13 @@ function channelRoute(args, router) {
       clearInterval(loadingScreen);
       helpers.clearConsole();
       stdout.write('CHANNEL INFO\n');
-      stdout.write('$key: ' + channel.$key + '\n');
-      stdout.write('name: ' + channel.name + '\n');
-      stdout.write('timeStep: ' + channel.timeStep + '\n');
-      stdout.write('breakTime: ' + channel.breakTime + '\n');
+      stdout.write(`$key: ${channel.$key}\n`);
+      stdout.write(`name: ${channel.name}\n`);
+      stdout.write(`timeStep: ${channel.timeStep}\n`);
+      stdout.write(`breakTime: ${channel.breakTime}\n`);
       stdout.write(`nextGame: ${channel.nextGame} [${new Date(channel.nextGame)}]\n`);
-      stdout.write('active: ' + (channel.active === true ? 'true' : 'false') + '\n');
+      stdout.write(`currentGame: [${channel.currentGame ? channel.currentGame : 'NOT SET'}]\n`);
+      stdout.write(`active: ${(channel.active === true ? 'true' : 'false')}\n`);
       inquirer.prompt([
         {
           type: 'list',

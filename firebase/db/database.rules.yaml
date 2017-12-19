@@ -3,6 +3,8 @@ functions:
   - webserverUser(): auth.uid === 'game-webserver'
   - teamExists(teamKey): root.teams[teamKey].exists()
   - channelExists(teamKey, channelKey): root.channels[teamKey][channelKey].exists()
+  - gameExists(teamKey, channelKey, gameKey): root.games[teamKey][channelKey][gameKey].exists()
+  - isValidChannel(): (next.phase === 'BREAK' && next.nextGame.exists()) || (next.phase === 'IN_GAME' && next.currentGame.exists())
 
 schema:
   type: object
@@ -53,6 +55,7 @@ schema:
         $channelKey:
           type: object
           additionalProperties: false
+          constraint: isValidChannel()
           required: ['active', 'name', 'timeStep', 'breakTime', 'phase']
           properties:
             active:
@@ -68,9 +71,14 @@ schema:
             phase:
               type: string
               enum: ['BREAK', 'IN_GAME']
+            # TODO: validate these fields depends on phase.
             # When next game must start.
             nextGame:
               type: number
+            # Reference to current game.
+            currentGame:
+              type: string
+              constraint: (!next.exists() || gameExists($teamKey, $channelKey, next))
     # Stores information about players: channel users who created character in game channel.
     players:
       type: object
@@ -94,6 +102,27 @@ schema:
                 type: string
               gold:
                 type: number
+    # Games created per each channel
+    games:
+      type: object
+      constraint: teamExists($teamKey)
+      $teamKey:
+        type: object
+        constraint: channelExists($teamKey, $channelKey)
+        $channelKey:
+          type: object
+          indexOn: ['phase']
+          $gameKey:
+            type: object
+            additionalProperties: false
+            required: ['phase', 'timeStep']
+            properties:
+              timeStep:
+                type: number
+                constraint: next > 0
+              phase:
+                type: string
+                enum: ['PAUSE', 'OVER', 'RUNNING']
 
     # TODO:
     # Stores information about game states in channels.
@@ -142,6 +171,11 @@ access:
   - location: /players/$teamKey/$channelKey/
     read: webserverUser()
   - location: /players/$teamKey/$channelKey/$playerKey
+    write: webserverUser()
+
+  - location: /games/$teamKey/$channelKey/
+    read: webserverUser()
+  - location: /games/$teamKey/$channelKey/$gameKey
     write: webserverUser()
 
   - location: /state
