@@ -2,13 +2,10 @@
 
 const Route = require('route-parser');
 const mainMenuFactory = require('../uimessage/factory/mainmenufactory');
-const informationMessageFactory = require('../uimessage/factory/informationmessagefactory');
-
-const INFORMATION_MESSAGE_OK = 'ok';
 
 function processActions(uiRouter, parsedPayload, args) {
   if (!uiRouter.player) {
-    return informationMessageFactory('Error: Cannot find your player.', '/', INFORMATION_MESSAGE_OK, INFORMATION_MESSAGE_OK);
+    return uiRouter.informationMessageUIRoute().getUIMessage(uiRouter, { text: 'Error: Cannot find your player.' });
   }
   // Parse submitted actions to know which window to render.
   // TODO:
@@ -24,9 +21,15 @@ function processActions(uiRouter, parsedPayload, args) {
   return null;
 }
 
+/**
+ *
+ * @param {UIRouter} uiRouter
+ * @param {Object} args
+ * @return {UIMessage}
+ */
 function getUIMessage(uiRouter, args) {
   if (!uiRouter.player) {
-    return informationMessageFactory('Error: Cannot find your player.', '/', INFORMATION_MESSAGE_OK, INFORMATION_MESSAGE_OK);
+    return uiRouter.informationMessageUIRoute().getUIMessage(uiRouter, { text: 'Error: Cannot find your player.' });
   }
   return mainMenuFactory(30, 40, 402);
 }

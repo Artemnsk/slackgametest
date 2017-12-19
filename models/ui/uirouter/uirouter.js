@@ -1,5 +1,6 @@
 "use strict";
 
+const /** @type UIRoute */ informationMessageUIRoute = require('./informationmessage').uiRoute;
 const /** @type UIRoute */ rootUIRoute = require('./root').uiRoute;
 const /** @type UIRoute */ newplayerUIRoute = require('./newplayer').uiRoute;
 const /** @type UIRoute */ mainmenuUIRoute = require('./mainmenu').uiRoute;
@@ -24,6 +25,7 @@ class UIRouter {
     this.player = player
   }
 
+  informationMessageUIRoute() { return informationMessageUIRoute }
   rootUIRoute() { return rootUIRoute }
   newplayerUIRoute() { return newplayerUIRoute }
   mainmenuUIRoute() { return mainmenuUIRoute }
@@ -53,6 +55,8 @@ class UIRouter {
       return this.spellbookUIRoute().processActions(this, parsedPayload);
     } else if (args = this.spellinfoUIRoute().route.match(path)) {
       return this.spellinfoUIRoute().processActions(this, parsedPayload, args);
+    } else if (args = this.informationMessageUIRoute().route.match(path)) {
+      return this.informationMessageUIRoute().processActions(this, parsedPayload, args);
     } else {
       // TODO: error.
     }

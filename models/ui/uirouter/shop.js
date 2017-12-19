@@ -2,13 +2,11 @@
 
 const Route = require('route-parser');
 const shopFactory = require('../uimessage/factory/shopfactory');
-const informationMessageFactory = require('../uimessage/factory/informationmessagefactory');
-
-const INFORMATION_MESSAGE_OK = 'ok';
 
 function processActions(uiRouter, parsedPayload, args) {
   if (!uiRouter.player) {
-    return informationMessageFactory('Error: Cannot find your player.', '/', INFORMATION_MESSAGE_OK, INFORMATION_MESSAGE_OK);
+    let text = "Player doesn't exist.";
+    return uiRouter.informationMessageUIRoute().getUIMessage(uiRouter, { text });
   }
   // Parse submitted actions to know which window to render.
   // TODO:
@@ -21,9 +19,16 @@ function processActions(uiRouter, parsedPayload, args) {
   return null;
 }
 
+/**
+ *
+ * @param {UIRoute} uiRouter
+ * @param {Object} args
+ * @return {UIMessage}
+ */
 function getUIMessage(uiRouter, args) {
   if (!uiRouter.player) {
-    return informationMessageFactory('Error: Player already exists.', '/', INFORMATION_MESSAGE_OK, INFORMATION_MESSAGE_OK);
+    let text = "Player doesn't exist.";
+    return uiRouter.informationMessageUIRoute().getUIMessage(uiRouter, { text });
   }
   return shopFactory(20, 20, 321);
 }
