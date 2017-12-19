@@ -1,11 +1,12 @@
 "use strict";
 
-const /** @type UIRoute */ rootUIRoute = require('./root');
-const /** @type UIRoute */ newplayerUIRoute = require('./newplayer');
-const /** @type UIRoute */ mainmenuUIRoute = require('./mainmenu');
-const /** @type UIRoute */ shopUIRoute = require('./shop');
-const /** @type UIRoute */ spellbookUIRoute = require('./spellbook');
-const /** @type UIRoute */ spellinfoUIRoute = require('./spellinfo');
+const /** @type UIRoute */ informationMessageUIRoute = require('./informationmessage').uiRoute;
+const /** @type UIRoute */ rootUIRoute = require('./root').uiRoute;
+const /** @type UIRoute */ newplayerUIRoute = require('./newplayer').uiRoute;
+const /** @type UIRoute */ breakmenuUIRoute = require('./breakmenu').uiRoute;
+const /** @type UIRoute */ shopUIRoute = require('./shop').uiRoute;
+const /** @type UIRoute */ spellbookUIRoute = require('./spellbook').uiRoute;
+const /** @type UIRoute */ spellinfoUIRoute = require('./spellinfo').uiRoute;
 
 // TODO: actually we can make prototype which can be used with reassigning game data for better performance.
 class UIRouter {
@@ -24,9 +25,10 @@ class UIRouter {
     this.player = player
   }
 
+  informationMessageUIRoute() { return informationMessageUIRoute }
   rootUIRoute() { return rootUIRoute }
   newplayerUIRoute() { return newplayerUIRoute }
-  mainmenuUIRoute() { return mainmenuUIRoute }
+  breakmenuUIRoute() { return breakmenuUIRoute }
   shopUIRoute() { return shopUIRoute }
   spellbookUIRoute() { return spellbookUIRoute }
   spellinfoUIRoute() { return spellinfoUIRoute }
@@ -40,20 +42,24 @@ class UIRouter {
    */
   getUIMessage(path, parsedPayload) {
     var args;
+    // TODO: simply foreach.
     if (args = this.rootUIRoute().route.match(path)) {
       return this.rootUIRoute().processActions(this, parsedPayload, args);
     } else if (args = this.newplayerUIRoute().route.match(path)) {
       return this.newplayerUIRoute().processActions(this, parsedPayload, args);
-    } else if (args = this.mainmenuUIRoute().route.match(path)) {
-      return this.mainmenuUIRoute().processActions(this, parsedPayload, args);
+    } else if (args = this.breakmenuUIRoute().route.match(path)) {
+      return this.breakmenuUIRoute().processActions(this, parsedPayload, args);
     } else if (args = this.shopUIRoute().route.match(path)) {
       return this.shopUIRoute().processActions(this, parsedPayload, args);
     } else if (args = this.spellbookUIRoute().route.match(path)) {
       return this.spellbookUIRoute().processActions(this, parsedPayload);
     } else if (args = this.spellinfoUIRoute().route.match(path)) {
       return this.spellinfoUIRoute().processActions(this, parsedPayload, args);
+    } else if (args = this.informationMessageUIRoute().route.match(path)) {
+      return this.informationMessageUIRoute().processActions(this, parsedPayload, args);
     } else {
-      // TODO: error.
+      let text = 'Route not found.';
+      return this.informationMessageUIRoute().getUIMessage(this, { text })
     }
   }
 }

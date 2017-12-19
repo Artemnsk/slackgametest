@@ -2,14 +2,19 @@
 
 const Route = require('route-parser');
 const newPlayerFactory = require('../uimessage/factory/newplayerfactory');
-const informationMessageFactory = require('../uimessage/factory/informationmessagefactory');
 const setPlayer = require('../../player/players').setPlayer;
 const Slack = require('slack-node');
 
 const CREATE_NEW_PLAYER_YES = 'yes';
-const INFORMATION_MESSAGE_OK = 'ok';
 
-const /** @type UIRouteProcessActions */ processActions = (uiRouter, parsedPayload, args) => {
+/**
+ *
+ * @param {UIRouter} uiRouter
+ * @param {ParsedSlackActionPayload} parsedPayload
+ * @param {Object} args
+ * @return {Promise.<UIMessage,Error>}
+ */
+function processActions(uiRouter, parsedPayload, args) {
   // Parse submitted actions to know which window to render.
   // TODO: that is actually bad.
   let action = parsedPayload.actions[0];
@@ -45,8 +50,9 @@ const /** @type UIRouteProcessActions */ processActions = (uiRouter, parsedPaylo
           return new Promise((resolve, reject) => {
             slack.api("users.info", apiCallArgs, (err, /** SlackUserInfoResponse */ response) => {
               if (err) {
-                let errorText = 'Error: Cannot retrieve your user info from Slack: ' + response.error;
-                resolve(informationMessageFactory(errorText, '/', INFORMATION_MESSAGE_OK, INFORMATION_MESSAGE_OK));
+                let text = 'Error: Cannot retrieve your user info from Slack: ' + response.error;
+                let uiMessage = uiRouter.informationMessageUIRoute().getUIMessage(uiRouter, { text });
+                resolve(uiMessage);
               } else if (response.ok === true) {
                 // Ensure player doesn't exist. Maybe that was click on outdated screen.
                 if (!uiRouter.player) {
@@ -57,16 +63,23 @@ const /** @type UIRouteProcessActions */ processActions = (uiRouter, parsedPaylo
                   };
                   setPlayer(playerFirebaseValue, uiRouter.team.$key, uiRouter.channel.$key, parsedPayload.user.id)
                     .then(() => {
-                      resolve(informationMessageFactory('Player being created.', '/', INFORMATION_MESSAGE_OK, INFORMATION_MESSAGE_OK));
+                      let text = 'Player being created.';
+                      let uiMessage = uiRouter.informationMessageUIRoute().getUIMessage(uiRouter, { text });
+                      resolve(uiMessage);
                     }, (error) => {
-                      let errorText = 'Error: Player cannot be created into DB in some reason: ' + error.message;
-                      resolve(informationMessageFactory(errorText, '/', INFORMATION_MESSAGE_OK, INFORMATION_MESSAGE_OK));
+                      let text = 'Error: Player cannot be created into DB in some reason: ' + error.message;
+                      let uiMessage = uiRouter.informationMessageUIRoute().getUIMessage(uiRouter, { text });
+                      resolve(uiMessage);
                     });
                 } else {
-                  resolve(informationMessageFactory('Error: Player already exists.', '/', INFORMATION_MESSAGE_OK, INFORMATION_MESSAGE_OK));
+                  let text = 'Error: Player already exists.';
+                  let uiMessage = uiRouter.informationMessageUIRoute().getUIMessage(uiRouter, { text });
+                  resolve(uiMessage);
                 }
               } else {
-                resolve(informationMessageFactory('Some unexpected error occurred during retrieval info about your Slack user.', '/', INFORMATION_MESSAGE_OK, INFORMATION_MESSAGE_OK));
+                let text = 'Some unexpected error occurred during retrieval info about your Slack user.';
+                let uiMessage = uiRouter.informationMessageUIRoute().getUIMessage(uiRouter, { text });
+                resolve(uiMessage);
               }
             });
           });
@@ -75,14 +88,22 @@ const /** @type UIRouteProcessActions */ processActions = (uiRouter, parsedPaylo
       break;
   }
   return null;
-};
+}
 
-const /** @type UIRouteGetUIMessage */ getUIMessage = (uiRouter, args) => {
+/**
+ *
+ * @param {UIRouter} uiRouter
+ * @param {Object} args
+ * @return {UIMessage}
+ */
+function getUIMessage(uiRouter, args) {
   if (uiRouter.player) {
-    return informationMessageFactory('Error: Player already exists.', '/', INFORMATION_MESSAGE_OK, INFORMATION_MESSAGE_OK);
+    let text = 'Error: Player already exists.';
+    let uiMessage = uiRouter.informationMessageUIRoute().getUIMessage(uiRouter, { text });
+    return uiMessage;
   }
   return newPlayerFactory();
-};
+}
 
 const /** @type UIRoute */ uiRoute = {
   route: new Route('/newplayer'),
@@ -90,4 +111,6 @@ const /** @type UIRoute */ uiRoute = {
   getUIMessage
 };
 
-module.exports = uiRoute;
+module.exports = {
+  uiRoute
+};
