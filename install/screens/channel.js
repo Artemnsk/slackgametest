@@ -28,6 +28,8 @@ function channelRoute(args, router) {
       stdout.write('$key: ' + channel.$key + '\n');
       stdout.write('name: ' + channel.name + '\n');
       stdout.write('timeStep: ' + channel.timeStep + '\n');
+      stdout.write('breakTime: ' + channel.breakTime + '\n');
+      stdout.write(`nextGame: ${channel.nextGame} [${new Date(channel.nextGame)}]\n`);
       stdout.write('active: ' + (channel.active === true ? 'true' : 'false') + '\n');
       inquirer.prompt([
         {

@@ -60,18 +60,30 @@
         ".write":"false",
         ".read":"(auth.uid==='game-webserver')",
         "$channelKey": {
-          ".write":"((root.child('system').child('maintenance').val()!==true&&root.child('teams').child($teamKey).exists()&&newData.child('timeStep').val()>0&&(!newData.exists()||newData.hasChildren())&&(newData.val()==null||newData.child('active').exists()&&newData.child('name').exists()&&newData.child('timeStep').exists())&&(!newData.child('active').exists()||newData.child('active').isBoolean())&&(!newData.child('name').exists()||newData.child('name').isString())&&(!newData.child('timeStep').exists()||newData.child('timeStep').isNumber())&&auth.uid==='game-webserver'))",
+          ".write":"((root.child('system').child('maintenance').val()!==true&&root.child('teams').child($teamKey).exists()&&(!newData.exists()||newData.hasChildren())&&(newData.val()==null||newData.child('active').exists()&&newData.child('name').exists()&&newData.child('timeStep').exists()&&newData.child('breakTime').exists()&&newData.child('phase').exists())&&(!newData.child('active').exists()||newData.child('active').isBoolean())&&(!newData.child('name').exists()||newData.child('name').isString())&&newData.child('timeStep').val()>0&&(!newData.child('timeStep').exists()||newData.child('timeStep').isNumber())&&newData.child('breakTime').val()>0&&(!newData.child('breakTime').exists()||newData.child('breakTime').isNumber())&&(!newData.child('phase').exists()||newData.child('phase').isString())&&(!newData.child('phase').exists()||newData.child('phase').val()==='BREAK'||newData.child('phase').val()==='IN_GAME')&&(!newData.child('nextGame').exists()||newData.child('nextGame').isNumber())&&auth.uid==='game-webserver'))",
           ".read":"((auth.uid==='game-webserver'))",
           "active": {
-            ".write":"((root.child('system').child('maintenance').val()!==true&&root.child('teams').child($teamKey).exists()&&newData.parent().child('timeStep').val()>0&&(newData.parent().val()==null||newData.parent().child('active').exists()&&newData.parent().child('name').exists()&&newData.parent().child('timeStep').exists())&&(!newData.exists()||newData.isBoolean())&&auth.uid==='game-webserver'))",
+            ".write":"((root.child('system').child('maintenance').val()!==true&&root.child('teams').child($teamKey).exists()&&(newData.parent().val()==null||newData.parent().child('active').exists()&&newData.parent().child('name').exists()&&newData.parent().child('timeStep').exists()&&newData.parent().child('breakTime').exists()&&newData.parent().child('phase').exists())&&(!newData.exists()||newData.isBoolean())&&auth.uid==='game-webserver'))",
             ".read":"((auth.uid==='game-webserver'))"
           },
           "name": {
-            ".write":"((root.child('system').child('maintenance').val()!==true&&root.child('teams').child($teamKey).exists()&&newData.parent().child('timeStep').val()>0&&(newData.parent().val()==null||newData.parent().child('active').exists()&&newData.parent().child('name').exists()&&newData.parent().child('timeStep').exists())&&(!newData.exists()||newData.isString())&&auth.uid==='game-webserver'))",
+            ".write":"((root.child('system').child('maintenance').val()!==true&&root.child('teams').child($teamKey).exists()&&(newData.parent().val()==null||newData.parent().child('active').exists()&&newData.parent().child('name').exists()&&newData.parent().child('timeStep').exists()&&newData.parent().child('breakTime').exists()&&newData.parent().child('phase').exists())&&(!newData.exists()||newData.isString())&&auth.uid==='game-webserver'))",
             ".read":"((auth.uid==='game-webserver'))"
           },
           "timeStep": {
-            ".write":"((root.child('system').child('maintenance').val()!==true&&root.child('teams').child($teamKey).exists()&&newData.parent().child('timeStep').val()>0&&(newData.parent().val()==null||newData.parent().child('active').exists()&&newData.parent().child('name').exists()&&newData.parent().child('timeStep').exists())&&(!newData.exists()||newData.isNumber())&&auth.uid==='game-webserver'))",
+            ".write":"((root.child('system').child('maintenance').val()!==true&&root.child('teams').child($teamKey).exists()&&(newData.parent().val()==null||newData.parent().child('active').exists()&&newData.parent().child('name').exists()&&newData.parent().child('timeStep').exists()&&newData.parent().child('breakTime').exists()&&newData.parent().child('phase').exists())&&newData.val()>0&&(!newData.exists()||newData.isNumber())&&auth.uid==='game-webserver'))",
+            ".read":"((auth.uid==='game-webserver'))"
+          },
+          "breakTime": {
+            ".write":"((root.child('system').child('maintenance').val()!==true&&root.child('teams').child($teamKey).exists()&&(newData.parent().val()==null||newData.parent().child('active').exists()&&newData.parent().child('name').exists()&&newData.parent().child('timeStep').exists()&&newData.parent().child('breakTime').exists()&&newData.parent().child('phase').exists())&&newData.val()>0&&(!newData.exists()||newData.isNumber())&&auth.uid==='game-webserver'))",
+            ".read":"((auth.uid==='game-webserver'))"
+          },
+          "phase": {
+            ".write":"((root.child('system').child('maintenance').val()!==true&&root.child('teams').child($teamKey).exists()&&(newData.parent().val()==null||newData.parent().child('active').exists()&&newData.parent().child('name').exists()&&newData.parent().child('timeStep').exists()&&newData.parent().child('breakTime').exists()&&newData.parent().child('phase').exists())&&(!newData.exists()||newData.isString())&&(!newData.exists()||newData.val()==='BREAK'||newData.val()==='IN_GAME')&&auth.uid==='game-webserver'))",
+            ".read":"((auth.uid==='game-webserver'))"
+          },
+          "nextGame": {
+            ".write":"((root.child('system').child('maintenance').val()!==true&&root.child('teams').child($teamKey).exists()&&(newData.parent().val()==null||newData.parent().child('active').exists()&&newData.parent().child('name').exists()&&newData.parent().child('timeStep').exists()&&newData.parent().child('breakTime').exists()&&newData.parent().child('phase').exists())&&(!newData.exists()||newData.isNumber())&&auth.uid==='game-webserver'))",
             ".read":"((auth.uid==='game-webserver'))"
           },
           "$other":{".validate":"false"}
@@ -89,14 +101,18 @@
           ".write":"false",
           ".read":"(auth.uid==='game-webserver')",
           "$playerKey": {
-            ".write":"((root.child('system').child('maintenance').val()!==true&&root.child('teams').child($teamKey).exists()&&root.child('channels').child($teamKey).child($channelKey).exists()&&(!newData.exists()||newData.hasChildren())&&(newData.val()==null||newData.child('active').exists()&&newData.child('name').exists())&&(!newData.child('active').exists()||newData.child('active').isBoolean())&&(!newData.child('name').exists()||newData.child('name').isString())&&auth.uid==='game-webserver'))",
+            ".write":"((root.child('system').child('maintenance').val()!==true&&root.child('teams').child($teamKey).exists()&&root.child('channels').child($teamKey).child($channelKey).exists()&&(!newData.exists()||newData.hasChildren())&&(newData.val()==null||newData.child('active').exists()&&newData.child('name').exists()&&newData.child('gold').exists())&&(!newData.child('active').exists()||newData.child('active').isBoolean())&&(!newData.child('name').exists()||newData.child('name').isString())&&(!newData.child('gold').exists()||newData.child('gold').isNumber())&&auth.uid==='game-webserver'))",
             ".read":"((auth.uid==='game-webserver'))",
             "active": {
-              ".write":"((root.child('system').child('maintenance').val()!==true&&root.child('teams').child($teamKey).exists()&&root.child('channels').child($teamKey).child($channelKey).exists()&&(newData.parent().val()==null||newData.parent().child('active').exists()&&newData.parent().child('name').exists())&&(!newData.exists()||newData.isBoolean())&&auth.uid==='game-webserver'))",
+              ".write":"((root.child('system').child('maintenance').val()!==true&&root.child('teams').child($teamKey).exists()&&root.child('channels').child($teamKey).child($channelKey).exists()&&(newData.parent().val()==null||newData.parent().child('active').exists()&&newData.parent().child('name').exists()&&newData.parent().child('gold').exists())&&(!newData.exists()||newData.isBoolean())&&auth.uid==='game-webserver'))",
               ".read":"((auth.uid==='game-webserver'))"
             },
             "name": {
-              ".write":"((root.child('system').child('maintenance').val()!==true&&root.child('teams').child($teamKey).exists()&&root.child('channels').child($teamKey).child($channelKey).exists()&&(newData.parent().val()==null||newData.parent().child('active').exists()&&newData.parent().child('name').exists())&&(!newData.exists()||newData.isString())&&auth.uid==='game-webserver'))",
+              ".write":"((root.child('system').child('maintenance').val()!==true&&root.child('teams').child($teamKey).exists()&&root.child('channels').child($teamKey).child($channelKey).exists()&&(newData.parent().val()==null||newData.parent().child('active').exists()&&newData.parent().child('name').exists()&&newData.parent().child('gold').exists())&&(!newData.exists()||newData.isString())&&auth.uid==='game-webserver'))",
+              ".read":"((auth.uid==='game-webserver'))"
+            },
+            "gold": {
+              ".write":"((root.child('system').child('maintenance').val()!==true&&root.child('teams').child($teamKey).exists()&&root.child('channels').child($teamKey).child($channelKey).exists()&&(newData.parent().val()==null||newData.parent().child('active').exists()&&newData.parent().child('name').exists()&&newData.parent().child('gold').exists())&&(!newData.exists()||newData.isNumber())&&auth.uid==='game-webserver'))",
               ".read":"((auth.uid==='game-webserver'))"
             },
             "$other":{".validate":"false"}

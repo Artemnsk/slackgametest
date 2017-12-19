@@ -53,14 +53,23 @@ schema:
         $channelKey:
           type: object
           additionalProperties: false
-          constraint: next.timeStep > 0
-          required: ['active', 'name', 'timeStep']
+          required: ['active', 'name', 'timeStep', 'breakTime', 'phase']
           properties:
             active:
               type: boolean
             name:
               type: string
             timeStep:
+              type: number
+              constraint: next > 0
+            breakTime:
+              type: number
+              constraint: next > 0
+            phase:
+              type: string
+              enum: ['BREAK', 'IN_GAME']
+            # When next game must start.
+            nextGame:
               type: number
     # Stores information about players: channel users who created character in game channel.
     players:
@@ -77,12 +86,14 @@ schema:
             additionalProperties: false
             # TODO:
             # constraint: true
-            required: ['active', 'name']
+            required: ['active', 'name', 'gold']
             properties:
               active:
                 type: boolean
               name:
                 type: string
+              gold:
+                type: number
 
     # TODO:
     # Stores information about game states in channels.

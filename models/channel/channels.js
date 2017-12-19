@@ -6,7 +6,10 @@ const Channel = require('./channel').Channel;
  * @typedef {Object} ChannelFirebaseValue
  * @property {boolean} active
  * @property {string} name
- * @property {number} timeStep - minimum time between player steps
+ * @property {number} timeStep - minimum time between player steps in ms
+ * @property {number} breakTime - break time in ms
+ * @property {string} phase
+ * @property {number} [nextGame]
  */
 
 /**
