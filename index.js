@@ -3,9 +3,9 @@ const app = express();
 const publicCredentials = require('./credentials/public');
 
 // Start game.
-const startGame = require('./models/game/game');
+const startGame = require('./gameloop/game');
 startGame();
-const randomizer = require('./models/game/actionsrandomizer');
+const randomizer = require('./gameloop/actionsrandomizer');
 // randomizer(1600);
 
 app.set('view engine', 'pug');

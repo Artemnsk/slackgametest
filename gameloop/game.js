@@ -2,13 +2,13 @@ const createStore = require('redux').createStore;
 const applyMiddleware = require('redux').applyMiddleware;
 const createLogger = require('redux-logger').createLogger;
 const loggerMiddleware = createLogger();
-const ACTION_TYPES = require('../action/action').ACTION_TYPES;
-const getRecentAction = require('../action/actions').getRecentAction;
-const removeAction = require('../action/actions').removeAction;
-const getState = require('../state/states').getState;
-const setState = require('../state/states').setState;
-const getTeams = require('../team/teams').getTeams;
-const getChannels = require('../channel/channels').getChannels;
+const ACTION_TYPES = require('../models/action/action').ACTION_TYPES;
+const getRecentAction = require('../models/action/actions').getRecentAction;
+const removeAction = require('../models/action/actions').removeAction;
+const getState = require('../models/state/states').getState;
+const setState = require('../models/state/states').setState;
+const getTeams = require('../models/team/teams').getTeams;
+const getChannels = require('../models/channel/channels').getChannels;
 
 // TODO: Our big reducer with game logic.
 /**
