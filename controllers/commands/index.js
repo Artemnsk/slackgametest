@@ -6,7 +6,6 @@ const UIRouter = require('../../models/ui/uirouter/uirouter');
 const tokenVerification = require('../../middlewares/tokenverification');
 const setGameData = require('../../middlewares/slackcommands').setGameData;
 const request = require('request');
-const mainMenuFactory = require('../../models/ui/uimessage/factory/mainmenufactory');
 
 router.use('/commands', tokenVerification);
 
@@ -18,7 +17,6 @@ router.post('/commands', setGameData, (/** SlackCommandRequest */ req, res) => {
     const uiMessage = uiRouter.getUIMessage('/');
     // TODO: Check game phase and load Game or display break menu. So use UIRouter with root ('/') route.
     // TODO: any errors must respond to Slack.
-    // const mainMenuUIMessage = mainMenuFactory(20, 30, 123);
     let sendParameters = {
       response_type: 'ephemeral'
     };

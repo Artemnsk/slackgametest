@@ -33,4 +33,6 @@ const /** @type UIRoute */ uiRoute = {
   getUIMessage
 };
 
-module.exports = uiRoute;
+module.exports = {
+  uiRoute
+};

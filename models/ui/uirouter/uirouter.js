@@ -1,11 +1,11 @@
 "use strict";
 
-const /** @type UIRoute */ rootUIRoute = require('./root');
-const /** @type UIRoute */ newplayerUIRoute = require('./newplayer');
-const /** @type UIRoute */ mainmenuUIRoute = require('./mainmenu');
-const /** @type UIRoute */ shopUIRoute = require('./shop');
-const /** @type UIRoute */ spellbookUIRoute = require('./spellbook');
-const /** @type UIRoute */ spellinfoUIRoute = require('./spellinfo');
+const /** @type UIRoute */ rootUIRoute = require('./root').uiRoute;
+const /** @type UIRoute */ newplayerUIRoute = require('./newplayer').uiRoute;
+const /** @type UIRoute */ mainmenuUIRoute = require('./mainmenu').uiRoute;
+const /** @type UIRoute */ shopUIRoute = require('./shop').uiRoute;
+const /** @type UIRoute */ spellbookUIRoute = require('./spellbook').uiRoute;
+const /** @type UIRoute */ spellinfoUIRoute = require('./spellinfo').uiRoute;
 
 // TODO: actually we can make prototype which can be used with reassigning game data for better performance.
 class UIRouter {
