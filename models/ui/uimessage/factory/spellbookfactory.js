@@ -7,7 +7,7 @@ const spells = require('../../../../storage/spells/spells');
 function _getSpells() {
   let attachment = {
     color: "#a333a1",
-    callback_id: '/mainmenu/spellbook',
+    callback_id: '/breakmenu/spellbook',
     attachment_type: "default"
   };
   var actions = [];
@@ -41,7 +41,7 @@ function spellBookFactory(hp, mana, gold) {
     text: '',
     color: "#3AA3E3",
     attachment_type: "default",
-    callback_id: "/mainmenu/spellbook",
+    callback_id: "/breakmenu/spellbook",
     actions: [
       {
         name: "back",

@@ -16,7 +16,7 @@ function processActions(uiRouter, parsedPayload, args) {
       return uiRouter.spellinfoUIRoute().getUIMessage(uiRouter, { spellName: action.value });
       break;
     case 'back':
-      return uiRouter.mainmenuUIRoute().getUIMessage(uiRouter, {});
+      return uiRouter.breakmenuUIRoute().getUIMessage(uiRouter, {});
       break;
   }
   return null;
@@ -31,7 +31,7 @@ function getUIMessage(uiRouter, args) {
 }
 
 const /** @type UIRoute */ uiRoute = {
-  route: new Route('/mainmenu/spellbook'),
+  route: new Route('/breakmenu/spellbook'),
   processActions,
   getUIMessage
 };

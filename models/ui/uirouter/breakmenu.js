@@ -1,7 +1,7 @@
 "use strict";
 
 const Route = require('route-parser');
-const mainMenuFactory = require('../uimessage/factory/mainmenufactory');
+const breakMenuFactory = require('../uimessage/factory/breakmenufactory');
 
 function processActions(uiRouter, parsedPayload, args) {
   if (!uiRouter.player) {
@@ -31,11 +31,11 @@ function getUIMessage(uiRouter, args) {
   if (!uiRouter.player) {
     return uiRouter.informationMessageUIRoute().getUIMessage(uiRouter, { text: 'Error: Cannot find your player.' });
   }
-  return mainMenuFactory(30, 40, 402);
+  return breakMenuFactory(30, 40, 402);
 }
 
 const /** @type UIRoute */ uiRoute = {
-  route: new Route('/mainmenu'),
+  route: new Route('/breakmenu'),
   processActions,
   getUIMessage
 };

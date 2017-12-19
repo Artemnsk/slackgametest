@@ -27,7 +27,7 @@ function getUIMessage(uiRouter, args) {
 }
 
 const /** @type UIRoute */ uiRoute = {
-  route: new Route('/mainmenu/spellbook/:spellName'),
+  route: new Route('/breakmenu/spellbook/:spellName'),
   processActions,
   getUIMessage
 };

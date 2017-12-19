@@ -3,7 +3,7 @@
 const /** @type UIRoute */ informationMessageUIRoute = require('./informationmessage').uiRoute;
 const /** @type UIRoute */ rootUIRoute = require('./root').uiRoute;
 const /** @type UIRoute */ newplayerUIRoute = require('./newplayer').uiRoute;
-const /** @type UIRoute */ mainmenuUIRoute = require('./mainmenu').uiRoute;
+const /** @type UIRoute */ breakmenuUIRoute = require('./breakmenu').uiRoute;
 const /** @type UIRoute */ shopUIRoute = require('./shop').uiRoute;
 const /** @type UIRoute */ spellbookUIRoute = require('./spellbook').uiRoute;
 const /** @type UIRoute */ spellinfoUIRoute = require('./spellinfo').uiRoute;
@@ -28,7 +28,7 @@ class UIRouter {
   informationMessageUIRoute() { return informationMessageUIRoute }
   rootUIRoute() { return rootUIRoute }
   newplayerUIRoute() { return newplayerUIRoute }
-  mainmenuUIRoute() { return mainmenuUIRoute }
+  breakmenuUIRoute() { return breakmenuUIRoute }
   shopUIRoute() { return shopUIRoute }
   spellbookUIRoute() { return spellbookUIRoute }
   spellinfoUIRoute() { return spellinfoUIRoute }
@@ -47,8 +47,8 @@ class UIRouter {
       return this.rootUIRoute().processActions(this, parsedPayload, args);
     } else if (args = this.newplayerUIRoute().route.match(path)) {
       return this.newplayerUIRoute().processActions(this, parsedPayload, args);
-    } else if (args = this.mainmenuUIRoute().route.match(path)) {
-      return this.mainmenuUIRoute().processActions(this, parsedPayload, args);
+    } else if (args = this.breakmenuUIRoute().route.match(path)) {
+      return this.breakmenuUIRoute().processActions(this, parsedPayload, args);
     } else if (args = this.shopUIRoute().route.match(path)) {
       return this.shopUIRoute().processActions(this, parsedPayload, args);
     } else if (args = this.spellbookUIRoute().route.match(path)) {
@@ -58,7 +58,8 @@ class UIRouter {
     } else if (args = this.informationMessageUIRoute().route.match(path)) {
       return this.informationMessageUIRoute().processActions(this, parsedPayload, args);
     } else {
-      // TODO: error.
+      let text = 'Route not found.';
+      return this.informationMessageUIRoute().getUIMessage(this, { text })
     }
   }
 }

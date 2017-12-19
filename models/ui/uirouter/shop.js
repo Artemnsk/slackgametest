@@ -13,7 +13,7 @@ function processActions(uiRouter, parsedPayload, args) {
   let action = parsedPayload.actions[0];
   switch (action.name) {
     case 'back':
-      return uiRouter.mainmenuUIRoute().getUIMessage(uiRouter, {});
+      return uiRouter.breakmenuUIRoute().getUIMessage(uiRouter, {});
       break;
   }
   return null;
@@ -34,7 +34,7 @@ function getUIMessage(uiRouter, args) {
 }
 
 const /** @type UIRoute */ uiRoute = {
-  route: new Route('/mainmenu/shop'),
+  route: new Route('/breakmenu/shop'),
   processActions,
   getUIMessage
 };

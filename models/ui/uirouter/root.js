@@ -1,7 +1,7 @@
 "use strict";
 
 const Route = require('route-parser');
-const mainMenuFactory = require('../uimessage/factory/mainmenufactory');
+const breakMenuFactory = require('../uimessage/factory/breakmenufactory');
 
 /**
  * @typedef {Object} UIRoute
@@ -16,10 +16,10 @@ function processActions(uiRouter, parsedPayload, args) {
     if (!uiRouter.player) {
       return uiRouter.newplayerUIRoute().getUIMessage(uiRouter, {});
     }
-    return uiRouter.mainmenuUIRoute().getUIMessage(uiRouter, {});
+    return uiRouter.breakmenuUIRoute().getUIMessage(uiRouter, {});
   }
 
-  return mainMenuFactory(20, 30, 123);
+  return breakMenuFactory(20, 30, 123);
 }
 
 function getUIMessage(uiRouter, args) {
@@ -27,7 +27,7 @@ function getUIMessage(uiRouter, args) {
     return uiRouter.newplayerUIRoute().getUIMessage(uiRouter, {});
   }
   // TODO: it depends...
-  return uiRouter.mainmenuUIRoute().getUIMessage(uiRouter, {});
+  return uiRouter.breakmenuUIRoute().getUIMessage(uiRouter, {});
 }
 
 const /** @type UIRoute */ uiRoute = {

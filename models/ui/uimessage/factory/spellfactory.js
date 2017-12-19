@@ -25,13 +25,13 @@ function spellFactory(hp, mana, gold, spell_id) {
     fields: spell.getInfo(),
     color: "#3AA3E3",
     attachment_type: "default",
-    callback_id: "/mainmenu/spellbook/" + spell_id,
+    callback_id: "/breakmenu/spellbook/" + spell_id,
   });
   uiAttachments.push({
     text: '',
     color: "#3AA3E3",
     attachment_type: "default",
-    callback_id: "/mainmenu/spellbook/"  + spell_id,
+    callback_id: "/breakmenu/spellbook/"  + spell_id,
     actions: [
       {
         name: "back",

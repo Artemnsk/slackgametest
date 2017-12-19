@@ -1,13 +1,17 @@
 "use strict";
 
 const UIMessage = require('../uimessage');
+// That is used as name and value for 'ok' button.
 const INFORMATION_MESSAGE_OK = 'ok';
 
 /**
  * Provides with information UI element.
+ * @param {string} text
+ * @param {string} callback_id
+ * @param {string} buttonText
  * @return {UIMessage}
  */
-function informationMessageFactory(text, callback_id, button_name, button_value) {
+function informationMessageFactory(text, callback_id, buttonText) {
   const informationMessageUIMessage = new UIMessage();
   let uiAttachments = [];
   uiAttachments.push({
@@ -18,7 +22,7 @@ function informationMessageFactory(text, callback_id, button_name, button_value)
     actions: [
       {
         name: INFORMATION_MESSAGE_OK,
-        text: "Ok",
+        text: buttonText,
         type: "button",
         value: INFORMATION_MESSAGE_OK
       }
@@ -28,4 +32,7 @@ function informationMessageFactory(text, callback_id, button_name, button_value)
   return informationMessageUIMessage;
 }
 
-module.exports = informationMessageFactory;
+module.exports = {
+  informationMessageFactory,
+  INFORMATION_MESSAGE_OK
+};

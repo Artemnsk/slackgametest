@@ -15,7 +15,7 @@ function shopFactory(hp, mana, gold) {
     text: "*Shop*",
     color: "#3AA3E3",
     attachment_type: "default",
-    callback_id: "/mainmenu/shop",
+    callback_id: "/breakmenu/shop",
     actions: [
       {
         name: "back",
