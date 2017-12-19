@@ -14,7 +14,6 @@ function clearConsole() {
 }
 
 function loadingScreen() {
-  clearConsole();
   stdout.write('Loading');
   return setInterval(() => {
     stdout.write('.');

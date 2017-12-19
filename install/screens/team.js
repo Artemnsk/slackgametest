@@ -70,12 +70,13 @@ function teamViewPart(args, router, team, teamAdminLabel) {
   stdout.write('botToken: ' + team.botToken + '\n');
   stdout.write('admin: ' + teamAdminLabel + '\n');
   stdout.write('active: ' + (team.active === true ? 'true' : 'false') + '\n');
+  let choices = team.admin ? [TEAM_EDIT, TEAM_CHANNELS, TEAM_BACK] : [TEAM_EDIT, { name: TEAM_CHANNELS, disabled: 'Set app admin for this Slack team first.'}, TEAM_BACK];
   inquirer.prompt([
     {
       type: 'list',
       name: 'option',
       message: helpers.separator,
-      choices: [TEAM_EDIT, TEAM_CHANNELS, TEAM_BACK]
+      choices: choices
     }
   ]).then((/** {option: string} */ answers) => {
     helpers.clearConsole();

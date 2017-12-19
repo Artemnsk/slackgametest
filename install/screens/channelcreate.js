@@ -58,34 +58,144 @@ function channelCreateRoute(args, router) {
           validate: true
         };
         const slack = new Slack(args.team.token);
-        var loadingScreen = helpers.loadingScreen();
         /**
          * @typedef {Object} SlackGroupsCreateResponse
          * @property {boolean} ok
          * @property {Object} group
          * @property {string} group.name
          * @property {string} group.id
+         * @property {string} group.creator
          * // TODO: other fields if needed.
          */
-        slack.api("groups.create", apiCallArgs, function(err, /** SlackGroupsCreateResponse */ response) {
+        process.stdout.write('About to create new private channel (group).\n');
+        var loadingScreen = helpers.loadingScreen();
+        slack.api("groups.create", apiCallArgs, (err, /** SlackGroupsCreateResponse */ response) => {
           if (err) {
             clearInterval(loadingScreen);
             _errorCallback(err.message, args, router);
           } else if(response.ok === true) {
-            let /** @type ChannelFirebaseValue */ channelFirebaseValues = {
-              active: true,
-              name: response.group.name,
-              timeStep: parseInt(answers.timeStep, 10)
+            clearInterval(loadingScreen);
+            process.stdout.write('\nAbout to invite bot to newly created channel.\n');
+            loadingScreen = helpers.loadingScreen();
+            // Invite app bot into channel.
+            let /** @type {{channel: string, user: string}} */ apiCallArgs = {
+              channel: response.group.id,
+              user: args.team.botId
             };
-            setChannel(channelFirebaseValues, args.team.$key, response.group.id)
-              .then(() => {
+            /**
+             * @typedef {Object} SlackGroupsInviteResponse
+             * @property {boolean} ok
+             * @property {Object} group
+             */
+            slack.api("groups.invite", apiCallArgs, (err, /** SlackGroupsInviteResponse */ response2) => {
+              if (err) {
                 clearInterval(loadingScreen);
-                helpers.clearConsole();
-                router.channelsRoute(args, router);
-              }, (error) => {
+                _errorCallback(err.message, args, router);
+              } else if (response.ok === true) {
                 clearInterval(loadingScreen);
-                _errorCallback('Actually Slack Channel being created... BUT!\n\n' + error.message, args, router);
-              });
+                process.stdout.write('\nCreating channel in Firebase now.\n');
+                loadingScreen = helpers.loadingScreen();
+                let /** @type ChannelFirebaseValue */ channelFirebaseValues = {
+                  active: true,
+                  name: response.group.name,
+                  timeStep: parseInt(answers.timeStep, 10)
+                };
+                setChannel(channelFirebaseValues, args.team.$key, response.group.id)
+                  .then(() => {
+                    clearInterval(loadingScreen);
+                    helpers.clearConsole();
+                    router.channelsRoute(args, router);
+                  }, (error) => {
+                    clearInterval(loadingScreen);
+                    _errorCallback('Actually Slack Channel being created... BUT!\n\n' + error.message, args, router);
+                  });
+                //
+                // // If creator is not app admin we want to invite app admin and kick creator.
+                // if (response.group.creator !== args.team.admin) {
+                //   clearInterval(loadingScreen);
+                //   process.stdout.write('\nCreator is not app admin! About to invite app admin to newly created channel.\n');
+                //   loadingScreen = helpers.loadingScreen();
+                //   // Invite app admin into channel.
+                //   let /** @type {{channel: string, user: string}} */ apiCallArgs = {
+                //     channel: response.group.id,
+                //     user: args.team.admin
+                //   };
+                //   slack.api("groups.invite", apiCallArgs, (err, /** SlackGroupsInviteResponse */ response3) => {
+                //     if (err) {
+                //       clearInterval(loadingScreen);
+                //       _errorCallback(err.message, args, router);
+                //     } else if (response.ok === true) {
+                //       clearInterval(loadingScreen);
+                //       process.stdout.write('\nAbout to kick initial channel creator from newly created channel.\n');
+                //       loadingScreen = helpers.loadingScreen();
+                //       // Kick original creator.
+                //       let /** @type {{channel: string, user: string}} */ apiCallArgs = {
+                //         channel: response.group.id,
+                //         user: response.group.creator
+                //       };
+                //       process.stdout.write('>>>> ' + response.group.creator + ' <<<<');
+                //       /**
+                //        * @typedef {Object} SlackGroupsKickResponse
+                //        * @property {boolean} ok
+                //        */
+                //       slack.api("groups.kick", apiCallArgs, (err, /** SlackGroupsKickResponse */ response4) => {
+                //         if (err) {
+                //           clearInterval(loadingScreen);
+                //           _errorCallback(err.message, args, router);
+                //         } else if (response.ok === true) {
+                //           process.stdout.write(JSON.stringify(response));
+                //           clearInterval(loadingScreen);
+                //           process.stdout.write('\nAbout to create channel in Firebase now.\n');
+                //           loadingScreen = helpers.loadingScreen();
+                //           // Finally we can create this channel in Firebase.
+                //           let /** @type ChannelFirebaseValue */ channelFirebaseValues = {
+                //             active: true,
+                //             name: response.group.name,
+                //             timeStep: parseInt(answers.timeStep, 10)
+                //           };
+                //           setChannel(channelFirebaseValues, args.team.$key, response.group.id)
+                //             .then(() => {
+                //               clearInterval(loadingScreen);
+                //               // helpers.clearConsole();
+                //               // router.channelsRoute(args, router);
+                //             }, (error) => {
+                //               clearInterval(loadingScreen);
+                //               _errorCallback('Actually Slack Channel being created... BUT!\n\n' + error.message, args, router);
+                //             });
+                //         } else {
+                //           clearInterval(loadingScreen);
+                //           _errorCallback('Something went wrong during kick non-admin from channel.', args, router);
+                //         }
+                //       });
+                //     } else {
+                //       clearInterval(loadingScreen);
+                //       _errorCallback('Something went wrong during admin invitation into channel.', args, router);
+                //     }
+                //   });
+                // } else {
+                //   clearInterval(loadingScreen);
+                //   process.stdout.write('\nCreator is app admin! Creating channel in Firebase now.\n');
+                //   loadingScreen = helpers.loadingScreen();
+                //   let /** @type ChannelFirebaseValue */ channelFirebaseValues = {
+                //     active: true,
+                //     name: response.group.name,
+                //     timeStep: parseInt(answers.timeStep, 10)
+                //   };
+                //   setChannel(channelFirebaseValues, args.team.$key, response.group.id)
+                //     .then(() => {
+                //       clearInterval(loadingScreen);
+                //       //helpers.clearConsole();
+                //       //router.channelsRoute(args, router);
+                //     }, (error) => {
+                //       clearInterval(loadingScreen);
+                //       _errorCallback('Actually Slack Channel being created... BUT!\n\n' + error.message, args, router);
+                //     });
+                // }
+              } else {
+                clearInterval(loadingScreen);
+                _errorCallback('Something went wrong during invitation of bot user into channel.', args, router);
+              }
+            });
           } else {
             clearInterval(loadingScreen);
             _errorCallback('Something went wrong. Probably this channel name already being taken by some archived channel.', args, router);
@@ -109,7 +219,7 @@ function channelCreateRoute(args, router) {
  * @param {InstallationRouter} router
  */
 function _errorCallback(message, args, router) {
-  helpers.clearConsole();
+  // helpers.clearConsole();
   inquirer.prompt([
     {
       type: 'list',

@@ -10,6 +10,7 @@ const privateCredentials = require('../../credentials/private');
 const setTeam = require('../../models/team/teams').setTeam;
 const getTeam = require('../../models/team/teams').getTeam;
 // This URL is used as redirect_uri in OAuth process.
+// TODO: use from current URL.
 const authRedirectURL = url.format({
   protocol: publicCredentials.protocol,
   hostname: publicCredentials.host,
@@ -99,6 +100,7 @@ function authorizeComplete(req, res, next) {
                 // Save access and bot tokens into database now.
                 let /** @type TeamFirebaseValue */ teamFirebaseValue = {
                   active: true,
+                  admin: team && team.admin ? team.admin : responseJSON.user_id,
                   name: responseJSON.team_name,
                   token: responseJSON.access_token,
                   userId: responseJSON.user_id,
