@@ -9,6 +9,7 @@ class Player {
   constructor(values) {
     this.active = values.active;
     this.name = values.name;
+    this.gold = values.gold;
     if (values.$key) {
       this.$key = values.$key;
     }
@@ -21,7 +22,8 @@ class Player {
   getFirebaseValue() {
     return Object.assign({}, {
       active: this.active,
-      name: this.name
+      name: this.name,
+      gold: this.gold
     });
   }
 }

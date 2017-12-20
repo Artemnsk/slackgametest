@@ -6,6 +6,7 @@ const Player = require('./player').Player;
  * @typedef {Object} PlayerFirebaseValue
  * @property {boolean} active
  * @property {string} name
+ * @property {number} gold
  */
 
 /**

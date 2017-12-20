@@ -59,7 +59,8 @@ function processActions(uiRouter, parsedPayload, args) {
                   // Now we can safely create new player.
                   let playerFirebaseValue = {
                     active: true,
-                    name: response.user.profile.real_name
+                    name: response.user.profile.real_name,
+                    gold: 0
                   };
                   setPlayer(playerFirebaseValue, uiRouter.team.$key, uiRouter.channel.$key, parsedPayload.user.id)
                     .then(() => {

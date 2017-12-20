@@ -1,5 +1,5 @@
-const addAction = require('../action/actions').addAction;
-const ACTION_TYPES = require('../action/action').ACTION_TYPES;
+const addAction = require('../models/action/actions').addAction;
+const ACTION_TYPES = require('../models/action/action').ACTION_TYPES;
 
 /**
  * Generates random actions with specified frequency.
