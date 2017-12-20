@@ -13,7 +13,7 @@ router.post('/commands', setGameData, (/** SlackCommandRequest */ req, res) => {
   var text = req.body.text;
   if (text === 'menu' || !text) {
     res.status(200).send('');
-    const uiRouter = new UIRouter(req.slackData.team, req.slackData.channel, req.slackData.player);
+    const uiRouter = new UIRouter(req.slackData.team, req.slackData.channel, req.slackData.player, req.slackData.game);
     const uiMessage = uiRouter.getUIMessage('/');
     // TODO: Check game phase and load Game or display break menu. So use UIRouter with root ('/') route.
     // TODO: any errors must respond to Slack.

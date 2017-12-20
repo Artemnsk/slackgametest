@@ -14,15 +14,18 @@ class UIRouter {
    * @param {Team} team
    * @param {Channel} channel
    * @param {?Player} player
+   * @param {?Game} game
    * @constructor
    * @property {Team} team
    * @property {Channel} channel
    * @property {?Player} player
+   * @property {?Game} game
    */
-  constructor(team, channel, player) {
+  constructor(team, channel, player, game) {
     this.team = team;
     this.channel = channel;
-    this.player = player
+    this.player = player;
+    this.game = game;
   }
 
   informationMessageUIRoute() { return informationMessageUIRoute }

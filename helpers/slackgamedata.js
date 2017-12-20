@@ -2,6 +2,9 @@ const getTeam = require('../models/team/teams').getTeam;
 const Team = require('../models/team/team').Team;
 const getChannel = require('../models/channel/channels').getChannel;
 const Channel = require('../models/channel/channel').Channel;
+const getGame = require('../models/game/games').getGame;
+const Game = require('../models/game/game').Game;
+const CHANNEL_PHASES = require('../models/channel/channel').CHANNEL_PHASES;
 const getPlayer = require('../models/player/players').getPlayer;
 const Player = require('../models/player/player').Player;
 
@@ -10,6 +13,7 @@ const Player = require('../models/player/player').Player;
  * @property {Team} team
  * @property {Channel} channel
  * @property {?Player} player
+ * @property {?Game} game
  */
 
 /**
@@ -46,10 +50,29 @@ function slackGameData(teamId, channelId, userId) {
       if (playerFirebaseValue) {
         player = new Player(playerFirebaseValue);
       }
-      return Promise.resolve({
-        team,
-        channel,
-        player
-      });
+      switch(channel.phase) {
+        case CHANNEL_PHASES.BREAK:
+          return Promise.resolve({
+            team,
+            channel,
+            player,
+            game: null
+          });
+          break;
+        case CHANNEL_PHASES.IN_GAME:
+          // Load Game.
+          return getGame(team.$key, channel.$key, channel.currentGame)
+            .then(game => {
+              return Promise.resolve({
+                team,
+                channel,
+                player,
+                game
+              });
+            });
+          break;
+      }
+      let message = 'Channel is invalid.';
+      return Promise.reject({ message });
     });
 }

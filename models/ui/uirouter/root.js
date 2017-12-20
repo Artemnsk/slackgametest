@@ -1,7 +1,7 @@
 "use strict";
 
 const Route = require('route-parser');
-const breakMenuFactory = require('../uimessage/factory/breakmenufactory');
+const CHANNEL_PHASES = require('../../channel/channel').CHANNEL_PHASES;
 
 /**
  * @typedef {Object} UIRoute
@@ -10,24 +10,49 @@ const breakMenuFactory = require('../uimessage/factory/breakmenufactory');
  * @property {Function} getUIMessage
  */
 
+/**
+ *
+ * @param {UIRouter} uiRouter
+ * @param {ParsedSlackActionPayload} parsedPayload
+ * @param {{}} args
+ * @return {UIMessage}
+ */
 function processActions(uiRouter, parsedPayload, args) {
+  // TODO: actually nothing is supposed to be submitted in 'root'.
   // TODO: from commands parsedpayload is empty.
-  if (!parsedPayload || !parsedPayload.actions || parsedPayload.actions.length === 0) {
-    if (!uiRouter.player) {
-      return uiRouter.newplayerUIRoute().getUIMessage(uiRouter, {});
-    }
-    return uiRouter.breakmenuUIRoute().getUIMessage(uiRouter, {});
-  }
+  // if (!parsedPayload || !parsedPayload.actions || parsedPayload.actions.length === 0) {
+  //   if (!uiRouter.player) {
+  //     return uiRouter.newplayerUIRoute().getUIMessage(uiRouter, {});
+  //   }
+  //   return uiRouter.breakmenuUIRoute().getUIMessage(uiRouter, {});
+  // }
 
-  return breakMenuFactory(20, 30, 123);
+  return getUIMessage(uiRouter);
 }
 
+/**
+ *
+ * @param {UIRouter} uiRouter
+ * @param {{}} args
+ * @return {UIMessage}
+ */
 function getUIMessage(uiRouter, args) {
   if (!uiRouter.player) {
     return uiRouter.newplayerUIRoute().getUIMessage(uiRouter, {});
   }
-  // TODO: it depends...
-  return uiRouter.breakmenuUIRoute().getUIMessage(uiRouter, {});
+  switch (uiRouter.channel.phase) {
+    case CHANNEL_PHASES.BREAK:
+      return uiRouter.breakmenuUIRoute().getUIMessage(uiRouter, {});
+      break;
+    case CHANNEL_PHASES.IN_GAME:
+      // TODO: game menu.
+      break;
+    default:
+      let text = 'Channel is invalid.';
+      let uiMessage = uiRouter.informationMessageUIRoute().getUIMessage(uiRouter, { text });
+      return uiMessage;
+      break;
+  }
 }
 
 const /** @type UIRoute */ uiRoute = {
