@@ -3,6 +3,13 @@
 const Route = require('route-parser');
 const shopFactory = require('../uimessage/factory/shopfactory');
 
+/**
+ *
+ * @param {UIRouter} uiRouter
+ * @param {ParsedSlackActionPayload} parsedPayload
+ * @param {{}} args
+ * @return {UIMessage}
+ */
 function processActions(uiRouter, parsedPayload, args) {
   if (!uiRouter.player) {
     let text = "Player doesn't exist.";
@@ -22,7 +29,7 @@ function processActions(uiRouter, parsedPayload, args) {
 /**
  *
  * @param {UIRoute} uiRouter
- * @param {Object} args
+ * @param {{}} args
  * @return {UIMessage}
  */
 function getUIMessage(uiRouter, args) {

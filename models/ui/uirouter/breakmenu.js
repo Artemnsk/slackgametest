@@ -3,6 +3,13 @@
 const Route = require('route-parser');
 const breakMenuFactory = require('../uimessage/factory/breakmenufactory');
 
+/**
+ *
+ * @param {UIRouter} uiRouter
+ * @param {ParsedSlackActionPayload} parsedPayload
+ * @param {{}} args
+ * @return {UIMessage}
+ */
 function processActions(uiRouter, parsedPayload, args) {
   if (!uiRouter.player) {
     return uiRouter.informationMessageUIRoute().getUIMessage(uiRouter, { text: 'Error: Cannot find your player.' });
@@ -24,7 +31,7 @@ function processActions(uiRouter, parsedPayload, args) {
 /**
  *
  * @param {UIRouter} uiRouter
- * @param {Object} args
+ * @param {{}} args
  * @return {UIMessage}
  */
 function getUIMessage(uiRouter, args) {

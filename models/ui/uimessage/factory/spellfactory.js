@@ -3,35 +3,25 @@
 const UIMessage = require('../uimessage');
 const statsTitleFactory = require('./partials/statstitlefactory');
 const spells = require('../../../../storage/spells/spells');
+const spellInfoFactory = require('./partials/spellinfofactory');
 
 /**
  * Provides with spell UI element.
+ * @param {Spell} spell
  * @return {UIMessage}
  */
-function spellFactory(hp, mana, gold, spell_id) {
+function spellFactory(spell) {
   const spellUIMessage = new UIMessage();
   let uiAttachments = [];
-  uiAttachments.push(statsTitleFactory(hp, mana, gold));
+  uiAttachments.push(statsTitleFactory(1, 2, 3));
 
-  // Get spell and display info.
-  var spell;
-  for (let i = 0; i < spells.length; i++) {
-    if (spell_id == spells[i].id) {
-      spell = spells[i];
-    }
-  }
-  uiAttachments.push({
-    author_name: `${spell.emoji}${spell.label}`,
-    fields: spell.getInfo(),
-    color: "#3AA3E3",
-    attachment_type: "default",
-    callback_id: "/breakmenu/spellbook/" + spell_id,
-  });
+  uiAttachments.push(spellInfoFactory(spell, "/breakmenu/spellbook/"  + spell.id));
+
   uiAttachments.push({
     text: '',
     color: "#3AA3E3",
     attachment_type: "default",
-    callback_id: "/breakmenu/spellbook/"  + spell_id,
+    callback_id: "/breakmenu/spellbook/"  + spell.id,
     actions: [
       {
         name: "back",
