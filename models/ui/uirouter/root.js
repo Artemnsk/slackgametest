@@ -46,6 +46,7 @@ function getUIMessage(uiRouter, args) {
       break;
     case CHANNEL_PHASES.IN_GAME:
       // TODO: game menu.
+      return uiRouter.gamemenuUIRoute().getUIMessage(uiRouter, {});
       break;
     default:
       let text = 'Channel is invalid.';

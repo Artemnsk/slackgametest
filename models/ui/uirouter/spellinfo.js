@@ -2,7 +2,15 @@
 
 const Route = require('route-parser');
 const spellFactory = require('../uimessage/factory/spellfactory');
+const spells = require('../../../storage/spells/spells');
 
+/**
+ *
+ * @param {UIRouter} uiRouter
+ * @param {ParsedSlackActionPayload} parsedPayload
+ * @param {{}} args
+ * @return {UIMessage}
+ */
 function processActions(uiRouter, parsedPayload, args) {
   if (!uiRouter.player) {
     let text = "Player doesn't exist.";
@@ -18,12 +26,23 @@ function processActions(uiRouter, parsedPayload, args) {
   return null;
 }
 
+/**
+ *
+ * @param {UIRouter} uiRouter
+ * @param {{spellId: string}} args
+ * @return {UIMessage}
+ */
 function getUIMessage(uiRouter, args) {
   if (!uiRouter.player) {
     let text = "Player doesn't exist.";
     return uiRouter.informationMessageUIRoute().getUIMessage(uiRouter, { text });
   }
-  return spellFactory(20, 22, 1234, args.spellName);
+  const spell = spells.find(item => item.id === args.spellId);
+  if (spell) {
+    return spellFactory(spell);
+  }
+  let text = "Spell not found.";
+  return uiRouter.informationMessageUIRoute().getUIMessage(uiRouter, { text });
 }
 
 const /** @type UIRoute */ uiRoute = {

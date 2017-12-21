@@ -11,7 +11,7 @@ const CREATE_NEW_PLAYER_YES = 'yes';
  *
  * @param {UIRouter} uiRouter
  * @param {ParsedSlackActionPayload} parsedPayload
- * @param {Object} args
+ * @param {{}} args
  * @return {Promise.<UIMessage,Error>}
  */
 function processActions(uiRouter, parsedPayload, args) {
@@ -94,7 +94,7 @@ function processActions(uiRouter, parsedPayload, args) {
 /**
  *
  * @param {UIRouter} uiRouter
- * @param {Object} args
+ * @param {{}} args
  * @return {UIMessage}
  */
 function getUIMessage(uiRouter, args) {

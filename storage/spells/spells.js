@@ -6,9 +6,9 @@
  * @property {String} id
  * @property {String} label
  * @property {String} description
- * @type {Array<Spell>}
  */
-const spells = [
+
+const /** @type Array<Spell> */ spells = [
   {
     emoji: ":dagger_knife:",
     id: "dagger",
