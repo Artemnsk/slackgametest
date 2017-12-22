@@ -1,8 +1,8 @@
 "use strict";
 
 const Route = require('route-parser');
-const spellFactory = require('../uimessage/factory/spellfactory');
-const spells = require('../../../storage/spells/spells');
+const spellFactory = require('../../../../uimessage/factory/spellfactory');
+const spells = require('../../../../../../storage/spells/spells');
 
 /**
  *

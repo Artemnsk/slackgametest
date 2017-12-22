@@ -1,10 +1,10 @@
 "use strict";
 
 const Route = require('route-parser');
-const gameMenuFactory = require('../uimessage/factory/gamemenufactory');
-const CHANNEL_PHASES = require('../../channel/channel').CHANNEL_PHASES;
+const gameMenuFactory = require('../../uimessage/factory/gamemenufactory');
+const CHANNEL_PHASES = require('../../../channel/channel').CHANNEL_PHASES;
 
-const castSpellFactory = require('../uimessage/factory/castspellfactory');
+const castSpellFactory = require('../../uimessage/factory/castspellfactory');
 
 function processActions(uiRouter, parsedPayload, args) {
   var a = 1;

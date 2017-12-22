@@ -1,13 +1,13 @@
 "use strict";
 
-const /** @type UIRoute */ informationMessageUIRoute = require('./informationmessage').uiRoute;
-const /** @type UIRoute */ rootUIRoute = require('./root').uiRoute;
-const /** @type UIRoute */ newplayerUIRoute = require('./newplayer').uiRoute;
-const /** @type UIRoute */ breakmenuUIRoute = require('./breakmenu').uiRoute;
-const /** @type UIRoute */ shopUIRoute = require('./shop').uiRoute;
-const /** @type UIRoute */ spellbookUIRoute = require('./spellbook').uiRoute;
-const /** @type UIRoute */ spellinfoUIRoute = require('./spellinfo').uiRoute;
-const /** @type UIRoute */ gamemenuUIRoute = require('./gamemenu').uiRoute;
+const /** @type UIRoute */ informationMessageUIRoute = require('./informationmessage/index').uiRoute;
+const /** @type UIRoute */ rootUIRoute = require('./index').uiRoute;
+const /** @type UIRoute */ newplayerUIRoute = require('./newplayer/index').uiRoute;
+const /** @type UIRoute */ breakmenuUIRoute = require('./breakmenu/index').uiRoute;
+const /** @type UIRoute */ shopUIRoute = require('./breakmenu/shop/index').uiRoute;
+const /** @type UIRoute */ spellbookUIRoute = require('./breakmenu/spellbook/index').uiRoute;
+const /** @type UIRoute */ spellinfoUIRoute = require('./breakmenu/spellbook/spellinfo/index').uiRoute;
+const /** @type UIRoute */ gamemenuUIRoute = require('./gamemenu/index').uiRoute;
 
 // TODO: actually we can make prototype which can be used with reassigning game data for better performance.
 class UIRouter {
@@ -42,7 +42,6 @@ class UIRouter {
    *
    * @param {string} path
    * @param {ParsedSlackActionPayload} [parsedPayload]
-   * // TODO: respond with error message, not null!
    * @return {UIMessage|Promise.<UIMessage,Error>}
    */
   getUIMessage(path, parsedPayload) {

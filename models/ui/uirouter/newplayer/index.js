@@ -1,8 +1,8 @@
 "use strict";
 
 const Route = require('route-parser');
-const newPlayerFactory = require('../uimessage/factory/newplayerfactory');
-const setPlayer = require('../../player/players').setPlayer;
+const newPlayerFactory = require('../../uimessage/factory/newplayerfactory');
+const setPlayer = require('../../../player/players').setPlayer;
 const Slack = require('slack-node');
 
 const CREATE_NEW_PLAYER_YES = 'yes';

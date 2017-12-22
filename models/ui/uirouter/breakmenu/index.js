@@ -1,7 +1,7 @@
 "use strict";
 
 const Route = require('route-parser');
-const breakMenuFactory = require('../uimessage/factory/breakmenufactory');
+const breakMenuFactory = require('../../uimessage/factory/breakmenufactory');
 
 /**
  *
