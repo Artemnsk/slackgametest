@@ -1,7 +1,7 @@
 "use strict";
 
 const Route = require('route-parser');
-const CHANNEL_PHASES = require('../../channel/channel').CHANNEL_PHASES;
+const CHANNEL_PHASES = require('../models/channel/channel').CHANNEL_PHASES;
 
 /**
  * @typedef {Object} UIRoute

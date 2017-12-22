@@ -1,8 +1,8 @@
 "use strict";
 
-const UIMessage = require('../uimessage');
-const statsTitleFactory = require('./partials/statstitlefactory');
-const spells = require('../../../../storage/spells/spells');
+const UIMessage = require('../../../models/uimessage/uimessage');
+const statsTitleFactory = require('../../_partials/statstitlefactory');
+const spells = require('../../../storage/spells/spells');
 
 function _getSpells() {
   let attachment = {

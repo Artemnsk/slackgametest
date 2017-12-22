@@ -1,8 +1,8 @@
 "use strict";
 
 const Route = require('route-parser');
-const spellFactory = require('../../../../uimessage/factory/spellfactory');
-const spells = require('../../../../../../storage/spells/spells');
+const spellInfoMessageFactory = require('./spellinfomessagefactory');
+const spells = require('../../../../storage/spells/spells');
 
 /**
  *
@@ -39,7 +39,7 @@ function getUIMessage(uiRouter, args) {
   }
   const spell = spells.find(item => item.id === args.spellId);
   if (spell) {
-    return spellFactory(spell);
+    return spellInfoMessageFactory(spell);
   }
   let text = "Spell not found.";
   return uiRouter.informationMessageUIRoute().getUIMessage(uiRouter, { text });

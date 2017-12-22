@@ -1,7 +1,7 @@
 "use strict";
 
 const Route = require('route-parser');
-const spellBookFactory = require('../../../uimessage/factory/spellbookfactory');
+const spellbookMessageFactory = require('./spellbookmessagefactory');
 
 /**
  *
@@ -40,7 +40,7 @@ function getUIMessage(uiRouter, args) {
     let text = "Player doesn't exist.";
     return uiRouter.informationMessageUIRoute().getUIMessage(uiRouter, { text });
   }
-  return spellBookFactory(20, 20, 321);
+  return spellbookMessageFactory(20, 20, 321);
 }
 
 const /** @type UIRoute */ uiRoute = {

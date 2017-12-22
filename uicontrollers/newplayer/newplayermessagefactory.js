@@ -1,6 +1,6 @@
 "use strict";
 
-const UIMessage = require('../uimessage');
+const UIMessage = require('../../models/uimessage/uimessage');
 // TODO: import this variable from uirouter/newplayer.
 const CREATE_NEW_PLAYER_YES = 'yes';
 

@@ -1,6 +1,6 @@
 "use strict";
 
-const UIMessage = require('../uimessage');
+const UIMessage = require('../../models/uimessage/uimessage');
 
 /**
  * Provides with game menu UI element.

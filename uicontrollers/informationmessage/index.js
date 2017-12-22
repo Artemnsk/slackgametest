@@ -1,8 +1,8 @@
 "use strict";
 
 const Route = require('route-parser');
-const informationMessageFactory = require('../../uimessage/factory/informationmessagefactory').informationMessageFactory;
-const INFORMATION_MESSAGE_OK = require('../../uimessage/factory/informationmessagefactory').INFORMATION_MESSAGE_OK;
+const informationMessageFactory = require('./informationmessagefactory').informationMessageFactory;
+const INFORMATION_MESSAGE_OK = require('./informationmessagefactory').INFORMATION_MESSAGE_OK;
 
 /**
  *

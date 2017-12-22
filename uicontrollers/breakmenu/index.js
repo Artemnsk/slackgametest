@@ -1,7 +1,7 @@
 "use strict";
 
 const Route = require('route-parser');
-const shopFactory = require('../../../uimessage/factory/shopfactory');
+const breakMenuMessageFactory = require('./breakmenumessagefactory');
 
 /**
  *
@@ -12,15 +12,17 @@ const shopFactory = require('../../../uimessage/factory/shopfactory');
  */
 function processActions(uiRouter, parsedPayload, args) {
   if (!uiRouter.player) {
-    let text = "Player doesn't exist.";
-    return uiRouter.informationMessageUIRoute().getUIMessage(uiRouter, { text });
+    return uiRouter.informationMessageUIRoute().getUIMessage(uiRouter, { text: 'Error: Cannot find your player.' });
   }
   // Parse submitted actions to know which window to render.
   // TODO:
   let action = parsedPayload.actions[0];
   switch (action.name) {
-    case 'back':
-      return uiRouter.breakmenuUIRoute().getUIMessage(uiRouter, {});
+    case 'spellbook':
+      return uiRouter.spellbookUIRoute().getUIMessage(uiRouter, {});
+      break;
+    case 'shop':
+      return uiRouter.shopUIRoute().getUIMessage(uiRouter, {});
       break;
   }
   return null;
@@ -34,14 +36,13 @@ function processActions(uiRouter, parsedPayload, args) {
  */
 function getUIMessage(uiRouter, args) {
   if (!uiRouter.player) {
-    let text = "Player doesn't exist.";
-    return uiRouter.informationMessageUIRoute().getUIMessage(uiRouter, { text });
+    return uiRouter.informationMessageUIRoute().getUIMessage(uiRouter, { text: 'Error: Cannot find your player.' });
   }
-  return shopFactory(20, 20, 321);
+  return breakMenuMessageFactory(30, 40, 402);
 }
 
 const /** @type UIRoute */ uiRoute = {
-  route: new Route('/breakmenu/shop'),
+  route: new Route('/breakmenu'),
   processActions,
   getUIMessage
 };

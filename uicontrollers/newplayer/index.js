@@ -1,8 +1,8 @@
 "use strict";
 
 const Route = require('route-parser');
-const newPlayerFactory = require('../../uimessage/factory/newplayerfactory');
-const setPlayer = require('../../../player/players').setPlayer;
+const newPlayerMessageFactory = require('./newplayermessagefactory');
+const setPlayer = require('../../models/player/players').setPlayer;
 const Slack = require('slack-node');
 
 const CREATE_NEW_PLAYER_YES = 'yes';
@@ -103,7 +103,7 @@ function getUIMessage(uiRouter, args) {
     let uiMessage = uiRouter.informationMessageUIRoute().getUIMessage(uiRouter, { text });
     return uiMessage;
   }
-  return newPlayerFactory();
+  return newPlayerMessageFactory();
 }
 
 const /** @type UIRoute */ uiRoute = {

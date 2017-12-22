@@ -1,7 +1,7 @@
 "use strict";
 
-const UIMessage = require('../uimessage');
-const statsTitleFactory = require('./partials/statstitlefactory');
+const UIMessage = require('../../../models/uimessage/uimessage');
+const statsTitleFactory = require('../../_partials/statstitlefactory');
 
 /**
  * Provides with shop UI element.

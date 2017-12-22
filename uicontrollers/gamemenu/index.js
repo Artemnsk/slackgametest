@@ -1,14 +1,20 @@
 "use strict";
 
 const Route = require('route-parser');
-const gameMenuFactory = require('../../uimessage/factory/gamemenufactory');
-const CHANNEL_PHASES = require('../../../channel/channel').CHANNEL_PHASES;
+const gameMenuMessageFactory = require('./gamemenumessagefactory');
+const CHANNEL_PHASES = require('../../models/channel/channel').CHANNEL_PHASES;
 
-const castSpellFactory = require('../../uimessage/factory/castspellfactory');
+const castSpellFactory = require('./castspell/castspellmessagefactory');
 
+/**
+ *
+ * @param {UIRouter} uiRouter
+ * @param {ParsedSlackActionPayload} parsedPayload
+ * @param {{}} args
+ * @return {UIMessage}
+ */
 function processActions(uiRouter, parsedPayload, args) {
-  var a = 1;
-  return gameMenuFactory('/gamemenu');
+  return uiRouter.gamemenuUIRoute().getUIMessage(uiRouter, {});
   // TODO:
   // return {
   //
@@ -18,7 +24,7 @@ function processActions(uiRouter, parsedPayload, args) {
 /**
  *
  * @param {UIRouter} uiRouter
- * @param {Object} args
+ * @param {{}} args
  * @return {UIMessage}
  */
 function getUIMessage(uiRouter, args) {
@@ -28,7 +34,7 @@ function getUIMessage(uiRouter, args) {
   } else if (uiRouter.channel.phase !== CHANNEL_PHASES.IN_GAME) {
     return uiRouter.rootUIRoute().getUIMessage(uiRouter, {});
   }
-  return gameMenuFactory('/gamemenu');
+  return gameMenuMessageFactory('/gamemenu');
 }
 
 const /** @type UIRoute */ uiRoute = {
