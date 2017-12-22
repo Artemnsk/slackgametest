@@ -28,7 +28,7 @@ function processActions(uiRouter, parsedPayload, args) {
 
 /**
  *
- * @param {UIRoute} uiRouter
+ * @param {UIRouter} uiRouter
  * @param {{}} args
  * @return {UIMessage}
  */

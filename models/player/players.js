@@ -52,7 +52,7 @@ function getPlayers(teamKey, channelKey, active) {
         let /** @type {Object<string,PlayerFirebaseValue>} */ playersFirebaseObject = snapshot.val();
         const playersArray = [];
         for (let playerKey in playersFirebaseObject) {
-          let playerFirebaseValue = playersFirebaseObject[channelKey];
+          let playerFirebaseValue = playersFirebaseObject[playerKey];
           let playerConstructorValues = Object.assign(playerFirebaseValue, { $key: playerKey, $channelKey: channelKey, $teamKey: teamKey });
           let player = new Player(playerConstructorValues);
           playersArray.push(player);

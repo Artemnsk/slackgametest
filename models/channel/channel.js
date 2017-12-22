@@ -47,7 +47,11 @@ class Channel {
           if (games.length === 0) {
             return getPlayers(this.$teamKey, this.$key, true)
               .then((players) => {
-                const gamers = players.map(player => player.getGamerFirebaseValue());
+                // Create gamers object.
+                const /** @type Object.<string,GamerFirebaseValue> */ gamers = players.reduce((gamersObj, currentPlayer) => {
+                  gamersObj[currentPlayer.$key] = currentPlayer.getGamerFirebaseValue();
+                  return gamersObj;
+                }, {});
                 const ref = getNewGameRef(this.$teamKey, this.$key);
                 const /** @type GameFirebaseValue */ gameFirebaseValue = {
                   timeStep: this.timeStep,
