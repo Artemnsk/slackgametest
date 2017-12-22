@@ -1,7 +1,7 @@
 "use strict";
 
 const Route = require('route-parser');
-const CHANNEL_PHASES = require('../../channel/channel').CHANNEL_PHASES;
+const CHANNEL_PHASES = require('../models/channel/channel').CHANNEL_PHASES;
 
 /**
  * @typedef {Object} UIRoute
@@ -22,9 +22,9 @@ function processActions(uiRouter, parsedPayload, args) {
   // TODO: from commands parsedpayload is empty.
   // if (!parsedPayload || !parsedPayload.actions || parsedPayload.actions.length === 0) {
   //   if (!uiRouter.player) {
-  //     return uiRouter.newplayerUIRoute().getUIMessage(uiRouter, {});
+  //     return uiRouter.newplayerUIRoute.getUIMessage(uiRouter, {});
   //   }
-  //   return uiRouter.breakmenuUIRoute().getUIMessage(uiRouter, {});
+  //   return uiRouter.breakmenuUIRoute.getUIMessage(uiRouter, {});
   // }
 
   return getUIMessage(uiRouter);
@@ -38,19 +38,19 @@ function processActions(uiRouter, parsedPayload, args) {
  */
 function getUIMessage(uiRouter, args) {
   if (!uiRouter.player) {
-    return uiRouter.newplayerUIRoute().getUIMessage(uiRouter, {});
+    return uiRouter.newplayerUIRoute.getUIMessage(uiRouter, {});
   }
   switch (uiRouter.channel.phase) {
     case CHANNEL_PHASES.BREAK:
-      return uiRouter.breakmenuUIRoute().getUIMessage(uiRouter, {});
+      return uiRouter.breakmenuUIRoute.getUIMessage(uiRouter, {});
       break;
     case CHANNEL_PHASES.IN_GAME:
       // TODO: game menu.
-      return uiRouter.gamemenuUIRoute().getUIMessage(uiRouter, {});
+      return uiRouter.gamemenuUIRoute.getUIMessage(uiRouter, {});
       break;
     default:
       let text = 'Channel is invalid.';
-      let uiMessage = uiRouter.informationMessageUIRoute().getUIMessage(uiRouter, { text });
+      let uiMessage = uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text });
       return uiMessage;
       break;
   }

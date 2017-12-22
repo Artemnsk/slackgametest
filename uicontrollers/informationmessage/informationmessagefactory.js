@@ -1,6 +1,6 @@
 "use strict";
 
-const UIMessage = require('../uimessage');
+const UIMessage = require('../../models/uimessage/uimessage');
 // That is used as name and value for 'ok' button.
 const INFORMATION_MESSAGE_OK = 'ok';
 

@@ -1,8 +1,8 @@
 "use strict";
 
 const Route = require('route-parser');
-const informationMessageFactory = require('../uimessage/factory/informationmessagefactory').informationMessageFactory;
-const INFORMATION_MESSAGE_OK = require('../uimessage/factory/informationmessagefactory').INFORMATION_MESSAGE_OK;
+const informationMessageFactory = require('./informationmessagefactory').informationMessageFactory;
+const INFORMATION_MESSAGE_OK = require('./informationmessagefactory').INFORMATION_MESSAGE_OK;
 
 /**
  *
@@ -17,13 +17,13 @@ function processActions(uiRouter, parsedPayload) {
     case INFORMATION_MESSAGE_OK:
       switch (action.value) {
         case INFORMATION_MESSAGE_OK:
-          return uiRouter.rootUIRoute().getUIMessage(uiRouter, {});
+          return uiRouter.rootUIRoute.getUIMessage(uiRouter, {});
           break;
       }
       break;
   }
   // Anyway return root if no match.
-  return uiRouter.rootUIRoute().getUIMessage(uiRouter, {});
+  return uiRouter.rootUIRoute.getUIMessage(uiRouter, {});
 }
 
 /**

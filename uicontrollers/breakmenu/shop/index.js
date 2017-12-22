@@ -1,8 +1,7 @@
 "use strict";
 
 const Route = require('route-parser');
-const spellFactory = require('../uimessage/factory/spellfactory');
-const spells = require('../../../storage/spells/spells');
+const shopMessageFactory = require('./shopMessagefactory');
 
 /**
  *
@@ -14,13 +13,14 @@ const spells = require('../../../storage/spells/spells');
 function processActions(uiRouter, parsedPayload, args) {
   if (!uiRouter.player) {
     let text = "Player doesn't exist.";
-    return uiRouter.informationMessageUIRoute().getUIMessage(uiRouter, { text });
+    return uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text });
   }
   // Parse submitted actions to know which window to render.
+  // TODO:
   let action = parsedPayload.actions[0];
   switch (action.name) {
     case 'back':
-      return uiRouter.spellbookUIRoute().getUIMessage(uiRouter, {});
+      return uiRouter.breakmenuUIRoute.getUIMessage(uiRouter, {});
       break;
   }
   return null;
@@ -29,24 +29,19 @@ function processActions(uiRouter, parsedPayload, args) {
 /**
  *
  * @param {UIRouter} uiRouter
- * @param {{spellId: string}} args
+ * @param {{}} args
  * @return {UIMessage}
  */
 function getUIMessage(uiRouter, args) {
   if (!uiRouter.player) {
     let text = "Player doesn't exist.";
-    return uiRouter.informationMessageUIRoute().getUIMessage(uiRouter, { text });
+    return uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text });
   }
-  const spell = spells.find(item => item.id === args.spellId);
-  if (spell) {
-    return spellFactory(spell);
-  }
-  let text = "Spell not found.";
-  return uiRouter.informationMessageUIRoute().getUIMessage(uiRouter, { text });
+  return shopMessageFactory(20, 20, 321);
 }
 
 const /** @type UIRoute */ uiRoute = {
-  route: new Route('/breakmenu/spellbook/:spellName'),
+  route: new Route('/breakmenu/shop'),
   processActions,
   getUIMessage
 };

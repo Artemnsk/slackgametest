@@ -1,9 +1,9 @@
 "use strict";
 
-const UIMessage = require('../uimessage');
-const statsTitleFactory = require('./partials/statstitlefactory');
+const UIMessage = require('../../../../models/uimessage/uimessage');
+const statsTitleFactory = require('../../../_partials/statstitlefactory');
 const spells = require('../../../../storage/spells/spells');
-const spellInfoFactory = require('./partials/spellinfofactory');
+const spellInfoFactory = require('../../../_partials/spellinfofactory');
 
 /**
  * Provides with spell UI element.

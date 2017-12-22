@@ -2,7 +2,7 @@
 
 const express = require('express');
 const router = express.Router();
-const UIRouter = require('../../models/ui/uirouter/uirouter');
+const UIRouter = require('../../uicontrollers/uirouter');
 const tokenVerification = require('../../middlewares/tokenverification');
 const setGameData = require('../../middlewares/slackcommands').setGameData;
 const request = require('request');
