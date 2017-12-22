@@ -32,6 +32,37 @@ function getGame(teamKey, channelKey, gameKey) {
 }
 
 /**
+ * Load game from DB by teamKey, channelKey and gameKey.
+ * @param {string} teamKey
+ * @param {string} channelKey
+ * @param {string} [phase] - filter by phase
+ * @return {Promise.<Array<Game>,Error>}
+ */
+function getGames(teamKey, channelKey, phase) {
+  const reference = firebaseApp.database().ref(`/games/${teamKey}/${channelKey}`);
+  if (phase !== undefined) {
+    reference.orderByChild('phase').equalTo(phase);
+  }
+  return reference.once('value')
+    .then((/** admin.database.DataSnapshot */ snapshot) => {
+      if (!snapshot.val()) {
+        // No games found.
+        return Promise.resolve([]);
+      } else {
+        let /** @type Object.<string,GameFirebaseValue> */ gamesFirebaseObject = snapshot.val();
+        const gamesArray = [];
+        for (let gameKey in gamesFirebaseObject) {
+          let gameFirebaseValue = gamesFirebaseObject[gameKey];
+          let gameConstructorValues = Object.assign(gameFirebaseValue, { $key: gameKey, $channelKey: channelKey, $teamKey: teamKey });
+          let game = new Game(gameConstructorValues);
+          gamesArray.push(game);
+        }
+        return Promise.resolve(gamesArray);
+      }
+    });
+}
+
+/**
  * Returns new game Firebase reference.
  * @param {string} teamKey
  * @param {string} channelKey
@@ -56,5 +87,6 @@ function setGame(gameValues, teamKey, channelKey, gameKey) {
 module.exports = {
   getGame,
   getNewGameRef,
-  setGame
+  setGame,
+  getGames
 };

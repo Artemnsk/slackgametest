@@ -1,6 +1,7 @@
 const getPlayers = require('../player/players').getPlayers;
 const getNewGameRef = require('../game/games').getNewGameRef;
 const setGame = require('../game/games').setGame;
+const getGames = require('../game/games').getGames;
 const Game = require('../game/game').Game;
 const GAME_PHASES = require('../game/game').GAME_PHASES;
 
@@ -40,16 +41,27 @@ class Channel {
    */
   startGame() {
     if (this.phase === CHANNEL_PHASES.BREAK) {
-      // TODO: ensure there are no unfinished games. getGames() function needed for that. Find by phase.
-      return getPlayers(this.$teamKey, this.$key, true)
-        .then((players) => {
-          const ref = getNewGameRef(this.$teamKey, this.$key);
-          const /** @type GameFirebaseValue */ gameFirebaseValue = {
-            timeStep: this.timeStep,
-            phase: GAME_PHASES.RUNNING,
-            gamers: {} // TODO: use some player.getGamer() method to get gamer firebase values.
-          };
-          return setGame(gameFirebaseValue, this.$teamKey, this.$key, ref.key);
+      // Ensure there are no 'RUNNING' games.
+      return getGames(this.$teamKey, this.$key, GAME_PHASES.RUNNING)
+        .then((games) => {
+          if (games.length === 0) {
+            return getPlayers(this.$teamKey, this.$key, true)
+              .then((players) => {
+                const gamers = players.map(player => player.getGamerFirebaseValue());
+                const ref = getNewGameRef(this.$teamKey, this.$key);
+                const /** @type GameFirebaseValue */ gameFirebaseValue = {
+                  timeStep: this.timeStep,
+                  phase: GAME_PHASES.RUNNING,
+                  gamers
+                };
+                return setGame(gameFirebaseValue, this.$teamKey, this.$key, ref.key);
+              });
+          } else {
+            let error = {
+              message: `Game with '${GAME_PHASES.RUNNING}' status already exists for this channel.`
+            };
+            return Promise.reject(error);
+          }
         });
     }
     return Promise.reject({ message: "Wrong channel phase to start a game." });

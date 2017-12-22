@@ -19,10 +19,16 @@ class Player {
 
   /**
    *
-   * @return Gamer
+   * @return GamerFirebaseValue
    */
-  getGamer() {
-
+  getGamerFirebaseValue() {
+    return {
+      name: this.name,
+      dead: false,
+      // TODO: set somewhere? Maybe channel/game setting?
+      health: 100,
+      mana: 40
+    };
   }
 
   /**
