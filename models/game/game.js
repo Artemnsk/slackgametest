@@ -7,17 +7,19 @@ const GAME_PHASES = {
 class Game {
   /**
    *
-   * @param {GameFirebaseValue & {$key: (undefined|string)}} values
+   * @param {GameFirebaseValue & {$key: string, $channelKey: string, $teamKey: string}} values
    * @constructor
    * @extends GameFirebaseValue
-   * @property {string} $key - Database key of this channel.
+   * @property {string} $key - Database key of this game.
+   * @property {string} $channelKey - Database key of game channel.
+   * @property {string} $teamKey - Database key of game team.
    */
   constructor(values) {
     this.timeStep = values.timeStep;
     this.phase = values.phase;
-    if (values.$key) {
-      this.$key = values.$key;
-    }
+    this.$key = values.$key;
+    this.$channelKey = values.$channelKey;
+    this.$teamKey = values.$teamKey;
   }
 
   /**

@@ -1,23 +1,25 @@
 class Player {
   /**
    *
-   * @param {PlayerFirebaseValue & {$key: (undefined|string)}} values
+   * @param {PlayerFirebaseValue & {$key: string, $channelKey: string, $teamKey: string} values
    * @constructor
    * @extends PlayerFirebaseValue
-   * @property {string} $key - Database key of this channel.
+   * @property {string} $key - Database key of this player.
+   * @property {string} $channelKey - Database key of player channel.
+   * @property {string} $teamKey - Database key of player team.
    */
   constructor(values) {
     this.active = values.active;
     this.name = values.name;
     this.gold = values.gold;
-    if (values.$key) {
-      this.$key = values.$key;
-    }
+    this.$key = values.$key;
+    this.$channelKey = values.$channelKey;
+    this.$teamKey = values.$teamKey;
   }
 
   /**
    *
-   * @return {ChannelFirebaseValue}
+   * @return {PlayerFirebaseValue}
    */
   getFirebaseValue() {
     return Object.assign({}, {

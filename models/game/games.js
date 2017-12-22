@@ -22,8 +22,8 @@ function getGame(teamKey, channelKey, gameKey) {
         // No game found.
         return Promise.resolve(null);
       } else {
-        let /** @type {Object<string,GameFirebaseValue>} */ values = snapshot.val();
-        let gameConstructorValues = Object.assign(values, { $key: snapshot.key });
+        let /** @type GameFirebaseValue */ values = snapshot.val();
+        let gameConstructorValues = Object.assign(values, { $key: snapshot.key, $channelKey: channelKey, $teamKey: teamKey });
         let game = new Game(gameConstructorValues);
         return Promise.resolve(game);
       }

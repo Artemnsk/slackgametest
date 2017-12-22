@@ -31,25 +31,19 @@ function slackGameData(teamId, channelId, userId) {
   return Promise.all(promises)
     .then((data) => {
       // Retrieve Team object.
-      let /** @type TeamFirebaseValue */ teamFirebaseValue = data[0];
-      if (!teamFirebaseValue || teamFirebaseValue.active !== true) {
+      const /** @type Team */ team = data[0];
+      if (!team || team.active !== true) {
         let message = 'Team not found or game support being disabled for this team.';
         return Promise.reject({ message });
       }
-      const team = new Team(teamFirebaseValue);
       // Retrieve Channel object.
-      let /** @type ChannelFirebaseValue */ channelFirebaseValue = data[1];
-      if (!channelFirebaseValue || channelFirebaseValue.active !== true) {
+      const /** @type Channel */ channel = data[1];
+      if (!channel || channel.active !== true) {
         let message = 'Channel never had game support or game support being disabled for this channel.';
         return Promise.reject({ message });
       }
-      const channel = new Channel(channelFirebaseValue);
       // Retrieve Player object.
-      var /** @type ?Player */ player = null;
-      let /** @type PlayerFirebaseValue */ playerFirebaseValue = data[2];
-      if (playerFirebaseValue) {
-        player = new Player(playerFirebaseValue);
-      }
+      const /** @type Player */ player = data[2];
       switch(channel.phase) {
         case CHANNEL_PHASES.BREAK:
           return Promise.resolve({
