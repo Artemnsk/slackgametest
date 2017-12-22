@@ -1,4 +1,8 @@
 const getPlayers = require('../player/players').getPlayers;
+const getNewGameRef = require('../game/games').getNewGameRef;
+const setGame = require('../game/games').setGame;
+const Game = require('../game/game').Game;
+const GAME_PHASES = require('../game/game').GAME_PHASES;
 
 const CHANNEL_PHASES = {
   BREAK: "BREAK",
@@ -36,11 +40,16 @@ class Channel {
    */
   startGame() {
     if (this.phase === CHANNEL_PHASES.BREAK) {
+      // TODO: ensure there are no unfinished games. getGames() function needed for that. Find by phase.
       return getPlayers(this.$teamKey, this.$key, true)
         .then((players) => {
-          // TODO: put them into new game.
-          // TODO: ensure there are no unfinished games.
-          // TODO: some player.getGamer() method.
+          const ref = getNewGameRef(this.$teamKey, this.$key);
+          const /** @type GameFirebaseValue */ gameFirebaseValue = {
+            timeStep: this.timeStep,
+            phase: GAME_PHASES.RUNNING,
+            gamers: {} // TODO: use some player.getGamer() method to get gamer firebase values.
+          };
+          return setGame(gameFirebaseValue, this.$teamKey, this.$key, ref.key);
         });
     }
     return Promise.reject({ message: "Wrong channel phase to start a game." });

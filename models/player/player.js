@@ -19,6 +19,14 @@ class Player {
 
   /**
    *
+   * @return Gamer
+   */
+  getGamer() {
+
+  }
+
+  /**
+   *
    * @return {PlayerFirebaseValue}
    */
   getFirebaseValue() {

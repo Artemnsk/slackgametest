@@ -6,6 +6,7 @@ const Game = require('./game').Game;
  * @typedef {Object} GameFirebaseValue
  * @property {number} timeStep
  * @property {string} phase
+ * @property {Object.<string,GamerFirebaseValue>} [gamers]
  */
 
 /**
@@ -31,18 +32,29 @@ function getGame(teamKey, channelKey, gameKey) {
 }
 
 /**
- * Create game in DB.
+ * Returns new game Firebase reference.
+ * @param {string} teamKey
+ * @param {string} channelKey
+ * @return {admin.database.ThenableReference}
+ */
+function getNewGameRef(teamKey, channelKey) {
+  return firebaseApp.database().ref(`/games/${teamKey}/${channelKey}`).push();
+}
+
+/**
+ * Sets game in DB.
  * @param {GameFirebaseValue} gameValues
  * @param {string} teamKey
  * @param {string} channelKey
+ * @param {string} gameKey
  * @return Promise.<any,Error>
  */
-function createGame(gameValues, teamKey, channelKey) {
-  const snapshot = firebaseApp.database().ref(`/games/${teamKey}/${channelKey}`).push();
-  return firebaseApp.database().ref(`/games/${teamKey}/${channelKey}/${snapshot.key}`).set(gameValues);
+function setGame(gameValues, teamKey, channelKey, gameKey) {
+  return firebaseApp.database().ref(`/games/${teamKey}/${channelKey}/${gameKey}`).set(gameValues);
 }
 
 module.exports = {
-  createGame,
-  getGame
+  getGame,
+  getNewGameRef,
+  setGame
 };

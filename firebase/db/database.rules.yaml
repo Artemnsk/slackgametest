@@ -131,7 +131,7 @@ schema:
                 ~$gamerKey:
                   type: object
                   constraint: isValidGamer($teamKey, $channelKey, $gamerKey)
-                  required: ['name', 'health', 'dead']
+                  required: ['name', 'health', 'mana', 'dead']
                   additionalProperties: false
                   properties:
                     name:
@@ -139,6 +139,9 @@ schema:
                     dead:
                       type: boolean
                     health:
+                      type: number
+                      constraint: next >= 0
+                    mana:
                       type: number
                       constraint: next >= 0
                     spells:
