@@ -23,8 +23,8 @@ function getPlayer(teamKey, channelKey, playerKey) {
         // No channel found.
         return Promise.resolve(null);
       } else {
-        let /** @type {Object<string,PlayerFirebaseValue>} */ values = snapshot.val();
-        let playerConstructorValues = Object.assign(values, { $key: snapshot.key });
+        let /** @type PlayerFirebaseValue */ values = snapshot.val();
+        let playerConstructorValues = Object.assign(values, { $key: snapshot.key, $channelKey: channelKey, $teamKey: teamKey });
         let player = new Player(playerConstructorValues);
         return Promise.resolve(player);
       }
@@ -52,8 +52,8 @@ function getPlayers(teamKey, channelKey, active) {
         let /** @type {Object<string,PlayerFirebaseValue>} */ playersFirebaseObject = snapshot.val();
         const playersArray = [];
         for (let playerKey in playersFirebaseObject) {
-          let playerFirebaseValue = playersFirebaseObject[channelKey];
-          let playerConstructorValues = Object.assign(playerFirebaseValue, { $key: playerKey });
+          let playerFirebaseValue = playersFirebaseObject[playerKey];
+          let playerConstructorValues = Object.assign(playerFirebaseValue, { $key: playerKey, $channelKey: channelKey, $teamKey: teamKey });
           let player = new Player(playerConstructorValues);
           playersArray.push(player);
         }

@@ -26,8 +26,8 @@ function getChannel(teamId, channelId) {
         // No channel found.
         return Promise.resolve(null);
       } else {
-        let /** @type {Object<string,ChannelFirebaseValue>} */ values = snapshot.val();
-        let channelConstructorValues = Object.assign(values, { $key: snapshot.key });
+        let /** @type ChannelFirebaseValue */ values = snapshot.val();
+        let channelConstructorValues = Object.assign(values, { $key: snapshot.key, $teamKey: teamId });
         let channel = new Channel(channelConstructorValues);
         return Promise.resolve(channel);
       }
@@ -55,7 +55,7 @@ function getChannels(teamId, active) {
         const channelsArray = [];
         for (let channelKey in channelsFirebaseObject) {
           let channelFirebaseValue = channelsFirebaseObject[channelKey];
-          let channelConstructorValues = Object.assign(channelFirebaseValue, { $key: channelKey });
+          let channelConstructorValues = Object.assign(channelFirebaseValue, { $key: channelKey, $teamKey: teamId });
           let channel = new Channel(channelConstructorValues);
           channelsArray.push(channel);
         }

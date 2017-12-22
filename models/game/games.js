@@ -6,6 +6,7 @@ const Game = require('./game').Game;
  * @typedef {Object} GameFirebaseValue
  * @property {number} timeStep
  * @property {string} phase
+ * @property {Object.<string,GamerFirebaseValue>} [gamers]
  */
 
 /**
@@ -22,8 +23,8 @@ function getGame(teamKey, channelKey, gameKey) {
         // No game found.
         return Promise.resolve(null);
       } else {
-        let /** @type {Object<string,GameFirebaseValue>} */ values = snapshot.val();
-        let gameConstructorValues = Object.assign(values, { $key: snapshot.key });
+        let /** @type GameFirebaseValue */ values = snapshot.val();
+        let gameConstructorValues = Object.assign(values, { $key: snapshot.key, $channelKey: channelKey, $teamKey: teamKey });
         let game = new Game(gameConstructorValues);
         return Promise.resolve(game);
       }
@@ -31,18 +32,61 @@ function getGame(teamKey, channelKey, gameKey) {
 }
 
 /**
- * Create game in DB.
+ * Load game from DB by teamKey, channelKey and gameKey.
+ * @param {string} teamKey
+ * @param {string} channelKey
+ * @param {string} [phase] - filter by phase
+ * @return {Promise.<Array<Game>,Error>}
+ */
+function getGames(teamKey, channelKey, phase) {
+  const reference = firebaseApp.database().ref(`/games/${teamKey}/${channelKey}`);
+  if (phase !== undefined) {
+    reference.orderByChild('phase').equalTo(phase);
+  }
+  return reference.once('value')
+    .then((/** admin.database.DataSnapshot */ snapshot) => {
+      if (!snapshot.val()) {
+        // No games found.
+        return Promise.resolve([]);
+      } else {
+        let /** @type Object.<string,GameFirebaseValue> */ gamesFirebaseObject = snapshot.val();
+        const gamesArray = [];
+        for (let gameKey in gamesFirebaseObject) {
+          let gameFirebaseValue = gamesFirebaseObject[gameKey];
+          let gameConstructorValues = Object.assign(gameFirebaseValue, { $key: gameKey, $channelKey: channelKey, $teamKey: teamKey });
+          let game = new Game(gameConstructorValues);
+          gamesArray.push(game);
+        }
+        return Promise.resolve(gamesArray);
+      }
+    });
+}
+
+/**
+ * Returns new game Firebase reference.
+ * @param {string} teamKey
+ * @param {string} channelKey
+ * @return {admin.database.ThenableReference}
+ */
+function getNewGameRef(teamKey, channelKey) {
+  return firebaseApp.database().ref(`/games/${teamKey}/${channelKey}`).push();
+}
+
+/**
+ * Sets game in DB.
  * @param {GameFirebaseValue} gameValues
  * @param {string} teamKey
  * @param {string} channelKey
+ * @param {string} gameKey
  * @return Promise.<any,Error>
  */
-function createGame(gameValues, teamKey, channelKey) {
-  const snapshot = firebaseApp.database().ref(`/games/${teamKey}/${channelKey}`).push();
-  return firebaseApp.database().ref(`/games/${teamKey}/${channelKey}/${snapshot.key}`).set(gameValues);
+function setGame(gameValues, teamKey, channelKey, gameKey) {
+  return firebaseApp.database().ref(`/games/${teamKey}/${channelKey}/${gameKey}`).set(gameValues);
 }
 
 module.exports = {
-  createGame,
-  getGame
+  getGame,
+  getNewGameRef,
+  setGame,
+  getGames
 };

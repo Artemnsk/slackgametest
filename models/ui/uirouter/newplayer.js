@@ -57,7 +57,7 @@ function processActions(uiRouter, parsedPayload, args) {
                 // Ensure player doesn't exist. Maybe that was click on outdated screen.
                 if (!uiRouter.player) {
                   // Now we can safely create new player.
-                  let playerFirebaseValue = {
+                  let /** @type PlayerFirebaseValue */ playerFirebaseValue = {
                     active: true,
                     name: response.user.profile.real_name,
                     gold: 0

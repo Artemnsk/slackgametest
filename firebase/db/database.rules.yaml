@@ -3,8 +3,11 @@ functions:
   - webserverUser(): auth.uid === 'game-webserver'
   - teamExists(teamKey): root.teams[teamKey].exists()
   - channelExists(teamKey, channelKey): root.channels[teamKey][channelKey].exists()
+  - playerExists(teamKey, channelKey, playerKey): root.players[teamKey][channelKey][playerKey].exists()
   - gameExists(teamKey, channelKey, gameKey): root.games[teamKey][channelKey][gameKey].exists()
   - isValidChannel(): (next.phase === 'BREAK' && next.nextGame.exists()) || (next.phase === 'IN_GAME' && next.currentGame.exists())
+  # When create new gamer appropriate player must exist.
+  - isValidGamer(teamKey, channelKey, gamerKey): prev.exists() || playerExists(teamKey, channelKey, gamerKey)
 
 schema:
   type: object
@@ -123,6 +126,28 @@ schema:
               phase:
                 type: string
                 enum: ['PAUSE', 'OVER', 'RUNNING']
+              gamers:
+                type: object
+                ~$gamerKey:
+                  type: object
+                  constraint: isValidGamer($teamKey, $channelKey, $gamerKey)
+                  required: ['name', 'health', 'mana', 'dead']
+                  additionalProperties: false
+                  properties:
+                    name:
+                      type: string
+                    dead:
+                      type: boolean
+                    health:
+                      type: number
+                      constraint: next >= 0
+                    mana:
+                      type: number
+                      constraint: next >= 0
+                    spells:
+                      type: object
+                      ~$spell:
+                        type: boolean
 
     # TODO:
     # Stores information about game states in channels.
