@@ -14,7 +14,7 @@ const castSpellFactory = require('./castspell/castspellmessagefactory');
  * @return {UIMessage}
  */
 function processActions(uiRouter, parsedPayload, args) {
-  return uiRouter.gamemenuUIRoute().getUIMessage(uiRouter, {});
+  return uiRouter.gamemenuUIRoute.getUIMessage(uiRouter, {});
   // TODO:
   // return {
   //
@@ -30,9 +30,9 @@ function processActions(uiRouter, parsedPayload, args) {
 function getUIMessage(uiRouter, args) {
   // return castSpellFactory(1, 2, 3, 'fireball');
   if (!uiRouter.player) {
-    return uiRouter.informationMessageUIRoute().getUIMessage(uiRouter, { text: 'Error: Cannot find your player.' });
+    return uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text: 'Error: Cannot find your player.' });
   } else if (uiRouter.channel.phase !== CHANNEL_PHASES.IN_GAME) {
-    return uiRouter.rootUIRoute().getUIMessage(uiRouter, {});
+    return uiRouter.rootUIRoute.getUIMessage(uiRouter, {});
   }
   return gameMenuMessageFactory('/gamemenu');
 }

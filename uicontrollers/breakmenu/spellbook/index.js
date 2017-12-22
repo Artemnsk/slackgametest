@@ -13,17 +13,17 @@ const spellbookMessageFactory = require('./spellbookmessagefactory');
 function processActions(uiRouter, parsedPayload, args) {
   if (!uiRouter.player) {
     let text = "Player doesn't exist.";
-    return uiRouter.informationMessageUIRoute().getUIMessage(uiRouter, { text });
+    return uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text });
   }
   // Parse submitted actions to know which window to render.
   // TODO:
   let action = parsedPayload.actions[0];
   switch (action.name) {
     case 'spell':
-      return uiRouter.spellinfoUIRoute().getUIMessage(uiRouter, { spellId: action.value });
+      return uiRouter.spellinfoUIRoute.getUIMessage(uiRouter, { spellId: action.value });
       break;
     case 'back':
-      return uiRouter.breakmenuUIRoute().getUIMessage(uiRouter, {});
+      return uiRouter.breakmenuUIRoute.getUIMessage(uiRouter, {});
       break;
   }
   return null;
@@ -38,7 +38,7 @@ function processActions(uiRouter, parsedPayload, args) {
 function getUIMessage(uiRouter, args) {
   if (!uiRouter.player) {
     let text = "Player doesn't exist.";
-    return uiRouter.informationMessageUIRoute().getUIMessage(uiRouter, { text });
+    return uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text });
   }
   return spellbookMessageFactory(20, 20, 321);
 }

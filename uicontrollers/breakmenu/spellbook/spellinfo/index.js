@@ -14,13 +14,13 @@ const spells = require('../../../../storage/spells/spells');
 function processActions(uiRouter, parsedPayload, args) {
   if (!uiRouter.player) {
     let text = "Player doesn't exist.";
-    return uiRouter.informationMessageUIRoute().getUIMessage(uiRouter, { text });
+    return uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text });
   }
   // Parse submitted actions to know which window to render.
   let action = parsedPayload.actions[0];
   switch (action.name) {
     case 'back':
-      return uiRouter.spellbookUIRoute().getUIMessage(uiRouter, {});
+      return uiRouter.spellbookUIRoute.getUIMessage(uiRouter, {});
       break;
   }
   return null;
@@ -35,14 +35,14 @@ function processActions(uiRouter, parsedPayload, args) {
 function getUIMessage(uiRouter, args) {
   if (!uiRouter.player) {
     let text = "Player doesn't exist.";
-    return uiRouter.informationMessageUIRoute().getUIMessage(uiRouter, { text });
+    return uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text });
   }
   const spell = spells.find(item => item.id === args.spellId);
   if (spell) {
     return spellInfoMessageFactory(spell);
   }
   let text = "Spell not found.";
-  return uiRouter.informationMessageUIRoute().getUIMessage(uiRouter, { text });
+  return uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text });
 }
 
 const /** @type UIRoute */ uiRoute = {

@@ -51,7 +51,7 @@ function processActions(uiRouter, parsedPayload, args) {
             slack.api("users.info", apiCallArgs, (err, /** SlackUserInfoResponse */ response) => {
               if (err) {
                 let text = 'Error: Cannot retrieve your user info from Slack: ' + response.error;
-                let uiMessage = uiRouter.informationMessageUIRoute().getUIMessage(uiRouter, { text });
+                let uiMessage = uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text });
                 resolve(uiMessage);
               } else if (response.ok === true) {
                 // Ensure player doesn't exist. Maybe that was click on outdated screen.
@@ -65,21 +65,21 @@ function processActions(uiRouter, parsedPayload, args) {
                   setPlayer(playerFirebaseValue, uiRouter.team.$key, uiRouter.channel.$key, parsedPayload.user.id)
                     .then(() => {
                       let text = 'Player being created.';
-                      let uiMessage = uiRouter.informationMessageUIRoute().getUIMessage(uiRouter, { text });
+                      let uiMessage = uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text });
                       resolve(uiMessage);
                     }, (error) => {
                       let text = 'Error: Player cannot be created into DB in some reason: ' + error.message;
-                      let uiMessage = uiRouter.informationMessageUIRoute().getUIMessage(uiRouter, { text });
+                      let uiMessage = uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text });
                       resolve(uiMessage);
                     });
                 } else {
                   let text = 'Error: Player already exists.';
-                  let uiMessage = uiRouter.informationMessageUIRoute().getUIMessage(uiRouter, { text });
+                  let uiMessage = uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text });
                   resolve(uiMessage);
                 }
               } else {
                 let text = 'Some unexpected error occurred during retrieval info about your Slack user.';
-                let uiMessage = uiRouter.informationMessageUIRoute().getUIMessage(uiRouter, { text });
+                let uiMessage = uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text });
                 resolve(uiMessage);
               }
             });
@@ -100,7 +100,7 @@ function processActions(uiRouter, parsedPayload, args) {
 function getUIMessage(uiRouter, args) {
   if (uiRouter.player) {
     let text = 'Error: Player already exists.';
-    let uiMessage = uiRouter.informationMessageUIRoute().getUIMessage(uiRouter, { text });
+    let uiMessage = uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text });
     return uiMessage;
   }
   return newPlayerMessageFactory();
