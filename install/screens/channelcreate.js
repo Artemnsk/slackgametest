@@ -2,15 +2,13 @@
 
 const inquirer = require('inquirer');
 const helpers = require('../helpers');
-const setChannel = require('../../models/channel/channels').setChannel;
+const Channel = require('../../models/channel/channel').Channel;
 const CHANNEL_PHASES = require('../../models/channel/channel').CHANNEL_PHASES;
 
 const Slack = require('slack-node');
 
 const CHANNEL_CREATE = 'Create channel';
 const CHANNEL_CANCEL = 'Cancel';
-
-const ERROR_TRY_AGAIN = 'Try again';
 const ERROR_BACK = 'Back';
 
 module.exports = channelCreateRoute;
@@ -117,7 +115,7 @@ function channelCreateRoute(args, router) {
                   // Set next game time to now + break time like break has just begun.
                   nextGame: currentDate.getTime() + parseInt(answers.breakTime, 10)
                 };
-                setChannel(channelFirebaseValues, args.team.$key, response.group.id)
+                Channel.setChannel(channelFirebaseValues, args.team.$key, response.group.id)
                   .then(() => {
                     clearInterval(loadingScreen);
                     helpers.clearConsole();

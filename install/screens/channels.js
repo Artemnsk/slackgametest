@@ -1,7 +1,7 @@
 "use strict";
 
 const inquirer = require('inquirer');
-const getChannels = require('../../models/channel/channels').getChannels;
+const Channel = require('../../models/channel/channel').Channel;
 const helpers = require('../helpers');
 
 const LIST_BACK = 'Back';
@@ -19,7 +19,7 @@ module.exports = channelsRoute;
  */
 function channelsRoute(args, router) {
   var loadingScreen = helpers.loadingScreen();
-  getChannels(args.team.$key, true)
+  Channel.getChannels(args.team.$key, true)
     .then((channels) => {
       clearInterval(loadingScreen);
       helpers.clearConsole();

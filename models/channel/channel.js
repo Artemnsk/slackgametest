@@ -1,3 +1,6 @@
+const getDBChannel = require('./dbfirebase').getDBChannel;
+const getDBChannels = require('./dbfirebase').getDBChannels;
+const setDBChannel = require('./dbfirebase').setDBChannel;
 const getPlayers = require('../player/players').getPlayers;
 const getNewGameRef = require('../game/games').getNewGameRef;
 const setGame = require('../game/games').setGame;
@@ -85,6 +88,56 @@ class Channel {
       nextGame: this.nextGame ? this.nextGame : null,
       currentGame: this.currentGame ? this.currentGame : null
     });
+  }
+
+  /**
+   * Load channel from DB by channelId.
+   * @param {string} teamId
+   * @param {string} channelId
+   * @return {Promise.<?Channel,Error>}
+   */
+  static getChannel(teamId, channelId) {
+    return getDBChannel(teamId, channelId)
+      .then(channelFirebaseValue => {
+        if (channelFirebaseValue) {
+          let channelConstructorValues = Object.assign(channelFirebaseValue, { $key: channelId, $teamKey: teamId });
+          let channel = new Channel(channelConstructorValues);
+          return Promise.resolve(channel);
+        } else {
+          return Promise.resolve(channelFirebaseValue);
+        }
+      });
+  }
+
+  /**
+   * Respond with channels array from DB.
+   * @param {string} teamId
+   * @param {boolean} [active] - filter by 'active' field. No filter if not set.
+   * @return Promise.<Array<Channel>,Error>
+   */
+  static getChannels(teamId, active) {
+    return getDBChannels(teamId, active)
+      .then(teamsFirebaseObject => {
+        const channelsArray = [];
+        for (let channelKey in teamsFirebaseObject) {
+          let channelFirebaseValue = teamsFirebaseObject[channelKey];
+          let channelConstructorValues = Object.assign(channelFirebaseValue, { $key: channelKey, $teamKey: teamId });
+          let channel = new Channel(channelConstructorValues);
+          channelsArray.push(channel);
+        }
+        return Promise.resolve(channelsArray);
+      });
+  }
+
+  /**
+   * Sets channel in DB.
+   * @param {ChannelFirebaseValue} channelValues
+   * @param {string} teamKey
+   * @param {string} channelKey
+   * @return Promise.<any,Error>
+   */
+  static setChannel(channelValues, teamKey, channelKey) {
+    return setDBChannel(channelValues, teamKey, channelKey);
   }
 }
 
