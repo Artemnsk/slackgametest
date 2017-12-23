@@ -1,5 +1,4 @@
 const /** @type admin.app.App */ firebaseApp = require('../../helpers/firebaseapp');
-const Team = require('./team').Team;
 
 /**
  * Data format received from Firebase.
@@ -16,19 +15,17 @@ const Team = require('./team').Team;
 /**
  * Load team from DB by teamId.
  * @param {string} teamId
- * @return {Promise.<?Team,Error>}
+ * @return {Promise.<?TeamFirebaseValue,Error>}
  */
-function getTeam(teamId) {
+function getDBTeam(teamId) {
   return firebaseApp.database().ref('/teams/' + teamId).once('value')
     .then((/** admin.database.DataSnapshot */ snapshot) => {
       if (!snapshot.val()) {
         // No team found.
         return Promise.resolve(null);
       } else {
-        let /** @type {Object<string,TeamFirebaseValue>} */ values = snapshot.val();
-        let teamConstructorValues = Object.assign(values, { $key: snapshot.key });
-        let /** @type Team */ team = new Team(teamConstructorValues);
-        return Promise.resolve(team);
+        let /** @type TeamFirebaseValue */ teamFirebaseValue = snapshot.val();
+        return Promise.resolve(teamFirebaseValue);
       }
     });
 }
@@ -36,9 +33,9 @@ function getTeam(teamId) {
 /**
  * Respond with teams array from DB.
  * @param {boolean} [active] - filter by 'active' field. No filter if not set.
- * @return Promise<Array<Team>,Error>
+ * @return Promise<Object.<string,TeamFirebaseValue>,Error>
  */
-function getTeams(active) {
+function getDBTeams(active) {
   const reference = firebaseApp.database().ref('/teams');
   if (active !== undefined) {
     reference.orderByChild('active').equalTo(active);
@@ -47,17 +44,10 @@ function getTeams(active) {
     .then((/** admin.database.DataSnapshot */ snapshot) => {
       if (!snapshot.val()) {
         // No teams found.
-        return Promise.resolve([]);
+        return Promise.resolve({});
       } else {
-        let /** @type {Object<string,TeamFirebaseValue>} */ teamsFirebaseObject = snapshot.val();
-        const teamsArray = [];
-        for (let teamKey in teamsFirebaseObject) {
-          let teamFirebaseValue = teamsFirebaseObject[teamKey];
-          let teamConstructorValues = Object.assign(teamFirebaseValue, { $key: teamKey });
-          let team = new Team(teamConstructorValues);
-          teamsArray.push(team);
-        }
-        return Promise.resolve(teamsArray);
+        let /** @type {Object.<string,TeamFirebaseValue>} */ teamsFirebaseObject = snapshot.val();
+        return Promise.resolve(teamsFirebaseObject);
       }
     });
 }
@@ -68,12 +58,12 @@ function getTeams(active) {
  * @param {string} teamId
  * @return Promise.<any,Error>
  */
-function setTeam(teamValues, teamId) {
+function setDBTeam(teamValues, teamId) {
   return firebaseApp.database().ref('/teams/' + teamId).set(teamValues);
 }
 
 module.exports = {
-  setTeam,
-  getTeams,
-  getTeam
+  setDBTeam,
+  getDBTeams,
+  getDBTeam
 };

@@ -7,7 +7,7 @@ const getRecentAction = require('../models/action/actions').getRecentAction;
 const removeAction = require('../models/action/actions').removeAction;
 const getState = require('../models/state/states').getState;
 const setState = require('../models/state/states').setState;
-const getTeams = require('../models/team/teams').getTeams;
+const Team = require('../models/team/team').Team;
 const getChannels = require('../models/channel/channels').getChannels;
 
 // TODO: Our big reducer with game logic.
@@ -37,7 +37,7 @@ var gameStore;
  */
 module.exports = () => {
   // Load all active teams.
-  return getTeams(true)
+  return Team.getTeams(true)
     .then((teams) => {
       // TODO: spawn separate child process for each team?
       teams.map((team) => {

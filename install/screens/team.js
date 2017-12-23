@@ -2,7 +2,7 @@
 
 const stdout = process.stdout;
 const inquirer = require('inquirer');
-const getTeam = require('../../models/team/teams').getTeam;
+const Team = require('../../models/team/team').Team;
 const helpers = require('../helpers');
 
 const Slack = require('slack-node');
@@ -22,7 +22,7 @@ module.exports = teamRoute;
  */
 function teamRoute(args, router) {
   var loadingScreen = helpers.loadingScreen();
-  getTeam(args.teamKey)
+  Team.getTeam(args.teamKey)
     .then((team) => {
       if (team.admin) {
         let apiCallArgs = {

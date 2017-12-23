@@ -7,8 +7,7 @@ const https = require('https');
 const queryString = require('querystring');
 const publicCredentials = require('../../credentials/public');
 const privateCredentials = require('../../credentials/private');
-const setTeam = require('../../models/team/teams').setTeam;
-const getTeam = require('../../models/team/teams').getTeam;
+const Team = require('../../models/team/team').Team;
 // This URL is used as redirect_uri in OAuth process.
 // TODO: use from current URL.
 const authRedirectURL = url.format({
@@ -92,7 +91,7 @@ function authorizeComplete(req, res, next) {
         const /** @type SuccessfulAuthorizationResponse */ responseJSON = JSON.parse(responseMessage);
         if (responseJSON.ok === true) {
           // At first get team info in app.
-          getTeam(responseJSON.team_id)
+          Team.getTeam(responseJSON.team_id)
             .then((team) => {
               if (team && team.admin && team.admin !== responseJSON.user_id) {
                 res.status(500).send("App is already installed by admin and you are not app admin so we won't replace admin token with yours.");
@@ -107,7 +106,7 @@ function authorizeComplete(req, res, next) {
                   botId: responseJSON.bot.bot_user_id,
                   botToken: responseJSON.bot.bot_access_token
                 };
-                setTeam(teamFirebaseValue, responseJSON.team_id)
+                Team.setTeam(teamFirebaseValue, responseJSON.team_id)
                   .then(() => {
                     res.render(__dirname + '/../../views/authorizationcompleted');
                   }, (error) => {

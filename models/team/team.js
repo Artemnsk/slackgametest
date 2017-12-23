@@ -1,3 +1,7 @@
+const getDBTeam = require('./dbfirebase').getDBTeam;
+const getDBTeams = require('./dbfirebase').getDBTeams;
+const setDBTeam = require('./dbfirebase').setDBTeam;
+
 class Team {
   /**
    *
@@ -43,6 +47,53 @@ class Team {
       botId: this.botId,
       botToken: this.botToken,
     });
+  }
+
+  /**
+   * Load team from DB by teamId.
+   * @param {string} teamId
+   * @return {Promise.<?Team,Error>}
+   */
+  static getTeam(teamId) {
+    return getDBTeam(teamId)
+      .then(teamFirebaseValue => {
+        if (teamFirebaseValue) {
+          let teamConstructorValues = Object.assign(teamFirebaseValue, { $key: teamId });
+          let team = new Team(teamConstructorValues);
+          return Promise.resolve(team);
+        } else {
+          return Promise.resolve(teamFirebaseValue);
+        }
+      });
+  }
+
+  /**
+   * Respond with teams array from DB.
+   * @param {boolean} [active] - filter by 'active' field. No filter if not set.
+   * @return Promise<Array<Team>,Error>
+   */
+  static getTeams(active) {
+    return getDBTeams(active)
+      .then(teamsFirebaseObject => {
+        const teamsArray = [];
+        for (let teamKey in teamsFirebaseObject) {
+          let teamFirebaseValue = teamsFirebaseObject[teamKey];
+          let teamConstructorValues = Object.assign(teamFirebaseValue, { $key: teamKey });
+          let team = new Team(teamConstructorValues);
+          teamsArray.push(team);
+        }
+        return Promise.resolve(teamsArray);
+      });
+  }
+
+  /**
+   * Sets team data into DB.
+   * @param {TeamFirebaseValue} teamValues
+   * @param {string} teamId
+   * @return Promise.<any,Error>
+   */
+  static setTeam(teamValues, teamId) {
+    return setDBTeam(teamValues, teamId);
   }
 }
 

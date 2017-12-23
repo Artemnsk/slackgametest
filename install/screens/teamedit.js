@@ -2,7 +2,7 @@
 
 const stdout = process.stdout;
 const inquirer = require('inquirer');
-const setTeam = require('../../models/team/teams').setTeam;
+const Team = require('../../models/team/team').Team;
 const helpers = require('../helpers');
 
 const Slack = require('slack-node');
@@ -83,7 +83,7 @@ function teamEditRoute(args, router) {
             let active = answers.active === TEAM_ACTIVE_TRUE;
             teamFirebaseValues.active = active;
             var loadingScreen = helpers.loadingScreen();
-            setTeam(teamFirebaseValues, args.team.$key)
+            Team.setTeam(teamFirebaseValues, args.team.$key)
               .then(() => {
                 clearInterval(loadingScreen);
                 helpers.clearConsole();
