@@ -152,7 +152,6 @@ function channelCreateRoute(args, router) {
  * @param {InstallationRouter} router
  */
 function _errorCallback(message, args, router) {
-  // helpers.clearConsole();
   inquirer.prompt([
     {
       type: 'list',
