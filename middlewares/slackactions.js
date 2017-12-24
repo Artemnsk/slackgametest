@@ -1,12 +1,6 @@
 "use strict";
 
 const slackGameData = require('../helpers/slackgamedata');
-const getTeam = require('../models/team/teams').getTeam;
-const Team = require('../models/team/team').Team;
-const getChannel = require('../models/channel/channels').getChannel;
-const Channel = require('../models/channel/channel').Channel;
-const getPlayer = require('../models/player/players').getPlayer;
-const Player = require('../models/player/player').Player;
 
 module.exports = {
   setGameData

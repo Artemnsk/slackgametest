@@ -1,11 +1,7 @@
-const getTeam = require('../models/team/teams').getTeam;
 const Team = require('../models/team/team').Team;
-const getChannel = require('../models/channel/channels').getChannel;
 const Channel = require('../models/channel/channel').Channel;
-const getGame = require('../models/game/games').getGame;
 const Game = require('../models/game/game').Game;
 const CHANNEL_PHASES = require('../models/channel/channel').CHANNEL_PHASES;
-const getPlayer = require('../models/player/players').getPlayer;
 const Player = require('../models/player/player').Player;
 
 /**
@@ -27,7 +23,7 @@ module.exports = slackGameData;
 
 function slackGameData(teamId, channelId, userId) {
   let promises = [];
-  promises.push(getTeam(teamId), getChannel(teamId, channelId), getPlayer(teamId, channelId, userId));
+  promises.push(Team.getTeam(teamId), Channel.getChannel(teamId, channelId), Player.getPlayer(teamId, channelId, userId));
   return Promise.all(promises)
     .then((data) => {
       // Retrieve Team object.
@@ -55,7 +51,7 @@ function slackGameData(teamId, channelId, userId) {
           break;
         case CHANNEL_PHASES.IN_GAME:
           // Load Game.
-          return getGame(team.$key, channel.$key, channel.currentGame)
+          return Game.getGame(team.$key, channel.$key, channel.currentGame)
             .then(game => {
               return Promise.resolve({
                 team,

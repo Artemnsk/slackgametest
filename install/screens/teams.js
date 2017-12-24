@@ -1,7 +1,7 @@
 "use strict";
 
 const inquirer = require('inquirer');
-const getTeams = require('../../models/team/teams').getTeams;
+const Team = require('../../models/team/team').Team;
 const helpers = require('../helpers');
 
 const LIST_EXIT = 'Exit';
@@ -16,7 +16,7 @@ module.exports = teamsRoute;
  */
 function teamsRoute(router) {
   var loadingScreen = helpers.loadingScreen();
-  getTeams()
+  Team.getTeams()
     .then((teams) => {
       clearInterval(loadingScreen);
       helpers.clearConsole();

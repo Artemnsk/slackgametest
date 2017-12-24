@@ -1,5 +1,4 @@
 const /** @type admin.app.App */ firebaseApp = require('../../helpers/firebaseapp');
-const Player = require('./player').Player;
 
 /**
  * Data format received from Firebase.
@@ -14,19 +13,17 @@ const Player = require('./player').Player;
  * @param {string} teamKey
  * @param {string} channelKey
  * @param {string} playerKey
- * @return {Promise.<?Player,Error>}
+ * @return {Promise.<?PlayerFirebaseValue,Error>}
  */
-function getPlayer(teamKey, channelKey, playerKey) {
+function getDBPlayer(teamKey, channelKey, playerKey) {
   return firebaseApp.database().ref('/players/' + teamKey + '/' + channelKey + '/' + playerKey).once('value')
     .then((/** admin.database.DataSnapshot */ snapshot) => {
       if (!snapshot.val()) {
         // No channel found.
         return Promise.resolve(null);
       } else {
-        let /** @type PlayerFirebaseValue */ values = snapshot.val();
-        let playerConstructorValues = Object.assign(values, { $key: snapshot.key, $channelKey: channelKey, $teamKey: teamKey });
-        let player = new Player(playerConstructorValues);
-        return Promise.resolve(player);
+        let /** @type PlayerFirebaseValue */ playerFirebaseValues = snapshot.val();
+        return Promise.resolve(playerFirebaseValues);
       }
     });
 }
@@ -36,9 +33,9 @@ function getPlayer(teamKey, channelKey, playerKey) {
  * @param {string} teamKey
  * @param {string} channelKey
  * @param {boolean} [active] - filter by 'active' field. No filter if not set.
- * @return Promise<Array<Player>,Error>
+ * @return Promise<Object.<string,PlayerFirebaseValue>,Error>
  */
-function getPlayers(teamKey, channelKey, active) {
+function getDBPlayers(teamKey, channelKey, active) {
   const reference = firebaseApp.database().ref('/players/' + teamKey + '/' + channelKey);
   if (active !== undefined) {
     reference.orderByChild('active').equalTo(active);
@@ -47,17 +44,10 @@ function getPlayers(teamKey, channelKey, active) {
     .then((/** admin.database.DataSnapshot */ snapshot) => {
       if (!snapshot.val()) {
         // No channels found.
-        return Promise.resolve([]);
+        return Promise.resolve({});
       } else {
         let /** @type {Object<string,PlayerFirebaseValue>} */ playersFirebaseObject = snapshot.val();
-        const playersArray = [];
-        for (let playerKey in playersFirebaseObject) {
-          let playerFirebaseValue = playersFirebaseObject[playerKey];
-          let playerConstructorValues = Object.assign(playerFirebaseValue, { $key: playerKey, $channelKey: channelKey, $teamKey: teamKey });
-          let player = new Player(playerConstructorValues);
-          playersArray.push(player);
-        }
-        return Promise.resolve(playersArray);
+        return Promise.resolve(playersFirebaseObject);
       }
     });
 }
@@ -70,12 +60,12 @@ function getPlayers(teamKey, channelKey, active) {
  * @param {string} playerKey
  * @return Promise.<any,Error>
  */
-function setPlayer(playerValues, teamKey, channelKey, playerKey) {
+function setDBPlayer(playerValues, teamKey, channelKey, playerKey) {
   return firebaseApp.database().ref('/players/' + teamKey + '/' + channelKey + '/' + playerKey).set(playerValues);
 }
 
 module.exports = {
-  setPlayer,
-  getPlayers,
-  getPlayer
+  setDBPlayer,
+  getDBPlayers,
+  getDBPlayer
 };

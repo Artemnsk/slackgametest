@@ -2,7 +2,7 @@
 
 const stdout = process.stdout;
 const inquirer = require('inquirer');
-const getChannel = require('../../models/channel/channels').getChannel;
+const Channel = require('../../models/channel/channel').Channel;
 const helpers = require('../helpers');
 
 const CHANNEL_EDIT = 'Edit';
@@ -20,7 +20,7 @@ module.exports = channelRoute;
  */
 function channelRoute(args, router) {
   var loadingScreen = helpers.loadingScreen();
-  getChannel(args.team.$key, args.channelKey)
+  Channel.getChannel(args.team.$key, args.channelKey)
     .then((channel) => {
       clearInterval(loadingScreen);
       helpers.clearConsole();

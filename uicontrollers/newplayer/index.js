@@ -2,7 +2,7 @@
 
 const Route = require('route-parser');
 const newPlayerMessageFactory = require('./newplayermessagefactory');
-const setPlayer = require('../../models/player/players').setPlayer;
+const Player = require('../../models/player/player').Player;
 const Slack = require('slack-node');
 
 const CREATE_NEW_PLAYER_YES = 'yes';
@@ -62,7 +62,7 @@ function processActions(uiRouter, parsedPayload, args) {
                     name: response.user.profile.real_name,
                     gold: 0
                   };
-                  setPlayer(playerFirebaseValue, uiRouter.team.$key, uiRouter.channel.$key, parsedPayload.user.id)
+                  Player.setPlayer(playerFirebaseValue, uiRouter.team.$key, uiRouter.channel.$key, parsedPayload.user.id)
                     .then(() => {
                       let text = 'Player being created.';
                       let uiMessage = uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text });
