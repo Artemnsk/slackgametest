@@ -6,6 +6,8 @@ const teamEditRoute = require('./screens/teamedit');
 const channelsRoute = require('./screens/channels');
 const channelCreateRoute = require('./screens/channelcreate');
 const channelRoute = require('./screens/channel');
+const channelStartGameRoute = require('./screens/channelstartgame');
+const channelOverGameRoute = require('./screens/channelovergame');
 
 /**
  * @typedef {Object} InstallationRouter
@@ -15,6 +17,8 @@ const channelRoute = require('./screens/channel');
  * @property {ChannelsRoute} channelsRoute
  * @property {ChannelCreateRoute} channelCreateRoute
  * @property {ChannelRoute} channelRoute
+ * @property {ChannelStartGameRoute} channelStartGameRoute
+ * @property {ChannelOverGameRoute} channelOverGameRoute
  * @type {InstallationRouter}
  */
 module.exports = {
@@ -23,5 +27,7 @@ module.exports = {
   teamEditRoute,
   channelsRoute,
   channelCreateRoute,
-  channelRoute
+  channelRoute,
+  channelStartGameRoute,
+  channelOverGameRoute
 };
