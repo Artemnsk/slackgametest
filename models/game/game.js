@@ -2,6 +2,7 @@ const getDBGame = require('./dbfirebase').getDBGame;
 const getDBGames = require('./dbfirebase').getDBGames;
 const setDBGame = require('./dbfirebase').setDBGame;
 const getNewGameDBRef = require('./dbfirebase').getNewGameDBRef;
+const removeDBGame = require('./dbfirebase').removeDBGame;
 
 const GAME_PHASES = {
   PAUSE: "PAUSE",
@@ -98,6 +99,10 @@ class Game {
    */
   static setGame(gameValues, teamKey, channelKey, gameKey) {
     return setDBGame(gameValues, teamKey, channelKey, gameKey);
+  }
+
+  static removeGame(teamKey, channelKey, gameKey) {
+    return removeDBGame(teamKey, channelKey, gameKey);
   }
 }
 

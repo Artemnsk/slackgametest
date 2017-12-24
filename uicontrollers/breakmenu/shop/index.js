@@ -33,6 +33,7 @@ function processActions(uiRouter, parsedPayload, args) {
  * @return {UIMessage}
  */
 function getUIMessage(uiRouter, args) {
+  uiRouter.channel.startGame();
   if (!uiRouter.player) {
     let text = "Player doesn't exist.";
     return uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text });

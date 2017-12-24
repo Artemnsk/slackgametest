@@ -74,9 +74,21 @@ function setDBGame(gameValues, teamKey, channelKey, gameKey) {
   return firebaseApp.database().ref(`/games/${teamKey}/${channelKey}/${gameKey}`).set(gameValues);
 }
 
+/**
+ * Remove game from DB.
+ * @param {string} teamKey
+ * @param {string} channelKey
+ * @param {string} gameKey
+ * @return Promise.<any,Error>
+ */
+function removeDBGame(teamKey, channelKey, gameKey) {
+  return firebaseApp.database().ref(`/games/${teamKey}/${channelKey}/${gameKey}`).remove();
+}
+
 module.exports = {
   getDBGame,
   getNewGameDBRef,
   setDBGame,
-  getDBGames
+  getDBGames,
+  removeDBGame
 };
