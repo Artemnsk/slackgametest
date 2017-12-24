@@ -29,6 +29,7 @@ function channelRoute(args, router) {
       stdout.write('CHANNEL INFO\n');
       stdout.write(`$key: ${channel.$key}\n`);
       stdout.write(`name: ${channel.name}\n`);
+      stdout.write(`phase: "${channel.phase}"\n`);
       stdout.write(`timeStep: ${channel.timeStep}\n`);
       stdout.write(`breakTime: ${channel.breakTime}\n`);
       stdout.write(`nextGame: ${channel.nextGame ? channel.nextGame : 'NOT SET'} ${channel.nextGame? `[${new Date(channel.nextGame)}]` : ''}\n`);
