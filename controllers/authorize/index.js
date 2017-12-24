@@ -108,10 +108,10 @@ function authorizeComplete(req, res, next) {
                 };
                 Team.setTeam(teamFirebaseValue, responseJSON.team_id)
                   .then(() => {
-                    res.render(__dirname + '/../../views/authorizationcompleted');
+                    res.send('DONE!');
                   }, (error) => {
                     let errorTitle = 'Something went wrong. Despite the fact app being installed in your team it probably will not work properly. Better to reinstall it. Error: ' + error.message;
-                    res.send(errorTitle);
+                    res.status(500).send(errorTitle);
                   });
               }
             }, (error) => {
