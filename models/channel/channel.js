@@ -62,17 +62,31 @@ class Channel {
                 };
                 return Game.setGame(gameFirebaseValue, this.$teamKey, this.$key, newGameKey)
                   .then(() => {
+                    // Remember old values.
+                    let channelOldFirebaseValue = this.getFirebaseValue();
                     // Update channel now.
-                    let channelFirebaseValue = this.getFirebaseValue();
-                    channelFirebaseValue.currentGame = newGameKey;
-                    channelFirebaseValue.phase = CHANNEL_PHASES.IN_GAME;
+                    this.currentGame = newGameKey;
+                    this.phase = CHANNEL_PHASES.IN_GAME;
                     // TODO: decide what to do. Seems like if phase is IN_GAME we do not take care of this value at all.
-                    channelFirebaseValue.nextGame = 0;
-                    Channel.setChannel(channelFirebaseValue, this.$teamKey, this.$key)
-                      .then(() => {}, (err) => {
+                    this.nextGame = 0;
+                    Channel.setChannel(this.getFirebaseValue(), this.$teamKey, this.$key)
+                      .then(() => {
+                        let newGame = new Game(gameFirebaseValue, this.$teamKey, this.$key, newGameKey);
+                        return Promise.resolve(newGame);
+                      }, (updateChannelErr) => {
+                        // Return values back.
+                        this.currentGame = channelOldFirebaseValue.currentGame;
+                        this.phase = channelOldFirebaseValue.phase;
+                        this.nextGame = channelOldFirebaseValue.nextGame;
                         // If problem during channel update appeared we need to 'revert' this process - remove newly created game.
                         return Game.removeGame(newGameKey)
-                          .then(() => {}, (err) => {
+                          .then(() => {
+                            let error = {
+                              message: `In some reason game successfully created but channel wasn't updated. So we removed newly created game. Try again or ask admin to fix that! Error: ${updateChannelErr.message}`
+                            };
+                            return Promise.reject(error);
+                          }, (err) => {
+                            // Respond with error.
                             let error = {
                               message: `Game games/'${this.$teamKey}/${this.$key}/${newGameKey}' being created but data of appropriate channel wasn't updated. Ask admin to fix that! Error: ${err.message}`
                             };
@@ -90,6 +104,67 @@ class Channel {
         });
     }
     return Promise.reject({ message: "Wrong channel phase to start a game." });
+  }
+
+  /**
+   *
+   * @return {Promise.<Game,Error>}
+   */
+  overGame() {
+    if (this.phase === CHANNEL_PHASES.IN_GAME) {
+      // Ensure 'RUNNING' game exists.
+      return Game.getGames(this.$teamKey, this.$key, GAME_PHASES.RUNNING)
+        .then((games) => {
+          if (games.length > 0) {
+            const currentGame = games[0];
+            let gameOldFirebaseValue = currentGame.getFirebaseValue();
+            currentGame.phase = GAME_PHASES.OVER;
+            return Game.setGame(currentGame.getFirebaseValue(), currentGame.$teamKey, currentGame.$channelKey, currentGame.$key)
+              .then(() => {
+                // Update Channel now.
+                let channelOldFirebaseValue = this.getFirebaseValue();
+                this.phase = CHANNEL_PHASES.BREAK;
+                this.currentGame = undefined;
+                this.nextGame = Date.now() + this.breakTime;
+                return Channel.setChannel(this.getFirebaseValue(), this.$teamKey, this.$key)
+                  .then(() => {
+                    return Promise.resolve(currentGame);
+                  }, (updateChannelErr) => {
+                    this.phase = channelOldFirebaseValue.phase;
+                    this.currentGame = channelOldFirebaseValue.currentGame;
+                    // If problem during channel update appeared we need to 'revert' this process - change updated game values back.
+                    return Game.setGame(gameOldFirebaseValue, currentGame.$teamKey, currentGame.$channelKey, currentGame.$key)
+                      .then(() => {
+                        currentGame.phase = gameOldFirebaseValue.OVER;
+                        currentGame.nextGame = gameOldFirebaseValue.nextGame;
+                        let error = {
+                          message: `In some reason game successfully updated but channel wasn't updated. So we returned game values back. Try again or ask admin to fix that! Error: ${updateChannelErr.message}`
+                        };
+                        return Promise.reject(error);
+                      }, (err) => {
+                        // Respond with error.
+                        let error = {
+                          message: `Game games/'${this.$teamKey}/${this.$key}/${currentGame.$key}' being updated but data of appropriate channel wasn't updated. Ask admin to fix that! Error: ${err.message}`
+                        };
+                        return Promise.reject(error);
+                      });
+                  });
+              }, (err) => {
+                currentGame.phase = gameOldFirebaseValue.OVER;
+                let error = {
+                  message: `Game games/'${this.$teamKey}/${this.$key}/${currentGame.$key}' wasn't updated! Error: ${err.message}`
+                };
+                return Promise.reject(error);
+              });
+          } else {
+            let error = {
+              message: `There is no game with '${GAME_PHASES.RUNNING}' status in this channel.`
+            };
+            return Promise.reject(error);
+          }
+        });
+    }
+    return Promise.reject({ message: "Wrong channel phase to over game." });
   }
 
   /**

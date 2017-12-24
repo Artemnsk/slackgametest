@@ -38,9 +38,9 @@ function getDBChannel(teamId, channelId) {
  * @return Promise.<Object.<string,ChannelFirebaseValue>,Error>
  */
 function getDBChannels(teamId, active) {
-  const reference = firebaseApp.database().ref('/channels/' + teamId);
+  let reference = firebaseApp.database().ref('/channels/' + teamId);
   if (active !== undefined) {
-    reference.orderByChild('active').equalTo(active);
+    reference = reference.orderByChild('active').equalTo(active);
   }
   return reference.once('value')
     .then((/** admin.database.DataSnapshot */ snapshot) => {
