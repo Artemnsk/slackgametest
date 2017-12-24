@@ -8,7 +8,6 @@ startGame();
 const randomizer = require('./gameloop/actionsrandomizer');
 // randomizer(1600);
 
-app.set('view engine', 'pug');
 app.use('/slacktestgame', require('./controllers'));
 
 if (publicCredentials.useSSL) {
