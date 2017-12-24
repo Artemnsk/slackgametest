@@ -1,7 +1,7 @@
-const getDBGame = require('./games').getDBGame;
-const getDBGames = require('./games').getDBGames;
-const setDBGame = require('./games').setDBGame;
-const getNewGameDBRef = require('./games').getNewGameDBRef;
+const getDBGame = require('./dbfirebase').getDBGame;
+const getDBGames = require('./dbfirebase').getDBGames;
+const setDBGame = require('./dbfirebase').setDBGame;
+const getNewGameDBRef = require('./dbfirebase').getNewGameDBRef;
 
 const GAME_PHASES = {
   PAUSE: "PAUSE",

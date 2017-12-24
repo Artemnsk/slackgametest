@@ -1,5 +1,4 @@
 const /** @type admin.app.App */ firebaseApp = require('../../helpers/firebaseapp');
-const Game = require('./game').Game;
 
 /**
  * Data format received from Firebase.

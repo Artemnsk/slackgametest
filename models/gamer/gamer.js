@@ -9,7 +9,6 @@
  */
 
 class Gamer {
-
   /**
    *
    * @param {GamerFirebaseValue & {$key: string, $gameKey, $channelKey: string, $teamKey: string}} values
