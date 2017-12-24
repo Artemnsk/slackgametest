@@ -53,12 +53,33 @@ class Channel {
                   return gamersObj;
                 }, {});
                 const ref = Game.getNewGameRef(this.$teamKey, this.$key);
+                // TODO: check that key being created.
+                const newGameKey = ref.key;
                 const /** @type GameFirebaseValue */ gameFirebaseValue = {
                   timeStep: this.timeStep,
                   phase: GAME_PHASES.RUNNING,
                   gamers
                 };
-                return Game.setGame(gameFirebaseValue, this.$teamKey, this.$key, ref.key);
+                return Game.setGame(gameFirebaseValue, this.$teamKey, this.$key, newGameKey)
+                  .then(() => {
+                    // Update channel now.
+                    let channelFirebaseValue = this.getFirebaseValue();
+                    channelFirebaseValue.currentGame = newGameKey;
+                    channelFirebaseValue.phase = CHANNEL_PHASES.IN_GAME;
+                    // TODO: decide what to do. Seems like if phase is IN_GAME we do not take care of this value at all.
+                    channelFirebaseValue.nextGame = 0;
+                    Channel.setChannel(channelFirebaseValue, this.$teamKey, this.$key)
+                      .then(() => {}, (err) => {
+                        // If problem during channel update appeared we need to 'revert' this process - remove newly created game.
+                        return Game.removeGame(newGameKey)
+                          .then(() => {}, (err) => {
+                            let error = {
+                              message: `Game games/'${this.$teamKey}/${this.$key}/${newGameKey}' being created but data of appropriate channel wasn't updated. Ask admin to fix that! Error: ${err.message}`
+                            };
+                            return Promise.reject(error);
+                          });
+                      });
+                  });
               });
           } else {
             let error = {
