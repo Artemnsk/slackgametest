@@ -36,9 +36,9 @@ function getDBGame(teamKey, channelKey, gameKey) {
  * @return {Promise.<Object.<string,GameFirebaseValue>,Error>}
  */
 function getDBGames(teamKey, channelKey, phase) {
-  const reference = firebaseApp.database().ref(`/games/${teamKey}/${channelKey}`);
+  let reference = firebaseApp.database().ref(`/games/${teamKey}/${channelKey}`);
   if (phase !== undefined) {
-    reference.orderByChild('phase').equalTo(phase);
+    reference = reference.orderByChild('phase').equalTo(phase);
   }
   return reference.once('value')
     .then((/** admin.database.DataSnapshot */ snapshot) => {

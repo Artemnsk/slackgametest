@@ -36,9 +36,9 @@ function getDBPlayer(teamKey, channelKey, playerKey) {
  * @return Promise<Object.<string,PlayerFirebaseValue>,Error>
  */
 function getDBPlayers(teamKey, channelKey, active) {
-  const reference = firebaseApp.database().ref('/players/' + teamKey + '/' + channelKey);
+  let reference = firebaseApp.database().ref('/players/' + teamKey + '/' + channelKey);
   if (active !== undefined) {
-    reference.orderByChild('active').equalTo(active);
+    reference = reference.orderByChild('active').equalTo(active);
   }
   return reference.once('value')
     .then((/** admin.database.DataSnapshot */ snapshot) => {

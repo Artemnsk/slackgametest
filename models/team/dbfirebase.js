@@ -36,9 +36,9 @@ function getDBTeam(teamId) {
  * @return Promise<Object.<string,TeamFirebaseValue>,Error>
  */
 function getDBTeams(active) {
-  const reference = firebaseApp.database().ref('/teams');
+  let reference = firebaseApp.database().ref('/teams');
   if (active !== undefined) {
-    reference.orderByChild('active').equalTo(active);
+    reference = reference.orderByChild('active').equalTo(active);
   }
   return reference.once('value')
     .then((/** admin.database.DataSnapshot */ snapshot) => {
