@@ -1,7 +1,7 @@
 const getDBChannel = require('./dbfirebase').getDBChannel;
 const getDBChannels = require('./dbfirebase').getDBChannels;
 const setDBChannel = require('./dbfirebase').setDBChannel;
-const getPlayers = require('../player/players').getPlayers;
+const Player = require('../player/player').Player;
 const getNewGameRef = require('../game/games').getNewGameRef;
 const setGame = require('../game/games').setGame;
 const getGames = require('../game/games').getGames;
@@ -48,7 +48,7 @@ class Channel {
       return getGames(this.$teamKey, this.$key, GAME_PHASES.RUNNING)
         .then((games) => {
           if (games.length === 0) {
-            return getPlayers(this.$teamKey, this.$key, true)
+            return Player.getPlayers(this.$teamKey, this.$key, true)
               .then((players) => {
                 // Create gamers object.
                 const /** @type Object.<string,GamerFirebaseValue> */ gamers = players.reduce((gamersObj, currentPlayer) => {
