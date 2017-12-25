@@ -9,7 +9,7 @@ const spells = require('../../../../storage/spells/spells');
  * @param {UIRouter} uiRouter
  * @param {ParsedSlackActionPayload} parsedPayload
  * @param {{}} args
- * @return {UIMessage}
+ * @return {Promise<UIMessage,Error>}
  */
 function processActions(uiRouter, parsedPayload, args) {
   if (!uiRouter.player) {
@@ -30,7 +30,7 @@ function processActions(uiRouter, parsedPayload, args) {
  *
  * @param {UIRouter} uiRouter
  * @param {{spellId: string}} args
- * @return {UIMessage}
+ * @return {Promise<UIMessage,Error>}
  */
 function getUIMessage(uiRouter, args) {
   if (!uiRouter.player) {
@@ -39,7 +39,8 @@ function getUIMessage(uiRouter, args) {
   }
   const spell = spells.find(item => item.id === args.spellId);
   if (spell) {
-    return spellInfoMessageFactory(spell);
+    let uiMessage = spellInfoMessageFactory(spell);
+    return Promise.resolve(uiMessage);
   }
   let text = "Spell not found.";
   return uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text });

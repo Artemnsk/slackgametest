@@ -50,7 +50,7 @@ class UIRouter {
    *
    * @param {string} path
    * @param {ParsedSlackActionPayload} [parsedPayload]
-   * @return {UIMessage|Promise.<UIMessage,Error>}
+   * @return {Promise<UIMessage,Error>}
    */
   getUIMessage(path, parsedPayload) {
     var args;

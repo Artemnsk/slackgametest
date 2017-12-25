@@ -15,7 +15,7 @@ const CHANNEL_PHASES = require('../models/channel/channel').CHANNEL_PHASES;
  * @param {UIRouter} uiRouter
  * @param {ParsedSlackActionPayload} parsedPayload
  * @param {{}} args
- * @return {UIMessage}
+ * @return {Promise.<UIMessage,Error>}
  */
 function processActions(uiRouter, parsedPayload, args) {
   // TODO: actually nothing is supposed to be submitted in 'root'.
@@ -26,15 +26,15 @@ function processActions(uiRouter, parsedPayload, args) {
   //   }
   //   return uiRouter.breakmenuUIRoute.getUIMessage(uiRouter, {});
   // }
-
-  return getUIMessage(uiRouter);
+  let uiMessage = getUIMessage(uiRouter, {});
+  return Promise.resolve(uiMessage);
 }
 
 /**
  *
  * @param {UIRouter} uiRouter
  * @param {{}} args
- * @return {UIMessage}
+ * @return {Promise.<UIMessage,Error>}
  */
 function getUIMessage(uiRouter, args) {
   if (!uiRouter.player) {
