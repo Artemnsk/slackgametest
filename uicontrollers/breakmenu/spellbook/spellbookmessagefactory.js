@@ -1,13 +1,19 @@
 "use strict";
 
 const UIMessage = require('../../../models/uimessage/uimessage');
-const statsTitleFactory = require('../../_partials/statstitlefactory');
+const breakTitleFactory = require('../../_partials/breaktitlefactory');
 const spells = require('../../../storage/spells/spells');
 
-function _getSpells() {
+/**
+ *
+ * @param {string} callback_id
+ * @return Object
+ * @private
+ */
+function _getSpells(callback_id) {
   let attachment = {
     color: "#a333a1",
-    callback_id: '/breakmenu/spellbook',
+    callback_id,
     attachment_type: "default"
   };
   var actions = [];
@@ -31,13 +37,15 @@ function _getSpells() {
 /**
  * Provides with spellbook UI element.
  * @param {string} callback_id
+ * @param {Channel} channel
+ * @param {Player} player
  * @return {UIMessage}
  */
-function spellBookFactory(callback_id, hp, mana, gold) {
+function spellBookFactory(callback_id, channel, player) {
   const spellBookUIMessage = new UIMessage();
   let uiAttachments = [];
-  uiAttachments.push(statsTitleFactory(hp, mana, gold));
-  uiAttachments.push(_getSpells());
+  uiAttachments.push(breakTitleFactory(callback_id, channel, player));
+  uiAttachments.push(_getSpells(callback_id));
   uiAttachments.push({
     text: '',
     color: "#3AA3E3",

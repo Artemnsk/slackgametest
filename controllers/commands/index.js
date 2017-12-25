@@ -13,7 +13,7 @@ router.post('/commands', setGameData, (/** SlackCommandRequest */ req, res) => {
   var text = req.body.text;
   if (text === 'menu' || !text) {
     res.status(200).send('');
-    const uiRouter = new UIRouter(req.slackData.team, req.slackData.channel, req.slackData.player, req.slackData.game);
+    const uiRouter = new UIRouter(req.slackData.team, req.slackData.channel, req.slackData.player, req.slackData.game, req.slackData.gamer);
     const uiMessagePromise = uiRouter.getUIMessage('/');
     uiMessagePromise.then((uiMessage) => {
       let sendParameters = {

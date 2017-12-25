@@ -1,17 +1,19 @@
 "use strict";
 
 const UIMessage = require('../../../models/uimessage/uimessage');
-const statsTitleFactory = require('../../_partials/statstitlefactory');
+const breakTitleFactory = require('../../_partials/breaktitlefactory');
 
 /**
  * Provides with shop UI element.
  * @param {string} callback_id
+ * @param {Channel} channel
+ * @param {Player} player
  * @return {UIMessage}
  */
-function shopFactory(callback_id, hp, mana, gold) {
+function shopFactory(callback_id, channel, player) {
   const shopUIMessage = new UIMessage();
   let uiAttachments = [];
-  uiAttachments.push(statsTitleFactory(hp, mana, gold));
+  uiAttachments.push(breakTitleFactory(callback_id, channel, player));
   uiAttachments.push({
     text: "*Shop*",
     color: "#3AA3E3",

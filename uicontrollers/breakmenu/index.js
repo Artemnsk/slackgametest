@@ -2,6 +2,7 @@
 
 const Route = require('route-parser');
 const breakMenuMessageFactory = require('./breakmenumessagefactory');
+const CHANNEL_PHASES = require('../../models/channel/channel').CHANNEL_PHASES;
 
 /**
  *
@@ -13,6 +14,8 @@ const breakMenuMessageFactory = require('./breakmenumessagefactory');
 function processActions(uiRouter, parsedPayload, args) {
   if (!uiRouter.player) {
     return uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text: 'Error: Cannot find your player.' });
+  } else if (uiRouter.channel.phase !== CHANNEL_PHASES.BREAK) {
+    return uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text: 'Error: Invalid channel phase to use this menu.' });
   }
   // Parse submitted actions to know which window to render.
   // TODO:
@@ -37,8 +40,10 @@ function processActions(uiRouter, parsedPayload, args) {
 function getUIMessage(uiRouter, args) {
   if (!uiRouter.player) {
     return uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text: 'Error: Cannot find your player.' });
+  } else if (uiRouter.channel.phase !== CHANNEL_PHASES.BREAK) {
+    return uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text: 'Error: Invalid channel phase to use this menu.' });
   }
-  let uiMessage = breakMenuMessageFactory(uiRouter.breakmenuUIRoute.route.reverse({}), 30, 40, 402);
+  let uiMessage = breakMenuMessageFactory(uiRouter.breakmenuUIRoute.route.reverse({}), uiRouter.channel, uiRouter.player);
   return Promise.resolve(uiMessage);
 }
 

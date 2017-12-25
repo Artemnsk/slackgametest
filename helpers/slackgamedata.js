@@ -10,6 +10,7 @@ const Player = require('../models/player/player').Player;
  * @property {Channel} channel
  * @property {?Player} player
  * @property {?Game} game
+ * @property {?Gamer} gamer
  */
 
 /**
@@ -46,7 +47,8 @@ function slackGameData(teamId, channelId, userId) {
             team,
             channel,
             player,
-            game: null
+            game: null,
+            gamer: null
           });
           break;
         case CHANNEL_PHASES.IN_GAME:
@@ -57,7 +59,8 @@ function slackGameData(teamId, channelId, userId) {
                 team,
                 channel,
                 player,
-                game
+                game,
+                gamer: game.getGamer(userId)
               });
             });
           break;

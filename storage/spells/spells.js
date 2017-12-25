@@ -6,6 +6,7 @@
  * @property {String} id
  * @property {String} label
  * @property {String} description
+ * @property {Function} getInfo
  */
 
 const /** @type Array<Spell> */ spells = [

@@ -71,7 +71,12 @@ class Channel {
                     this.nextGame = 0;
                     Channel.setChannel(this.getFirebaseValue(), this.$teamKey, this.$key)
                       .then(() => {
-                        let newGame = new Game(gameFirebaseValue, this.$teamKey, this.$key, newGameKey);
+                        let gameConstructorValue = Object.assign(gameFirebaseValue, {
+                          $key: newGameKey,
+                          $channelKey: this.$key,
+                          $teamKey: this.$teamKey
+                        });
+                        let newGame = new Game(gameConstructorValue);
                         return Promise.resolve(newGame);
                       }, (updateChannelErr) => {
                         // Return values back.

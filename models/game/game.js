@@ -3,6 +3,7 @@ const getDBGames = require('./dbfirebase').getDBGames;
 const setDBGame = require('./dbfirebase').setDBGame;
 const getNewGameDBRef = require('./dbfirebase').getNewGameDBRef;
 const removeDBGame = require('./dbfirebase').removeDBGame;
+const Gamer = require('../gamer/gamer').Gamer;
 
 const GAME_PHASES = {
   PAUSE: "PAUSE",
@@ -28,6 +29,25 @@ class Game {
     this.$channelKey = values.$channelKey;
     this.$teamKey = values.$teamKey;
     this.gamers = values.gamers ? values.gamers : {};
+  }
+
+  /**
+   *
+   * @param {string} userKey
+   * @return {?Gamer}
+   */
+  getGamer(userKey) {
+    if (this.gamers[userKey]) {
+      let gamerConstructorValue = Object.assign(this.gamers[userKey], {
+        $key: userKey,
+        $gameKey: this.$key,
+        $channelKey: this.$channelKey,
+        $teamKey: this.$teamKey
+      });
+      return new Gamer(gamerConstructorValue);
+    } else {
+      return null;
+    }
   }
 
   /**

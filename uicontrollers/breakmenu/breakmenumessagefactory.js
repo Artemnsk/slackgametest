@@ -1,17 +1,19 @@
 "use strict";
 
 const UIMessage = require('../../models/uimessage/uimessage');
-const statsTitleFactory = require('../_partials/statstitlefactory');
+const breakTitleFactory = require('../_partials/breaktitlefactory');
 
 /**
  * Provides with main menu UI element.
  * @param {string} callback_id
+ * @param {Channel} channel
+ * @param {Player} player
  * @return {UIMessage}
  */
-function breakMenuFactory(callback_id, hp, mp, gold) {
+function breakMenuFactory(callback_id, channel, player) {
   const breakMenuUIMessage = new UIMessage();
   let uiAttachments = [];
-  uiAttachments.push(statsTitleFactory(hp, mp, gold));
+  uiAttachments.push(breakTitleFactory(callback_id, channel, player));
   uiAttachments.push({
     text: '',
     color: "#3AA3E3",

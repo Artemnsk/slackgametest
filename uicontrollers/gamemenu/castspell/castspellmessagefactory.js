@@ -1,7 +1,7 @@
 "use strict";
 
 const UIMessage = require('../../../models/uimessage/uimessage');
-const statsTitleFactory = require('../../_partials/statstitlefactory');
+const gameTitleFactory = require('../../_partials/gametitlefactory');
 const spells = require('../../../storage/spells/spells');
 const spellInfoFactory = require('../../_partials/spellinfofactory');
 
@@ -12,7 +12,7 @@ const spellInfoFactory = require('../../_partials/spellinfofactory');
 function castSpellFactory(hp, mana, gold, spell_id) {
   const castSpellUIMessage = new UIMessage();
   let uiAttachments = [];
-  uiAttachments.push(statsTitleFactory(hp, mana, gold));
+  // uiAttachments.push(statsTitleFactory(hp, mana, gold));
 
   // Get spell and display info.
   const spell = spells.find(item => item.id === spell_id);

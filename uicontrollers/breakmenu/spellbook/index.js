@@ -2,6 +2,7 @@
 
 const Route = require('route-parser');
 const spellbookMessageFactory = require('./spellbookmessagefactory');
+const CHANNEL_PHASES = require('../../../models/channel/channel').CHANNEL_PHASES;
 
 /**
  *
@@ -14,6 +15,8 @@ function processActions(uiRouter, parsedPayload, args) {
   if (!uiRouter.player) {
     let text = "Player doesn't exist.";
     return uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text });
+  } else if (uiRouter.channel.phase !== CHANNEL_PHASES.BREAK) {
+    return uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text: 'Error: Invalid channel phase to use this menu.' });
   }
   // Parse submitted actions to know which window to render.
   // TODO:
@@ -40,8 +43,10 @@ function getUIMessage(uiRouter, args) {
   if (!uiRouter.player) {
     let text = "Player doesn't exist.";
     return uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text });
+  } else if (uiRouter.channel.phase !== CHANNEL_PHASES.BREAK) {
+    return uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text: 'Error: Invalid channel phase to use this menu.' });
   }
-  let uiMessage = spellbookMessageFactory(uiRouter.spellbookUIRoute.route.reverse({}), 20, 20, 321);
+  let uiMessage = spellbookMessageFactory(uiRouter.spellbookUIRoute.route.reverse({}), uiRouter.channel, uiRouter.player);
   return Promise.resolve(uiMessage);
 }
 

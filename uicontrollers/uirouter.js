@@ -16,11 +16,13 @@ class UIRouter {
    * @param {Channel} channel
    * @param {?Player} player
    * @param {?Game} game
+   * @param {?Gamer} gamer
    * @constructor
    * @property {Team} team
    * @property {Channel} channel
    * @property {?Player} player
    * @property {?Game} game
+   * @property {?Gamer} gamer
    * @property {UIRoute} informationMessageUIRoute
    * @property {UIRoute} rootUIRoute
    * @property {UIRoute} newplayerUIRoute
@@ -30,11 +32,12 @@ class UIRouter {
    * @property {UIRoute} spellinfoUIRoute
    * @property {UIRoute} gamemenuUIRoute
    */
-  constructor(team, channel, player, game) {
+  constructor(team, channel, player, game, gamer) {
     this.team = team;
     this.channel = channel;
     this.player = player;
     this.game = game;
+    this.gamer = gamer;
     // Define UIRoutes.
     this.informationMessageUIRoute = informationMessageUIRoute;
     this.rootUIRoute = rootUIRoute;
