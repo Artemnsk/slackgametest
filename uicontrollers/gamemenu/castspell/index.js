@@ -1,17 +1,15 @@
 "use strict";
 
 const Route = require('route-parser');
-const gameMenuMessageFactory = require('./gamemenumessagefactory');
-const /** @type Array<Spell> */ spells = require('../../storage/spells/spells');
-const CHANNEL_PHASES = require('../../models/channel/channel').CHANNEL_PHASES;
-
-const castSpellFactory = require('./castspell/castspellmessagefactory');
+const CHANNEL_PHASES = require('../../../models/channel/channel').CHANNEL_PHASES;
+const /** @type Array<Spell> */ spells = require('../../../storage/spells/spells');
+const castSpellFactory = require('./castspellmessagefactory');
 
 /**
  *
  * @param {UIRouter} uiRouter
  * @param {ParsedSlackActionPayload} parsedPayload
- * @param {{}} args
+ * @param {{ spellId: string }} args
  * @return {Promise<UIMessage,Error>}
  */
 function processActions(uiRouter, parsedPayload, args) {
@@ -19,11 +17,18 @@ function processActions(uiRouter, parsedPayload, args) {
     return uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text: 'Error: Cannot find your player.' });
   } else if (uiRouter.channel.phase !== CHANNEL_PHASES.IN_GAME) {
     return uiRouter.rootUIRoute.getUIMessage(uiRouter, {});
+  } else if (!uiRouter.gamer) {
+    // TODO: something else if you have no gamer.
   }
   let action = parsedPayload.actions[0];
   switch (action.name) {
     case 'spell':
-      return uiRouter.castspellUIRoute.getUIMessage(uiRouter, { spellId: action.value });
+      const spell = spells.find(item => item.id === args.spellId);
+      // TODO: delegate to spell obj.
+      // return uiRouter.castspellUIRoute.getUIMessage(uiRouter, { spellId: action.value });
+      break;
+    case 'back':
+      return uiRouter.gamemenuUIRoute.getUIMessage(uiRouter, {});
       break;
   }
   // TODO: error?
@@ -33,7 +38,7 @@ function processActions(uiRouter, parsedPayload, args) {
 /**
  *
  * @param {UIRouter} uiRouter
- * @param {{}} args
+ * @param {{ spellId: string }} args
  * @return {Promise<UIMessage,Error>}
  */
 function getUIMessage(uiRouter, args) {
@@ -41,14 +46,19 @@ function getUIMessage(uiRouter, args) {
     return uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text: 'Error: Cannot find your player.' });
   } else if (uiRouter.channel.phase !== CHANNEL_PHASES.IN_GAME) {
     return uiRouter.rootUIRoute.getUIMessage(uiRouter, {});
+  } else if (!uiRouter.gamer) {
+    // TODO: something else if you have no gamer.
   }
-  let gamerSpells = spells.filter(item => uiRouter.gamer && uiRouter.gamer.spells && uiRouter.gamer.spells[item.id] === true);
-  let uiMessage = gameMenuMessageFactory(uiRouter.gamemenuUIRoute.route.reverse({}), uiRouter.gamer, gamerSpells);
-  return Promise.resolve(uiMessage);
+  const spell = spells.find(item => item.id === args.spellId);
+  if (spell) {
+    return Promise.resolve(castSpellFactory(uiRouter.castspellUIRoute.route.reverse(args), uiRouter.channel, uiRouter.gamer, spell));
+  } else {
+    return uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text: 'Error: spell not found.' });
+  }
 }
 
 const /** @type UIRoute */ uiRoute = {
-  route: new Route('/gamemenu'),
+  route: new Route('/gamemenu/castspell/:spellId'),
   processActions,
   getUIMessage
 };
