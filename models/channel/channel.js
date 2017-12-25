@@ -55,6 +55,8 @@ class Channel {
                 const ref = Game.getNewGameRef(this.$teamKey, this.$key);
                 // TODO: check that key being created.
                 const newGameKey = ref.key;
+                // Assign 2 random spells to gamers.
+                Game.assignSpells(gamers, 2);
                 const /** @type GameFirebaseValue */ gameFirebaseValue = {
                   timeStep: this.timeStep,
                   phase: GAME_PHASES.RUNNING,
