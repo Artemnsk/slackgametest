@@ -33,7 +33,7 @@ function processActions(uiRouter, parsedPayload) {
  */
 function getUIMessage(uiRouter, args) {
   let buttonText = args.buttonText ? args.buttonText : 'Ok';
-  let uiMessage = informationMessageFactory(args.text, '/informationmessage', buttonText);
+  let uiMessage = informationMessageFactory(uiRouter.informationMessageUIRoute.route.reverse({}), args.text, buttonText);
   return Promise.resolve(uiMessage);
 }
 

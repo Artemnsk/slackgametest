@@ -50,8 +50,7 @@ function getUIMessage(uiRouter, args) {
       break;
     default:
       let text = 'Channel is invalid.';
-      let uiMessage = uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text });
-      return uiMessage;
+      return uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text });
       break;
   }
 }

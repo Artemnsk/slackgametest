@@ -12,7 +12,7 @@ const CREATE_NEW_PLAYER_YES = 'yes';
  * @param {UIRouter} uiRouter
  * @param {ParsedSlackActionPayload} parsedPayload
  * @param {{}} args
- * @return {Promise.<UIMessage,Error>}
+ * @return {Promise<UIMessage,Error>}
  */
 function processActions(uiRouter, parsedPayload, args) {
   // Parse submitted actions to know which window to render.
@@ -95,7 +95,7 @@ function processActions(uiRouter, parsedPayload, args) {
  *
  * @param {UIRouter} uiRouter
  * @param {{}} args
- * @return {UIMessage}
+ * @return {Promise<UIMessage,Error>}
  */
 function getUIMessage(uiRouter, args) {
   if (uiRouter.player) {
@@ -103,7 +103,8 @@ function getUIMessage(uiRouter, args) {
     let uiMessage = uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text });
     return uiMessage;
   }
-  return newPlayerMessageFactory();
+  let uiMessage = newPlayerMessageFactory(uiRouter.newplayerUIRoute.route.reverse({}));
+  return Promise.resolve(uiMessage);
 }
 
 const /** @type UIRoute */ uiRoute = {

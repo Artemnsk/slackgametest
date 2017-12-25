@@ -6,16 +6,17 @@ const CREATE_NEW_PLAYER_YES = 'yes';
 
 /**
  * Provides with new player UI element.
+ * @param {string} callback_id
  * @return {UIMessage}
  */
-function newPlayerFactory() {
+function newPlayerFactory(callback_id) {
   const newPlayerUIMessage = new UIMessage();
   let uiAttachments = [];
   uiAttachments.push({
     text: 'You have no player in this game yet. Do you want to create new one?',
     color: "#3AA3E3",
     attachment_type: "default",
-    callback_id: "/newplayer",
+    callback_id,
     actions: [
       {
         name: "option",

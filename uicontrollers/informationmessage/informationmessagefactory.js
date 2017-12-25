@@ -6,12 +6,12 @@ const INFORMATION_MESSAGE_OK = 'ok';
 
 /**
  * Provides with information UI element.
- * @param {string} text
  * @param {string} callback_id
+ * @param {string} text
  * @param {string} buttonText
  * @return {UIMessage}
  */
-function informationMessageFactory(text, callback_id, buttonText) {
+function informationMessageFactory(callback_id, text, buttonText) {
   const informationMessageUIMessage = new UIMessage();
   let uiAttachments = [];
   uiAttachments.push({

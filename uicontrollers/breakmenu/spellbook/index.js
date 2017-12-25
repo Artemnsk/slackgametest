@@ -41,7 +41,7 @@ function getUIMessage(uiRouter, args) {
     let text = "Player doesn't exist.";
     return uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text });
   }
-  let uiMessage = spellbookMessageFactory(20, 20, 321);
+  let uiMessage = spellbookMessageFactory(uiRouter.spellbookUIRoute.route.reverse({}), 20, 20, 321);
   return Promise.resolve(uiMessage);
 }
 
