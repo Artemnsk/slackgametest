@@ -14,6 +14,7 @@ class Gamer {
    * @param {GamerFirebaseValue & {$key: string, $gameKey, $channelKey: string, $teamKey: string}} values
    * @constructor
    * @extends GameFirebaseValue
+   * @property {Object.<string,boolean>} spells
    * @property {string} $key - Database key of this player.
    * @property {string} $gameKey - Database key of player game.
    * @property {string} $channelKey - Database key of player channel.
@@ -25,6 +26,7 @@ class Gamer {
     this.dead = values.dead;
     this.health = values.health;
     this.mana = values.mana;
+    this.spells = values.spells ? values.spells : {};
     this.$key = values.$key;
     this.$gameKey = values.$gameKey;
     this.$channelKey = values.$channelKey;
@@ -33,14 +35,15 @@ class Gamer {
 
   /**
    *
-   * @return {GameFirebaseValue}
+   * @return {GamerFirebaseValue}
    */
   getFirebaseValue() {
     return Object.assign({}, {
       name: this.name,
       dead: this.dead,
       health: this.health,
-      mana: this.mana
+      mana: this.mana,
+      spells: this.spells
     });
   }
 }

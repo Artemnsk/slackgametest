@@ -4,6 +4,7 @@ const setDBGame = require('./dbfirebase').setDBGame;
 const getNewGameDBRef = require('./dbfirebase').getNewGameDBRef;
 const removeDBGame = require('./dbfirebase').removeDBGame;
 const Gamer = require('../gamer/gamer').Gamer;
+const /** @type Array<Spell> */ spells = require('../../storage/spells/spells');
 
 const GAME_PHASES = {
   PAUSE: "PAUSE",
@@ -48,6 +49,27 @@ class Game {
     } else {
       return null;
     }
+  }
+
+  /**
+   * @param {Object<string,Gamer>} gamers
+   * @param {number} quantity - how many spells to assign to each gamer.
+   * @return {Object<string,Gamer>}
+   */
+  static assignSpells(gamers, quantity) {
+    for (let gamerKey in gamers) {
+      let /** @type Object<string,boolean> */ currentGamerSpells = {};
+      for (let i = 0; i < quantity; i++) {
+        let j = null;
+        // If it is first iteration or this spell already being added.
+        while (j === null || currentGamerSpells[spells[j].id] === true) {
+          j = Math.floor(Math.random() * spells.length);
+        }
+        currentGamerSpells[spells[j].id] = true;
+      }
+      gamers[gamerKey].spells = currentGamerSpells;
+    }
+    return gamers;
   }
 
   /**
