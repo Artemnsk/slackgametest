@@ -2,7 +2,7 @@
 
 const Route = require('route-parser');
 const spellInfoMessageFactory = require('./spellinfomessagefactory');
-const spells = require('../../../../storage/spells/spells');
+const /** @type Array<Spell> */ spells = require('../../../../storage/spells/spells');
 
 /**
  *
@@ -39,7 +39,7 @@ function getUIMessage(uiRouter, args) {
   }
   const spell = spells.find(item => item.id === args.spellId);
   if (spell) {
-    let uiMessage = spellInfoMessageFactory(spell);
+    let uiMessage = spellInfoMessageFactory(uiRouter.spellinfoUIRoute.route.reverse({ spellName: spell.id }), spell);
     return Promise.resolve(uiMessage);
   }
   let text = "Spell not found.";

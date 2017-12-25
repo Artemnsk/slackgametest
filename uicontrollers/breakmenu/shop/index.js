@@ -23,6 +23,7 @@ function processActions(uiRouter, parsedPayload, args) {
       return uiRouter.breakmenuUIRoute.getUIMessage(uiRouter, {});
       break;
   }
+  // TODO:
   return null;
 }
 
@@ -39,7 +40,7 @@ function getUIMessage(uiRouter, args) {
     let text = "Player doesn't exist.";
     return uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text });
   }
-  let uiMessage = shopMessageFactory(20, 20, 321);
+  let uiMessage = shopMessageFactory(uiRouter.shopUIRoute.route.reverse({}), 20, 20, 321);
   return Promise.resolve(uiMessage);
 }
 

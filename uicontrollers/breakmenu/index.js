@@ -38,7 +38,7 @@ function getUIMessage(uiRouter, args) {
   if (!uiRouter.player) {
     return uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text: 'Error: Cannot find your player.' });
   }
-  let uiMessage = breakMenuMessageFactory(30, 40, 402);
+  let uiMessage = breakMenuMessageFactory(uiRouter.breakmenuUIRoute.route.reverse({}), 30, 40, 402);
   return Promise.resolve(uiMessage);
 }
 

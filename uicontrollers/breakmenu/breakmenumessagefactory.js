@@ -5,9 +5,10 @@ const statsTitleFactory = require('../_partials/statstitlefactory');
 
 /**
  * Provides with main menu UI element.
+ * @param {string} callback_id
  * @return {UIMessage}
  */
-function breakMenuFactory(hp, mp, gold) {
+function breakMenuFactory(callback_id, hp, mp, gold) {
   const breakMenuUIMessage = new UIMessage();
   let uiAttachments = [];
   uiAttachments.push(statsTitleFactory(hp, mp, gold));
@@ -15,7 +16,7 @@ function breakMenuFactory(hp, mp, gold) {
     text: '',
     color: "#3AA3E3",
     attachment_type: "default",
-    callback_id: "/breakmenu",
+    callback_id,
     actions: [
       {
         name: "spellbook",

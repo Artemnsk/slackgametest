@@ -34,7 +34,7 @@ function getUIMessage(uiRouter, args) {
   } else if (uiRouter.channel.phase !== CHANNEL_PHASES.IN_GAME) {
     return uiRouter.rootUIRoute.getUIMessage(uiRouter, {});
   }
-  let uiMessage = gameMenuMessageFactory('/gamemenu');
+  let uiMessage = gameMenuMessageFactory(uiRouter.gamemenuUIRoute.route.reverse({}));
   return Promise.resolve(uiMessage);
 }
 

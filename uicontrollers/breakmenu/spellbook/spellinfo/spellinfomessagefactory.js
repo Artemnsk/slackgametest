@@ -2,15 +2,15 @@
 
 const UIMessage = require('../../../../models/uimessage/uimessage');
 const statsTitleFactory = require('../../../_partials/statstitlefactory');
-const spells = require('../../../../storage/spells/spells');
 const spellInfoFactory = require('../../../_partials/spellinfofactory');
 
 /**
  * Provides with spell UI element.
+ * @param {string} callback_id
  * @param {Spell} spell
  * @return {UIMessage}
  */
-function spellFactory(spell) {
+function spellFactory(callback_id, spell) {
   const spellUIMessage = new UIMessage();
   let uiAttachments = [];
   uiAttachments.push(statsTitleFactory(1, 2, 3));
@@ -21,7 +21,7 @@ function spellFactory(spell) {
     text: '',
     color: "#3AA3E3",
     attachment_type: "default",
-    callback_id: "/breakmenu/spellbook/"  + spell.id,
+    callback_id,
     actions: [
       {
         name: "back",

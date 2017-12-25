@@ -5,9 +5,10 @@ const statsTitleFactory = require('../../_partials/statstitlefactory');
 
 /**
  * Provides with shop UI element.
+ * @param {string} callback_id
  * @return {UIMessage}
  */
-function shopFactory(hp, mana, gold) {
+function shopFactory(callback_id, hp, mana, gold) {
   const shopUIMessage = new UIMessage();
   let uiAttachments = [];
   uiAttachments.push(statsTitleFactory(hp, mana, gold));
@@ -15,7 +16,7 @@ function shopFactory(hp, mana, gold) {
     text: "*Shop*",
     color: "#3AA3E3",
     attachment_type: "default",
-    callback_id: "/breakmenu/shop",
+    callback_id,
     actions: [
       {
         name: "back",

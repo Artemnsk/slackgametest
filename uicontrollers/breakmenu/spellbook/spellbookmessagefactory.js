@@ -30,9 +30,10 @@ function _getSpells() {
 
 /**
  * Provides with spellbook UI element.
+ * @param {string} callback_id
  * @return {UIMessage}
  */
-function spellBookFactory(hp, mana, gold) {
+function spellBookFactory(callback_id, hp, mana, gold) {
   const spellBookUIMessage = new UIMessage();
   let uiAttachments = [];
   uiAttachments.push(statsTitleFactory(hp, mana, gold));
@@ -41,7 +42,7 @@ function spellBookFactory(hp, mana, gold) {
     text: '',
     color: "#3AA3E3",
     attachment_type: "default",
-    callback_id: "/breakmenu/spellbook",
+    callback_id,
     actions: [
       {
         name: "back",
