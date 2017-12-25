@@ -3,7 +3,7 @@
 module.exports = spellInfoFactory;
 
 /**
- *
+ * // TODO: put all this into spell class!
  * @param {Spell} spell
  * @param {string} callback_id
  * @return Object
