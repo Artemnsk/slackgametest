@@ -22,14 +22,15 @@ function processActions(uiRouter, parsedPayload, args) {
   }
   let action = parsedPayload.actions[0];
   switch (action.name) {
-    case 'spell':
-      const spell = spells.find(item => item.id === args.spellId);
-      // TODO: delegate to spell obj.
-      // return uiRouter.castspellUIRoute.getUIMessage(uiRouter, { spellId: action.value });
-      break;
     case 'back':
       return uiRouter.gamemenuUIRoute.getUIMessage(uiRouter, {});
       break;
+  }
+  // Delegate that to spell now.
+  const spell = spells.find(item => item.id === args.spellId);
+  let uiMessage = spell.processCastForm(parsedPayload);
+  if (uiMessage) {
+    return uiRouter.gamemenuUIRoute.getUIMessage(uiRouter, {});
   }
   // TODO: error?
   return null;
@@ -51,7 +52,7 @@ function getUIMessage(uiRouter, args) {
   }
   const spell = spells.find(item => item.id === args.spellId);
   if (spell) {
-    return Promise.resolve(castSpellFactory(uiRouter.castspellUIRoute.route.reverse(args), uiRouter.channel, uiRouter.gamer, spell));
+    return Promise.resolve(castSpellFactory(uiRouter.castspellUIRoute.route.reverse(args), uiRouter.channel, uiRouter.game, uiRouter.gamer, spell));
   } else {
     return uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text: 'Error: spell not found.' });
   }
