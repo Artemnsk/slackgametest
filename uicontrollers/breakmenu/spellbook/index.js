@@ -8,7 +8,7 @@ const spellbookMessageFactory = require('./spellbookmessagefactory');
  * @param {UIRouter} uiRouter
  * @param {ParsedSlackActionPayload} parsedPayload
  * @param {{}} args
- * @return {UIMessage}
+ * @return {Promise<UIMessage,Error>}
  */
 function processActions(uiRouter, parsedPayload, args) {
   if (!uiRouter.player) {
@@ -26,6 +26,7 @@ function processActions(uiRouter, parsedPayload, args) {
       return uiRouter.breakmenuUIRoute.getUIMessage(uiRouter, {});
       break;
   }
+  // TODO: error?
   return null;
 }
 
@@ -33,14 +34,15 @@ function processActions(uiRouter, parsedPayload, args) {
  *
  * @param {UIRouter} uiRouter
  * @param {{}} args
- * @return {UIMessage}
+ * @return {Promise<UIMessage,Error>}
  */
 function getUIMessage(uiRouter, args) {
   if (!uiRouter.player) {
     let text = "Player doesn't exist.";
     return uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text });
   }
-  return spellbookMessageFactory(20, 20, 321);
+  let uiMessage = spellbookMessageFactory(20, 20, 321);
+  return Promise.resolve(uiMessage);
 }
 
 const /** @type UIRoute */ uiRoute = {

@@ -8,7 +8,7 @@ const shopMessageFactory = require('./shopMessagefactory');
  * @param {UIRouter} uiRouter
  * @param {ParsedSlackActionPayload} parsedPayload
  * @param {{}} args
- * @return {UIMessage}
+ * @return {Promise<UIMessage,Error>}
  */
 function processActions(uiRouter, parsedPayload, args) {
   if (!uiRouter.player) {
@@ -30,7 +30,7 @@ function processActions(uiRouter, parsedPayload, args) {
  *
  * @param {UIRouter} uiRouter
  * @param {{}} args
- * @return {UIMessage}
+ * @return {Promise<UIMessage,Error>}
  */
 function getUIMessage(uiRouter, args) {
   // uiRouter.channel.startGame();
@@ -39,7 +39,8 @@ function getUIMessage(uiRouter, args) {
     let text = "Player doesn't exist.";
     return uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text });
   }
-  return shopMessageFactory(20, 20, 321);
+  let uiMessage = shopMessageFactory(20, 20, 321);
+  return Promise.resolve(uiMessage);
 }
 
 const /** @type UIRoute */ uiRoute = {

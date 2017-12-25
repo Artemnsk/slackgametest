@@ -11,7 +11,7 @@ const castSpellFactory = require('./castspell/castspellmessagefactory');
  * @param {UIRouter} uiRouter
  * @param {ParsedSlackActionPayload} parsedPayload
  * @param {{}} args
- * @return {UIMessage}
+ * @return {Promise<UIMessage,Error>}
  */
 function processActions(uiRouter, parsedPayload, args) {
   return uiRouter.gamemenuUIRoute.getUIMessage(uiRouter, {});
@@ -25,7 +25,7 @@ function processActions(uiRouter, parsedPayload, args) {
  *
  * @param {UIRouter} uiRouter
  * @param {{}} args
- * @return {UIMessage}
+ * @return {Promise<UIMessage,Error>}
  */
 function getUIMessage(uiRouter, args) {
   // return castSpellFactory(1, 2, 3, 'fireball');
@@ -34,7 +34,8 @@ function getUIMessage(uiRouter, args) {
   } else if (uiRouter.channel.phase !== CHANNEL_PHASES.IN_GAME) {
     return uiRouter.rootUIRoute.getUIMessage(uiRouter, {});
   }
-  return gameMenuMessageFactory('/gamemenu');
+  let uiMessage = gameMenuMessageFactory('/gamemenu');
+  return Promise.resolve(uiMessage);
 }
 
 const /** @type UIRoute */ uiRoute = {

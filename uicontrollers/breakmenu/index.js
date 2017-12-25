@@ -8,7 +8,7 @@ const breakMenuMessageFactory = require('./breakmenumessagefactory');
  * @param {UIRouter} uiRouter
  * @param {ParsedSlackActionPayload} parsedPayload
  * @param {{}} args
- * @return {UIMessage}
+ * @return {Promise<UIMessage,Error>}
  */
 function processActions(uiRouter, parsedPayload, args) {
   if (!uiRouter.player) {
@@ -32,13 +32,14 @@ function processActions(uiRouter, parsedPayload, args) {
  *
  * @param {UIRouter} uiRouter
  * @param {{}} args
- * @return {UIMessage}
+ * @return {Promise<UIMessage,Error>}
  */
 function getUIMessage(uiRouter, args) {
   if (!uiRouter.player) {
     return uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text: 'Error: Cannot find your player.' });
   }
-  return breakMenuMessageFactory(30, 40, 402);
+  let uiMessage = breakMenuMessageFactory(30, 40, 402);
+  return Promise.resolve(uiMessage);
 }
 
 const /** @type UIRoute */ uiRoute = {

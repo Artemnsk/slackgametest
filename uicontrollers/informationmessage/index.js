@@ -8,7 +8,7 @@ const INFORMATION_MESSAGE_OK = require('./informationmessagefactory').INFORMATIO
  *
  * @param {UIRouter} uiRouter
  * @param {ParsedSlackActionPayload} parsedPayload
- * @return {UIMessage|Promise<UIMessage, Error>}
+ * @return {Promise<UIMessage, Error>}
  */
 function processActions(uiRouter, parsedPayload) {
   // TODO: that is actually bad.
@@ -29,11 +29,12 @@ function processActions(uiRouter, parsedPayload) {
 /**
  * @param {UIRouter} uiRouter
  * @param {{text: string, buttonText: [string]}} args
- * @return {UIMessage}
+ * @return {Promise<UIMessage,Error>}
  */
 function getUIMessage(uiRouter, args) {
   let buttonText = args.buttonText ? args.buttonText : 'Ok';
-  return informationMessageFactory(args.text, '/informationmessage', buttonText);
+  let uiMessage = informationMessageFactory(args.text, '/informationmessage', buttonText);
+  return Promise.resolve(uiMessage);
 }
 
 const /** @type UIRoute */ uiRoute = {
