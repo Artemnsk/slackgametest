@@ -6,6 +6,7 @@ const /** @type admin.app.App */ firebaseApp = require('../../helpers/firebaseap
  * @property {string} type
  * @property {string} [target]
  * @property {string} [initiator]
+ * @property {{spellId: ?string}} [params]
  */
 
 /**

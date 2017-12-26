@@ -12,7 +12,7 @@ functions:
 
   # Raw Actions validation.
   - validRawAction(rawAction): validCastSpellRawAction(rawAction) # .. || valid<OTHER_TYPE>RawAction ... and so on.
-  - validCastSpellRawAction(rawAction): rawAction.type === 'CAST_SPELL' # && <some other CAST_SPELL requirements.
+  - validCastSpellRawAction(rawAction): rawAction.type === 'CAST_SPELL' && rawAction.params.spellId.exists()
 
 schema:
   type: object
@@ -179,10 +179,17 @@ schema:
                 initiator:
                   type: string
                   constraint: (!next.exists() || gamerExists($teamKey, $channelKey, $gameKey, next))
+                params:
+                  type: object
+                  additionalProperties: false
+                  properties:
+                    spellId:
+                      type: string
 
 
 
-    # TODO:
+
+    # TODO: REMOVE states AND actions DEPRECATED STUFF BELOW.
     # Stores information about game states in channels.
     states:
       type: object
@@ -235,6 +242,15 @@ access:
     read: webserverUser()
   - location: /games/$teamKey/$channelKey/$gameKey
     write: webserverUser()
+
+  - location: /rawActions/$teamKey/$channelKey/$gameKey
+    read: webserverUser()
+  - location: /rawActions/$teamKey/$channelKey/$gameKey/$rawActionKey
+    write: webserverUser()
+
+
+
+
 
   - location: /state
     read: webserverUser()

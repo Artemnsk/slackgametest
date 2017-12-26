@@ -1,3 +1,6 @@
+const RawAction = require('../../models/rawaction/rawaction').RawAction;
+const RAW_ACTION_TYPES = require('../../models/rawaction/rawaction').RAW_ACTION_TYPES;
+
 /**
  * @typedef {Object} SpellData
  * @property {String} emoji
@@ -65,22 +68,34 @@ class Spell {
   }
 
   /**
+   * If promise resolved to false it means that it is simply non-spell action.
+   * But if promise being rejected it means that we really wanted to process cast form but error appeared.
+   *
+   * @param {Game} game
    * @param {ParsedSlackActionPayload} parsedPayload
-   * @return boolean
+   * @return Promise<boolean,Error>
    */
-  processCastForm(parsedPayload) {
+  processCastForm(game, parsedPayload) {
     let action = parsedPayload.actions[0];
     switch (action.name) {
       case 'target':
         let gamerKey = action.selected_options && action.selected_options[0] && action.selected_options[0].value ? action.selected_options[0].value : null;
         if (gamerKey) {
-          // TODO: create actionRequest.
-          return true;
+          let /** @type RawActionFirebaseValue */ rawActionFirebaseValue = {
+            type: RAW_ACTION_TYPES.CAST_SPELL,
+            target: gamerKey,
+            initiator: parsedPayload.user.id,
+            params: {
+              spellId: this.id
+            }
+          };
+          return RawAction.addRawAction(rawActionFirebaseValue, game.$teamKey, game.$channelKey, game.$key)
+            .then(() => Promise.resolve(true));
         }
-        return false;
+        return Promise.resolve(false);
         break;
     }
-    return false;
+    return Promise.resolve(false);
   }
 }
 

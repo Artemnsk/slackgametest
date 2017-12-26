@@ -1,4 +1,4 @@
-const RAW_ACTION_TYPE_CAST_SPELL = 'RAW_ACTION_TYPE_CAST_SPELL';
+const CAST_SPELL = 'CAST_SPELL';
 const getRecentDBRawAction = require('./dbfirebase').getRecentDBRawAction;
 const removeDBRawAction = require('./dbfirebase').removeDBRawAction;
 const addDBRawAction = require('./dbfirebase').addDBRawAction;
@@ -8,7 +8,7 @@ const addDBRawAction = require('./dbfirebase').addDBRawAction;
  * @enum {string}
  */
 const RAW_ACTION_TYPES = {
-  RAW_ACTION_TYPE_CAST_SPELL
+  CAST_SPELL
 };
 
 class RawAction {
@@ -28,6 +28,9 @@ class RawAction {
     if (values.initiator) {
       this.initiator = values.initiator;
     }
+    if (values.params) {
+      this.params = values.params;
+    }
   }
 
   /**
@@ -38,7 +41,8 @@ class RawAction {
     return Object.assign({}, {
       type: this.type,
       target: this.target ? this.target : null,
-      initiator: this.initiator ? this.initiator : null
+      initiator: this.initiator ? this.initiator : null,
+      params: this.params ? this.params : null
     });
   }
 
