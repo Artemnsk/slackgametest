@@ -20,7 +20,7 @@ function castSpellFactory(callback_id, channel, game, gamer, spell) {
   uiAttachments.push(gameTitleFactory(callback_id, gamer));
   uiAttachments.push(spellInfoFactory(spell, callback_id));
   let footerUIAttachments = {
-    text: '',
+    text: spell.validateGamerCast(gamer),
     color: "#1E09C9",
     attachment_type: "default",
     callback_id: callback_id,
@@ -32,7 +32,7 @@ function castSpellFactory(callback_id, channel, game, gamer, spell) {
     type: "button",
     value: "back"
   });
-  let castSpellAction = spell.getCastForm(callback_id, game);
+  let castSpellAction = spell.getCastForm(callback_id, game, gamer);
   if (castSpellAction) {
     footerUIAttachments.actions.push(castSpellAction);
   }

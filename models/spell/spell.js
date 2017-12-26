@@ -40,29 +40,53 @@ class Spell {
   }
 
   /**
+   *
+   * @param {Gamer} gamer
+   * @return boolean|string
+   */
+  validateGamerCast(gamer) {
+    // TODO: there is first extension for mana and mana-free spells.
+    if (gamer.spells && gamer.spells[this.id] === true) {
+      if (!this.params.manacost || gamer.mana >= this.params.manacost) {
+        return true;
+      } else {
+        return 'You have not enough mana.';
+      }
+    } else {
+      return 'You have no this spell.';
+    }
+  }
+
+  /**
    * Returns select Action for uiAttachment with non-dead gamers (even with empty opts).
    * @param {string} callback_id
    * @param {Game} game
+   * @param {Gamer} gamer
    * @return ?Object
    */
-  getCastForm(callback_id, game) {
-    let options = [];
-    for (let gamerKey in game.gamers) {
-      if (game.gamers[gamerKey].dead === false) {
-        options.push({
-          text: game.gamers[gamerKey].name,
-          value: gamerKey
-        });
+  getCastForm(callback_id, game, gamer) {
+    if (this.validateGamerCast(gamer) === true) {
+      let options = [];
+      for (let gamerKey in game.gamers) {
+        if (game.gamers[gamerKey].dead === false) {
+          options.push({
+            text: game.gamers[gamerKey].name,
+            value: gamerKey
+          });
+        }
       }
-    }
-    if (options.length > 0) {
-      return {
-        name: "target",
-        text: "Target",
-        type: "select",
-        options
-      };
+      if (options.length > 0) {
+        return {
+          name: "target",
+          text: "Target",
+          type: "select",
+          options
+        };
+      } else {
+        return null;
+      }
     } else {
+      // TODO: display 'not enough mana' somehow.
       return null;
     }
   }
@@ -72,25 +96,28 @@ class Spell {
    * But if promise being rejected it means that we really wanted to process cast form but error appeared.
    *
    * @param {Game} game
+   * @param {Gamer} gamer
    * @param {ParsedSlackActionPayload} parsedPayload
    * @return Promise<boolean,Error>
    */
-  processCastForm(game, parsedPayload) {
+  processCastForm(game, gamer, parsedPayload) {
     let action = parsedPayload.actions[0];
     switch (action.name) {
       case 'target':
-        let gamerKey = action.selected_options && action.selected_options[0] && action.selected_options[0].value ? action.selected_options[0].value : null;
-        if (gamerKey) {
-          let /** @type RawActionFirebaseValue */ rawActionFirebaseValue = {
-            type: RAW_ACTION_TYPES.CAST_SPELL,
-            target: gamerKey,
-            initiator: parsedPayload.user.id,
-            params: {
-              spellId: this.id
-            }
-          };
-          return RawAction.addRawAction(rawActionFirebaseValue, game.$teamKey, game.$channelKey, game.$key)
-            .then(() => Promise.resolve(true));
+        if (this.validateGamerCast(gamer) === true) {
+          let targetKey = action.selected_options && action.selected_options[0] && action.selected_options[0].value ? action.selected_options[0].value : null;
+          if (targetKey) {
+            let /** @type RawActionFirebaseValue */ rawActionFirebaseValue = {
+              type: RAW_ACTION_TYPES.CAST_SPELL,
+              target: targetKey,
+              initiator: gamer.$key,
+              params: {
+                spellId: this.id
+              }
+            };
+            return RawAction.addRawAction(rawActionFirebaseValue, game.$teamKey, game.$channelKey, game.$key)
+              .then(() => Promise.resolve(true));
+          }
         }
         return Promise.resolve(false);
         break;
