@@ -28,12 +28,19 @@ function processActions(uiRouter, parsedPayload, args) {
   }
   // Delegate that to spell now.
   const spell = spells.find(item => item.id === args.spellId);
-  let uiMessage = spell.processCastForm(parsedPayload);
-  if (uiMessage) {
-    return uiRouter.gamemenuUIRoute.getUIMessage(uiRouter, {});
-  }
-  // TODO: error?
-  return null;
+  let spellBeingProcessedPromise = spell.processCastForm(uiRouter.game, parsedPayload);
+  return spellBeingProcessedPromise
+    .then((processed) => {
+      if (processed) {
+        return uiRouter.gamemenuUIRoute.getUIMessage(uiRouter, {});
+      } else {
+        // ..proceed with other checks. Currently no other checks.
+        // TODO: error?
+        return null;
+      }
+    }, (err) => {
+      return uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text: `Error: Something went wrong. ${err.message}` });
+    });
 }
 
 /**
