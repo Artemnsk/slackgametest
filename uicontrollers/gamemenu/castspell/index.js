@@ -28,7 +28,7 @@ function processActions(uiRouter, parsedPayload, args) {
   }
   // Delegate that to spell now.
   const spell = spells.find(item => item.id === args.spellId);
-  let spellBeingProcessedPromise = spell.processCastForm(uiRouter.game, parsedPayload);
+  let spellBeingProcessedPromise = spell.processCastForm(uiRouter.game, uiRouter.gamer, parsedPayload);
   return spellBeingProcessedPromise
     .then((processed) => {
       if (processed) {
