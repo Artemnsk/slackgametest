@@ -185,6 +185,38 @@
         }
       }
     },
+    "rawActions": {
+      ".write":"false",
+      ".read":"false",
+      "$teamKey": {
+        ".write":"false",
+        ".read":"false",
+        "$channelKey": {
+          ".write":"false",
+          ".read":"false",
+          "$gameKey": {
+            ".write":"false",
+            ".read":"false",
+            "$rawActionKey": {
+              ".write":"false",
+              ".read":"false",
+              "type": {
+                ".write":"false",
+                ".read":"false"
+              },
+              "target": {
+                ".write":"false",
+                ".read":"false"
+              },
+              "initiator": {
+                ".write":"false",
+                ".read":"false"
+              }
+            }
+          }
+        }
+      }
+    },
     "states": {
       ".write":"false",
       ".read":"(auth.uid==='game-webserver')",

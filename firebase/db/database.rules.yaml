@@ -5,9 +5,14 @@ functions:
   - channelExists(teamKey, channelKey): root.channels[teamKey][channelKey].exists()
   - playerExists(teamKey, channelKey, playerKey): root.players[teamKey][channelKey][playerKey].exists()
   - gameExists(teamKey, channelKey, gameKey): root.games[teamKey][channelKey][gameKey].exists()
+  - gamerExists(teamKey, channelKey, gameKey, gamerKey): root.games[teamKey][channelKey][gameKey].gamers[gamerKey].exists()
   - isValidChannel(): (next.phase === 'BREAK' && next.nextGame.exists()) || (next.phase === 'IN_GAME' && next.currentGame.exists())
   # When create new gamer appropriate player must exist.
   - isValidGamer(teamKey, channelKey, gamerKey): prev.exists() || playerExists(teamKey, channelKey, gamerKey)
+
+  # Raw Actions validation.
+  - validRawAction(rawAction): validCastSpellRawAction(rawAction) # .. || valid<OTHER_TYPE>RawAction ... and so on.
+  - validCastSpellRawAction(rawAction): rawAction.type === 'CAST_SPELL' # && <some other CAST_SPELL requirements.
 
 schema:
   type: object
@@ -148,6 +153,34 @@ schema:
                       type: object
                       ~$spell:
                         type: boolean
+    # Raw Actions for games.
+    rawActions:
+      type: object
+      constraint: teamExists($teamKey)
+      $teamKey:
+        type: object
+        constraint: channelExists($teamKey, $channelKey)
+        $channelKey:
+          type: object
+          constraint: gameExists($teamKey, $channelKey, $gameKey)
+          $gameKey:
+            type: object
+            $rawActionKey:
+              type: object
+              constraint: (!next.exists() || validRawAction(next))
+              required: ['type']
+              properties:
+                type:
+                  type: string
+                  enum: ['CAST_SPELL']
+                target:
+                  type: string
+                  constraint: (!next.exists() || gamerExists($teamKey, $channelKey, $gameKey, next))
+                initiator:
+                  type: string
+                  constraint: (!next.exists() || gamerExists($teamKey, $channelKey, $gameKey, next))
+
+
 
     # TODO:
     # Stores information about game states in channels.
