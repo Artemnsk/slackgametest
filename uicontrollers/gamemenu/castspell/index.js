@@ -1,7 +1,6 @@
 "use strict";
 
 const Route = require('route-parser');
-const CHANNEL_PHASES = require('../../../models/channel/channel').CHANNEL_PHASES;
 const /** @type Array<Spell> */ spells = require('../../../storage/spells/spells');
 const castSpellFactory = require('./castspellmessagefactory');
 
@@ -13,9 +12,6 @@ const castSpellFactory = require('./castspellmessagefactory');
  * @return {Promise<UIMessage,Error>}
  */
 function processActions(uiRouter, parsedPayload, args) {
-  if (!uiRouter.gamer) {
-    // TODO: something else if you have no gamer.
-  }
   let action = parsedPayload.actions[0];
   switch (action.name) {
     case 'back':
@@ -46,15 +42,8 @@ function processActions(uiRouter, parsedPayload, args) {
  * @return {Promise<UIMessage,Error>}
  */
 function getUIMessage(uiRouter, args) {
-  if (!uiRouter.gamer) {
-    // TODO: something else if you have no gamer.
-  }
   const spell = spells.find(item => item.id === args.spellId);
-  if (spell) {
-    return Promise.resolve(castSpellFactory(uiRouter.castspellUIRoute.route.reverse(args), uiRouter.channel, uiRouter.game, uiRouter.gamer, spell));
-  } else {
-    return uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text: 'Error: spell not found.' });
-  }
+  return Promise.resolve(castSpellFactory(uiRouter.castspellUIRoute.route.reverse(args), uiRouter.channel, uiRouter.game, uiRouter.gamer, spell));
 }
 
 /**
@@ -65,6 +54,20 @@ function getUIMessage(uiRouter, args) {
  * @return ?UIMessage
  */
 function validateRoute(uiRouter, path, parsedPayload) {
+  let validateRoute = new Route('/gamemenu/castspell/:spellId/*');
+  let args;
+  if (args = validateRoute.match(path)) {
+    if (!uiRouter.gamer) {
+      let text = 'Error: You are not participate in this game.';
+      return uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text });
+    } else if (!spells.find(item => item.id === args.spellId)) {
+      let text = "Error: spell with this spell ID doesn't exist.";
+      return uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text });
+    } else if (!uiRouter.gamer.spells || uiRouter.gamer.spells[args.spellId] !== true) {
+      let text = 'Error: You have no this spell.';
+      return uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text });
+    }
+  }
   return null;
 }
 

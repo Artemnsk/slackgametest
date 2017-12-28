@@ -30,7 +30,8 @@ function processActions(uiRouter, parsedPayload, args) {
  * @return {Promise<UIMessage,Error>}
  */
 function getUIMessage(uiRouter, args) {
-  let gamerSpells = spells.filter(item => uiRouter.gamer && uiRouter.gamer.spells && uiRouter.gamer.spells[item.id] === true);
+  // Normal game menu.
+  let gamerSpells = uiRouter.gamer ? spells.filter(item => uiRouter.gamer && uiRouter.gamer.spells && uiRouter.gamer.spells[item.id] === true) : [];
   let uiMessage = gameMenuMessageFactory(uiRouter.gamemenuUIRoute.route.reverse({}), uiRouter.gamer, gamerSpells);
   return Promise.resolve(uiMessage);
 }
