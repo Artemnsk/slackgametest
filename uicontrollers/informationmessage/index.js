@@ -40,8 +40,20 @@ function getUIMessage(uiRouter, args) {
 const /** @type UIRoute */ uiRoute = {
   route: new Route('/informationmessage'),
   processActions,
-  getUIMessage
+  getUIMessage,
+  validateRoute
 };
+
+/**
+ *
+ * @param {UIRouter} uiRouter
+ * @param {string} path
+ * @param {ParsedSlackActionPayload} [parsedPayload]
+ * @return ?UIMessage
+ */
+function validateRoute(uiRouter, path, parsedPayload) {
+  return null;
+}
 
 
 module.exports = {

@@ -98,19 +98,33 @@ function processActions(uiRouter, parsedPayload, args) {
  * @return {Promise<UIMessage,Error>}
  */
 function getUIMessage(uiRouter, args) {
-  if (uiRouter.player) {
-    let text = 'Error: Player already exists.';
-    let uiMessage = uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text });
-    return uiMessage;
-  }
   let uiMessage = newPlayerMessageFactory(uiRouter.newplayerUIRoute.route.reverse({}));
   return Promise.resolve(uiMessage);
+}
+
+/**
+ *
+ * @param {UIRouter} uiRouter
+ * @param {string} path
+ * @param {ParsedSlackActionPayload} [parsedPayload]
+ * @return ?UIMessage
+ */
+function validateRoute(uiRouter, path, parsedPayload) {
+  let validateRoute = new Route('/newplayer/*');
+  if (validateRoute.match(path)) {
+    if (uiRouter.player) {
+      let text = 'Error: Player already exists.';
+      return uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text });
+    }
+  }
+  return null;
 }
 
 const /** @type UIRoute */ uiRoute = {
   route: new Route('/newplayer'),
   processActions,
-  getUIMessage
+  getUIMessage,
+  validateRoute
 };
 
 module.exports = {
