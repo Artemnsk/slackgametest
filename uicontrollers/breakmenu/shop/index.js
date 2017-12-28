@@ -49,10 +49,22 @@ function getUIMessage(uiRouter, args) {
   return Promise.resolve(uiMessage);
 }
 
+/**
+ *
+ * @param {UIRouter} uiRouter
+ * @param {string} path
+ * @param {ParsedSlackActionPayload} [parsedPayload]
+ * @return ?UIMessage
+ */
+function validateRoute(uiRouter, path, parsedPayload) {
+  return null;
+}
+
 const /** @type UIRoute */ uiRoute = {
   route: new Route('/breakmenu/shop'),
   processActions,
-  getUIMessage
+  getUIMessage,
+  validateRoute
 };
 
 module.exports = {

@@ -8,6 +8,7 @@ const CHANNEL_PHASES = require('../models/channel/channel').CHANNEL_PHASES;
  * @property {Route} route
  * @property {Function} processActions
  * @property {Function} getUIMessage
+ * @property {Function} validateRoute
  */
 
 /**
@@ -55,10 +56,22 @@ function getUIMessage(uiRouter, args) {
   }
 }
 
+/**
+ *
+ * @param {UIRouter} uiRouter
+ * @param {string} path
+ * @param {ParsedSlackActionPayload} [parsedPayload]
+ * @return ?UIMessage
+ */
+function validateRoute(uiRouter, path, parsedPayload) {
+  return null;
+}
+
 const /** @type UIRoute */ uiRoute = {
   route: new Route('/'),
   processActions,
-  getUIMessage
+  getUIMessage,
+  validateRoute
 };
 
 module.exports = {

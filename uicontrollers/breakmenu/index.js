@@ -12,11 +12,6 @@ const CHANNEL_PHASES = require('../../models/channel/channel').CHANNEL_PHASES;
  * @return {Promise<UIMessage,Error>}
  */
 function processActions(uiRouter, parsedPayload, args) {
-  if (!uiRouter.player) {
-    return uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text: 'Error: Cannot find your player.' });
-  } else if (uiRouter.channel.phase !== CHANNEL_PHASES.BREAK) {
-    return uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text: 'Error: Invalid channel phase to use this menu.' });
-  }
   // Parse submitted actions to know which window to render.
   // TODO:
   let action = parsedPayload.actions[0];
@@ -38,19 +33,34 @@ function processActions(uiRouter, parsedPayload, args) {
  * @return {Promise<UIMessage,Error>}
  */
 function getUIMessage(uiRouter, args) {
-  if (!uiRouter.player) {
-    return uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text: 'Error: Cannot find your player.' });
-  } else if (uiRouter.channel.phase !== CHANNEL_PHASES.BREAK) {
-    return uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text: 'Error: Invalid channel phase to use this menu.' });
-  }
   let uiMessage = breakMenuMessageFactory(uiRouter.breakmenuUIRoute.route.reverse({}), uiRouter.channel, uiRouter.player);
   return Promise.resolve(uiMessage);
+}
+
+/**
+ *
+ * @param {UIRouter} uiRouter
+ * @param {string} path
+ * @param {ParsedSlackActionPayload} [parsedPayload]
+ * @return ?UIMessage
+ */
+function validateRoute(uiRouter, path, parsedPayload) {
+  let validateRoute = new Route('/breakmenu/*');
+  if (validateRoute.match(path)) {
+    if (!uiRouter.player) {
+      return uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text: 'Error: Cannot find your player.' });
+    } else if (uiRouter.channel.phase !== CHANNEL_PHASES.BREAK) {
+      return uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text: 'Error: Invalid channel phase to use this menu.' });
+    }
+  }
+  return null;
 }
 
 const /** @type UIRoute */ uiRoute = {
   route: new Route('/breakmenu'),
   processActions,
-  getUIMessage
+  getUIMessage,
+  validateRoute
 };
 
 module.exports = {

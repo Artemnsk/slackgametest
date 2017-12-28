@@ -59,6 +59,25 @@ class UIRouter {
    * @return {Promise<UIMessage,Error>}
    */
   getUIMessage(path, parsedPayload) {
+    let /** @type Array<UIRoute> */ uiRoutes = [
+      this.informationMessageUIRoute,
+      this.rootUIRoute,
+      this.newplayerUIRoute,
+      this.breakmenuUIRoute,
+      this.shopUIRoute,
+      this.spellbookUIRoute,
+      this.spellinfoUIRoute,
+      this.gamemenuUIRoute,
+      this.castspellUIRoute
+    ];
+    // Validation by path.
+    for (let i = 0; i < uiRoutes.length; i++) {
+      let errorUIMessage = uiRoutes[i].validateRoute(this, path, parsedPayload);
+      if (errorUIMessage) {
+        return Promise.resolve(errorUIMessage);
+      }
+    }
+    //
     var args;
     // TODO: simply foreach.
     if (args = this.rootUIRoute.route.match(path)) {

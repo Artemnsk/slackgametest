@@ -13,11 +13,7 @@ const castSpellFactory = require('./castspellmessagefactory');
  * @return {Promise<UIMessage,Error>}
  */
 function processActions(uiRouter, parsedPayload, args) {
-  if (!uiRouter.player) {
-    return uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text: 'Error: Cannot find your player.' });
-  } else if (uiRouter.channel.phase !== CHANNEL_PHASES.IN_GAME) {
-    return uiRouter.rootUIRoute.getUIMessage(uiRouter, {});
-  } else if (!uiRouter.gamer) {
+  if (!uiRouter.gamer) {
     // TODO: something else if you have no gamer.
   }
   let action = parsedPayload.actions[0];
@@ -50,11 +46,7 @@ function processActions(uiRouter, parsedPayload, args) {
  * @return {Promise<UIMessage,Error>}
  */
 function getUIMessage(uiRouter, args) {
-  if (!uiRouter.player) {
-    return uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text: 'Error: Cannot find your player.' });
-  } else if (uiRouter.channel.phase !== CHANNEL_PHASES.IN_GAME) {
-    return uiRouter.rootUIRoute.getUIMessage(uiRouter, {});
-  } else if (!uiRouter.gamer) {
+  if (!uiRouter.gamer) {
     // TODO: something else if you have no gamer.
   }
   const spell = spells.find(item => item.id === args.spellId);
@@ -65,10 +57,22 @@ function getUIMessage(uiRouter, args) {
   }
 }
 
+/**
+ *
+ * @param {UIRouter} uiRouter
+ * @param {string} path
+ * @param {ParsedSlackActionPayload} [parsedPayload]
+ * @return ?UIMessage
+ */
+function validateRoute(uiRouter, path, parsedPayload) {
+  return null;
+}
+
 const /** @type UIRoute */ uiRoute = {
   route: new Route('/gamemenu/castspell/:spellId'),
   processActions,
-  getUIMessage
+  getUIMessage,
+  validateRoute
 };
 
 module.exports = {

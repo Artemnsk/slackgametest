@@ -5,8 +5,6 @@ const gameMenuMessageFactory = require('./gamemenumessagefactory');
 const /** @type Array<Spell> */ spells = require('../../storage/spells/spells');
 const CHANNEL_PHASES = require('../../models/channel/channel').CHANNEL_PHASES;
 
-const castSpellFactory = require('./castspell/castspellmessagefactory');
-
 /**
  *
  * @param {UIRouter} uiRouter
@@ -15,11 +13,6 @@ const castSpellFactory = require('./castspell/castspellmessagefactory');
  * @return {Promise<UIMessage,Error>}
  */
 function processActions(uiRouter, parsedPayload, args) {
-  if (!uiRouter.player) {
-    return uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text: 'Error: Cannot find your player.' });
-  } else if (uiRouter.channel.phase !== CHANNEL_PHASES.IN_GAME) {
-    return uiRouter.rootUIRoute.getUIMessage(uiRouter, {});
-  }
   let action = parsedPayload.actions[0];
   switch (action.name) {
     case 'spell':
@@ -37,20 +30,35 @@ function processActions(uiRouter, parsedPayload, args) {
  * @return {Promise<UIMessage,Error>}
  */
 function getUIMessage(uiRouter, args) {
-  if (!uiRouter.player) {
-    return uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text: 'Error: Cannot find your player.' });
-  } else if (uiRouter.channel.phase !== CHANNEL_PHASES.IN_GAME) {
-    return uiRouter.rootUIRoute.getUIMessage(uiRouter, {});
-  }
   let gamerSpells = spells.filter(item => uiRouter.gamer && uiRouter.gamer.spells && uiRouter.gamer.spells[item.id] === true);
   let uiMessage = gameMenuMessageFactory(uiRouter.gamemenuUIRoute.route.reverse({}), uiRouter.gamer, gamerSpells);
   return Promise.resolve(uiMessage);
 }
 
+/**
+ *
+ * @param {UIRouter} uiRouter
+ * @param {string} path
+ * @param {ParsedSlackActionPayload} [parsedPayload]
+ * @return ?UIMessage
+ */
+function validateRoute(uiRouter, path, parsedPayload) {
+  let validateRoute = new Route('/gamemenu/*');
+  if (validateRoute.match(path)) {
+    if (!uiRouter.player) {
+      return uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text: 'Error: Cannot find your player.' });
+    } else if (uiRouter.channel.phase !== CHANNEL_PHASES.IN_GAME) {
+      return uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text: 'Error: Wrong game phase.' });
+    }
+  }
+  return null;
+}
+
 const /** @type UIRoute */ uiRoute = {
   route: new Route('/gamemenu'),
   processActions,
-  getUIMessage
+  getUIMessage,
+  validateRoute
 };
 
 module.exports = {
