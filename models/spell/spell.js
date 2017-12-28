@@ -45,15 +45,19 @@ class Spell {
    * @return boolean|string
    */
   validateGamerCast(gamer) {
-    // TODO: there is first extension for mana and mana-free spells.
-    if (gamer.spells && gamer.spells[this.id] === true) {
-      if (!this.params.manacost || gamer.mana >= this.params.manacost) {
-        return true;
-      } else {
-        return 'You have not enough mana.';
-      }
+    if (gamer.dead === true) {
+      return 'You are dead.';
     } else {
-      return 'You have no this spell.';
+      // TODO: there is first extension for mana and mana-free spells.
+      if (gamer.spells && gamer.spells[this.id] === true) {
+        if (!this.params.manacost || gamer.mana >= this.params.manacost) {
+          return true;
+        } else {
+          return 'You have not enough mana.';
+        }
+      } else {
+        return 'You have no this spell.';
+      }
     }
   }
 

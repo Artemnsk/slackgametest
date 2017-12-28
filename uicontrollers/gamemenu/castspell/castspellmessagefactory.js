@@ -19,24 +19,41 @@ function castSpellFactory(callback_id, channel, game, gamer, spell) {
   let uiAttachments = [];
   uiAttachments.push(gameTitleFactory(callback_id, gamer));
   uiAttachments.push(spellInfoFactory(spell, callback_id));
-  let footerUIAttachments = {
-    text: spell.validateGamerCast(gamer),
-    color: "#1E09C9",
-    attachment_type: "default",
-    callback_id: callback_id,
-    actions: []
-  };
-  footerUIAttachments.actions.push({
-    name: "back",
-    text: ":back:",
-    type: "button",
-    value: "back"
-  });
-  let castSpellAction = spell.getCastForm(callback_id, game, gamer);
-  if (castSpellAction) {
-    footerUIAttachments.actions.push(castSpellAction);
+  if (gamer.dead === true) {
+    let footerUIAttachments = {
+      text: '',
+      color: "#1E09C9",
+      attachment_type: "default",
+      callback_id: callback_id,
+      actions: [{
+        name: "back",
+        text: ":back:",
+        type: "button",
+        value: "back"
+      }]
+    };
+    uiAttachments.push(footerUIAttachments);
+  } else {
+    let validateSpell = spell.validateGamerCast(gamer);
+    let footerUIAttachments = {
+      text: validateSpell === true ? '' : validateSpell,
+      color: "#1E09C9",
+      attachment_type: "default",
+      callback_id: callback_id,
+      actions: []
+    };
+    footerUIAttachments.actions.push({
+      name: "back",
+      text: ":back:",
+      type: "button",
+      value: "back"
+    });
+    let castSpellAction = spell.getCastForm(callback_id, game, gamer);
+    if (castSpellAction) {
+      footerUIAttachments.actions.push(castSpellAction);
+    }
+    uiAttachments.push(footerUIAttachments);
   }
-  uiAttachments.push(footerUIAttachments);
   castSpellUIMessage.setUIAttachments(uiAttachments);
   return castSpellUIMessage;
 }

@@ -7,17 +7,27 @@ const /** @type Array<Spell> */ spells = require('../../storage/spells/spells');
 /**
  * Provides with game menu UI element.
  * @param {string} callback_id
- * @param {Gamer} gamer
+ * @param {?Gamer} gamer
  * @param {Array<Spell>} gamerSpells
  * @return {UIMessage}
  */
 function gameMenuFactory(callback_id, gamer, gamerSpells) {
-  const breakMenuUIMessage = new UIMessage();
+  const gameMenuUIMessage = new UIMessage();
   let uiAttachments = [];
-  uiAttachments.push(gameTitleFactory(callback_id, gamer));
-  uiAttachments.push(_getSpells(callback_id, gamerSpells));
-  breakMenuUIMessage.setUIAttachments(uiAttachments);
-  return breakMenuUIMessage;
+  if (!gamer) {
+    // Non-gamer menu.
+    uiAttachments.push(gameTitleFactory(callback_id, gamer));
+  } else if (gamer.dead === true) {
+    // Dead gamer menu.
+    uiAttachments.push(gameTitleFactory(callback_id, gamer));
+    uiAttachments.push(_getSpells(callback_id, gamerSpells));
+  } else {
+    // Default game menu.
+    uiAttachments.push(gameTitleFactory(callback_id, gamer));
+    uiAttachments.push(_getSpells(callback_id, gamerSpells));
+  }
+  gameMenuUIMessage.setUIAttachments(uiAttachments);
+  return gameMenuUIMessage;
 }
 
 /**
