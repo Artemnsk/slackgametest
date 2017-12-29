@@ -10,15 +10,15 @@ That is pretty easy. Go to Slack API pages and create an app. You don't have to 
 Ensure that your future webserver is accessible externally. Slack will use your
 webserver externally even if your webserver is local.
 
-Use your external IP address to set the following Slack credentials:
+Do the steps below in the Slack app settings.
 
-1. **Interactive Components** > **Request URL**
- - \<IP address\>/slacktestgame/actions
-2. **Slach Commands** > **Add New Command** > **Request URL**
- - \<IP address\>/slacktestgame/commands
-3. **OAuth&Permissions** > **Redirect URLs**
- - \<IP address\>/slacktestgame/authorize/complete
- - // TODO: maybe localhost/slacktestgame/authorize/complete. Better to add both for now :)
+1. Add an interactive component and set **Interactive Components** > **Request URL** to `http://<YOUR_EXTERNAL_IP_ADDRESS>/slacktestgame/actions`
+2. Add a slack command and set **Slack Commands** > **Add New Command** > **Request URL** to `http://<YOUR_EXTERNAL_IP_ADDRESS>/slacktestgame/commands`
+3. Set **OAuth And Permissions** > **Redirect URLs** to:
+ - `http://<YOUR_EXTERNAL_IP_ADDRESS>/slacktestgame/authorize/complete`
+ - // TODO: maybe `http://localhost/slacktestgame/authorize/complete`. Better to add both for now :)
+4. Create a bot user under **Bot Users** tab.
+5. Add permissions at **OAuth And Permissions** > **Scopes** > **Select Permission Scopes**. List of required permissions is located in `/controllers/authorize/index.js:authorizeRequest()->'scope'`. If some settings/permissions change in the future you can keep reinstalling the app.
 
 Go to your project app. Copy `private.js` and `public.js` from `/credentials/example` directory into `/credentials`.
 Set the following keys there:
@@ -121,13 +121,13 @@ $ firebase deploy --only database
 ```
 
 ### 3. Install game app in Slack team.
-Turn on your local webserver
+Turn on your local webserver. Go to the project directory and execute:
 
 ```
-$ node index.js
+$ npm start
 ```
 
-Then go to *\<IP address\>/slacktestgame/authorize/request*. Install this app
+Then go to `http://<YOUR_EXTERNAL_IP_ADDRESS>/slacktestgame/authorize/request`. Install this app
 in your team.
 There could be problems if previously you was logged in via browser into
 a different team. Log into your dev team for your Slack app in browser, and
@@ -136,7 +136,7 @@ then visit specified URL again.
 Once you install the Slack app in your team run installation prompt app:
 
 ```
-$ node install/install.js
+$ npm run configure
 ```
 
 Ensure that your team appeared there and you are admin of it.
