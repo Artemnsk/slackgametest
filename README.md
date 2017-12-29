@@ -84,6 +84,12 @@ To deploy your application into Firebase use:
 $ firebase deploy
 ```
 
+from `/firebase` directory. Also, before first deployment you'll need to go to `/firebase/functions` and run:
+
+```˚
+$ npm install
+```
+
 You also can provide additional optional arguments. For example, to only deploy database schema:
 
 ```
