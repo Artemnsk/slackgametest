@@ -8,3 +8,4 @@ credentials/*
 /firebase-debug.log
 /.firebaserc
 /firebase/db/rules.json
+.DS_Store
