@@ -8,8 +8,8 @@ const RAW_ACTION_TYPES = require('../../models/rawaction/rawaction').RAW_ACTION_
  * @property {string} label
  * @property {string} description
  * @property {boolean} consumable
- * @property {number} [quantity]
- * @property {{damage: ?number, manacost: ?number}} ?params
+ * @property {?number} quantity
+ * @property {Object} [params]
  */
 
 /**
@@ -28,6 +28,8 @@ class Item {
     this.label = itemData.label;
     this.description = itemData.description;
     this.params = itemData.params;
+    this.consumable = itemData.consumable;
+    this.quantity = this.consumable ? itemData.quantity : null;
   }
 
   getInfo() {

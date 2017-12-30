@@ -5,6 +5,8 @@ const dagger = new Item({
   id: "dagger",
   label: "Steel Dagger",
   description: "This is simple steel dagger. Nothing special.",
+  consumable: false,
+  quantity: null,
   params: {
     damage: 5
   }
