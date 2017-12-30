@@ -26,6 +26,19 @@ function gameMenuFactory(callback_id, gamer, gamerSpells) {
     uiAttachments.push(gameTitleFactory(callback_id, gamer));
     uiAttachments.push(_getSpells(callback_id, gamerSpells));
   }
+  let bottomMenu = {
+    text: '',
+    color: "#950001",
+    callback_id,
+    attachment_type: "default",
+    actions: [{
+      name: "navigation",
+      text: ":man-woman-girl-boy: Stats",
+      type: "button",
+      value: 'stats'
+    }]
+  };
+  uiAttachments.push(bottomMenu);
   gameMenuUIMessage.setUIAttachments(uiAttachments);
   return gameMenuUIMessage;
 }
