@@ -8,23 +8,28 @@ const /** @type Array<Spell> */ spells = require('../../storage/spells/spells');
  * Provides with game menu UI element.
  * @param {string} callback_id
  * @param {?Gamer} gamer
- * @param {Array<Spell>} gamerSpells
  * @return {UIMessage}
  */
-function gameMenuFactory(callback_id, gamer, gamerSpells) {
+function gameMenuFactory(callback_id, gamer) {
   const gameMenuUIMessage = new UIMessage();
   let uiAttachments = [];
+  let gamerSpellActions = _getSpellActions(callback_id, gamer);
+  let gametItemActions = _getItemActions(callback_id, gamer);
+  let gamerActions = gamerSpellActions.concat(gametItemActions);
+  let gamerActionsAttachment = {
+    text: gamerActions.length > 0 ? "*Available actions*" : "*Nothing to use*",
+    color: "#a333a1",
+    callback_id,
+    attachment_type: "default",
+    actions: gamerActions
+  };
   if (!gamer) {
     // Non-gamer menu.
     uiAttachments.push(gameTitleFactory(callback_id, gamer));
-  } else if (gamer.dead === true) {
-    // Dead gamer menu.
-    uiAttachments.push(gameTitleFactory(callback_id, gamer));
-    uiAttachments.push(_getSpells(callback_id, gamerSpells));
   } else {
-    // Default game menu.
+    // Both Dead gamer menu and Default game menu.
     uiAttachments.push(gameTitleFactory(callback_id, gamer));
-    uiAttachments.push(_getSpells(callback_id, gamerSpells));
+    uiAttachments.push(gamerActionsAttachment);
   }
   let bottomMenu = {
     text: '',
@@ -46,12 +51,13 @@ function gameMenuFactory(callback_id, gamer, gamerSpells) {
 /**
  *
  * @param {string} callback_id
- * @param {Array<Spell>} gamerSpells
- * @return Object
+ * @param {Gamer} gamer
+ * @return Array<Object>
  * @private
  */
-function _getSpells(callback_id, gamerSpells) {
-  let actions = gamerSpells.map(item => {
+function _getSpellActions(callback_id, gamer) {
+  let gamerSpells = gamer.getSpells();
+  return gamerSpells.map(item => {
       return {
         name: "spell",
         text: item.emoji,
@@ -59,13 +65,25 @@ function _getSpells(callback_id, gamerSpells) {
         value: item.id
       };
   });
-  return {
-    text: actions.length > 0 ? "*Spells*" : "*No spells available*",
-    color: "#a333a1",
-    callback_id,
-    attachment_type: "default",
-    actions
-  };
+}
+
+/**
+ *
+ * @param {string} callback_id
+ * @param {Gamer} gamer
+ * @return Array<Object>
+ * @private
+ */
+function _getItemActions(callback_id, gamer) {
+  let gamerSpells = gamer.getItems();
+  return gamerSpells.map(item => {
+      return {
+        name: "item",
+        text: item.emoji,
+        type: "button",
+        value: item.id
+      };
+  });
 }
 
 module.exports = gameMenuFactory;

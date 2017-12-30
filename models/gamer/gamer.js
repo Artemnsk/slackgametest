@@ -1,3 +1,6 @@
+const /** @type Array<Spell> */ spells = require('../../storage/spells/spells');
+const /** @type Array<Item> */ items = require('../../storage/items/items');
+
 /**
  *
  * @typedef {Object} GamerFirebaseValue
@@ -6,6 +9,7 @@
  * @property {number} health
  * @property {number} mana
  * @property {Object.<string,boolean>} [spells]
+ * @property {Object.<string,boolean>} [items]
  */
 
 class Gamer {
@@ -15,6 +19,7 @@ class Gamer {
    * @constructor
    * @extends GameFirebaseValue
    * @property {Object.<string,boolean>} spells
+   * @property {Object.<string,boolean>} items
    * @property {string} $key - Database key of this player.
    * @property {string} $gameKey - Database key of player game.
    * @property {string} $channelKey - Database key of player channel.
@@ -27,6 +32,7 @@ class Gamer {
     this.health = values.health;
     this.mana = values.mana;
     this.spells = values.spells ? values.spells : {};
+    this.items = values.items ? values.items : {};
     this.$key = values.$key;
     this.$gameKey = values.$gameKey;
     this.$channelKey = values.$channelKey;
@@ -46,6 +52,22 @@ class Gamer {
 
   /**
    *
+   * @return {Array<Spell>}
+   */
+  getSpells() {
+    return spells.filter(spell => this.spells && this.spells[spell.id] === true);
+  }
+
+  /**
+   *
+   * @return {Array<Item>}
+   */
+  getItems() {
+    return items.filter(item => this.items && this.items[item.id] === true);
+  }
+
+  /**
+   *
    * @return {GamerFirebaseValue}
    */
   getFirebaseValue() {
@@ -54,7 +76,8 @@ class Gamer {
       dead: this.dead,
       health: this.health,
       mana: this.mana,
-      spells: this.spells
+      spells: this.spells,
+      items: this.items
     });
   }
 }

@@ -1,4 +1,5 @@
 const CAST_SPELL = 'CAST_SPELL';
+const USE_ITEM = 'USE_ITEM';
 const getRecentDBRawAction = require('./dbfirebase').getRecentDBRawAction;
 const removeDBRawAction = require('./dbfirebase').removeDBRawAction;
 const addDBRawAction = require('./dbfirebase').addDBRawAction;
@@ -8,7 +9,8 @@ const addDBRawAction = require('./dbfirebase').addDBRawAction;
  * @enum {string}
  */
 const RAW_ACTION_TYPES = {
-  CAST_SPELL
+  CAST_SPELL,
+  USE_ITEM
 };
 
 class RawAction {
