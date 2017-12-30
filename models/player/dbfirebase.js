@@ -6,6 +6,7 @@ const /** @type admin.app.App */ firebaseApp = require('../../helpers/firebaseap
  * @property {boolean} active
  * @property {string} name
  * @property {number} gold
+ * @property {Object<string,boolean>} [items]
  */
 
 /**

@@ -59,7 +59,7 @@ class Game {
   static assignSpells(gamers, quantity) {
     for (let gamerKey in gamers) {
       let /** @type Object<string,boolean> */ currentGamerSpells = {};
-      for (let i = 0; i < quantity; i++) {
+      for (let i = 0; i < Math.min(quantity, spells.length); i++) {
         let j = null;
         // If it is first iteration or this spell already being added.
         while (j === null || currentGamerSpells[spells[j].id] === true) {

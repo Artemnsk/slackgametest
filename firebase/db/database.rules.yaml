@@ -11,8 +11,9 @@ functions:
   - isValidGamer(teamKey, channelKey, gamerKey): prev.exists() || playerExists(teamKey, channelKey, gamerKey)
 
   # Raw Actions validation.
-  - validRawAction(rawAction): validCastSpellRawAction(rawAction) # .. || valid<OTHER_TYPE>RawAction ... and so on.
+  - validRawAction(rawAction): validCastSpellRawAction(rawAction) || validUseItemRawAction(rawAction)
   - validCastSpellRawAction(rawAction): rawAction.type === 'CAST_SPELL' && rawAction.params.spellId.exists()
+  - validUseItemRawAction(rawAction): rawAction.type === 'USE_ITEM' && rawAction.params.itemId.exists()
 
 schema:
   type: object
@@ -110,6 +111,10 @@ schema:
                 type: string
               gold:
                 type: number
+              items:
+                type: object
+                ~$itemId:
+                  type: boolean
     # Games created per each channel
     games:
       type: object
@@ -153,6 +158,10 @@ schema:
                       type: object
                       ~$spell:
                         type: boolean
+                    items:
+                      type: object
+                      ~$itemId:
+                        type: boolean
     # Raw Actions for games.
     rawActions:
       type: object
@@ -172,7 +181,7 @@ schema:
               properties:
                 type:
                   type: string
-                  enum: ['CAST_SPELL']
+                  enum: ['CAST_SPELL', 'USE_ITEM']
                 target:
                   type: string
                   constraint: (!next.exists() || gamerExists($teamKey, $channelKey, $gameKey, next))
@@ -184,6 +193,8 @@ schema:
                   additionalProperties: false
                   properties:
                     spellId:
+                      type: string
+                    itemId:
                       type: string
 
 

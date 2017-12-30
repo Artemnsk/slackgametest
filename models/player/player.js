@@ -5,17 +5,19 @@ const setDBPlayer = require('./dbfirebase').setDBPlayer;
 class Player {
   /**
    *
-   * @param {PlayerFirebaseValue & {$key: string, $channelKey: string, $teamKey: string} values
+   * @param {PlayerFirebaseValue & {$key: string, $channelKey: string, $teamKey: string}} values
    * @constructor
    * @extends PlayerFirebaseValue
    * @property {string} $key - Database key of this player.
    * @property {string} $channelKey - Database key of player channel.
    * @property {string} $teamKey - Database key of player team.
+   * @property {Object.<string,boolean>} items
    */
   constructor(values) {
     this.active = values.active;
     this.name = values.name;
     this.gold = values.gold;
+    this.items = values.items ? values.items : {};
     this.$key = values.$key;
     this.$channelKey = values.$channelKey;
     this.$teamKey = values.$teamKey;
@@ -31,7 +33,8 @@ class Player {
       dead: false,
       // TODO: set somewhere? Maybe channel/game setting?
       health: 100,
-      mana: 40
+      mana: 40,
+      items: this.items
     };
   }
 
@@ -43,7 +46,8 @@ class Player {
     return Object.assign({}, {
       active: this.active,
       name: this.name,
-      gold: this.gold
+      gold: this.gold,
+      items: this.items
     });
   }
 

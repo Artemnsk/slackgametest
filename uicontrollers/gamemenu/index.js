@@ -18,6 +18,9 @@ function processActions(uiRouter, parsedPayload, args) {
     case 'spell':
       return uiRouter.castspellUIRoute.getUIMessage(uiRouter, { spellId: action.value });
       break;
+    case 'item':
+      return uiRouter.useItemUIRoute.getUIMessage(uiRouter, { itemId: action.value });
+      break;
     case 'navigation':
       switch (action.value) {
         case 'stats':
@@ -38,8 +41,7 @@ function processActions(uiRouter, parsedPayload, args) {
  */
 function getUIMessage(uiRouter, args) {
   // Normal game menu.
-  let gamerSpells = uiRouter.gamer ? spells.filter(item => uiRouter.gamer && uiRouter.gamer.spells && uiRouter.gamer.spells[item.id] === true) : [];
-  let uiMessage = gameMenuMessageFactory(uiRouter.gamemenuUIRoute.route.reverse({}), uiRouter.gamer, gamerSpells);
+  let uiMessage = gameMenuMessageFactory(uiRouter.gamemenuUIRoute.route.reverse({}), uiRouter.gamer);
   return Promise.resolve(uiMessage);
 }
 
