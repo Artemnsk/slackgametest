@@ -9,6 +9,7 @@ const /** @type UIRoute */ spellbookUIRoute = require('./breakmenu/spellbook/ind
 const /** @type UIRoute */ spellinfoUIRoute = require('./breakmenu/spellbook/spellinfo/index').uiRoute;
 const /** @type UIRoute */ gamemenuUIRoute = require('./gamemenu/index').uiRoute;
 const /** @type UIRoute */ castspellUIRoute = require('./gamemenu/castspell/index').uiRoute;
+const /** @type UIRoute */ gamersListUIRoute = require('./gamemenu/gamerslist/index').uiRoute;
 
 // TODO: actually we can make prototype which can be used with reassigning game data for better performance.
 class UIRouter {
@@ -33,6 +34,7 @@ class UIRouter {
    * @property {UIRoute} spellinfoUIRoute
    * @property {UIRoute} gamemenuUIRoute
    * @property {UIRoute} castspellUIRoute
+   * @property {UIRoute} gamersListUIRoute
    */
   constructor(team, channel, player, game, gamer) {
     this.team = team;
@@ -50,6 +52,7 @@ class UIRouter {
     this.spellinfoUIRoute = spellinfoUIRoute;
     this.gamemenuUIRoute = gamemenuUIRoute;
     this.castspellUIRoute = castspellUIRoute;
+    this.gamersListUIRoute = gamersListUIRoute;
   }
 
   /**
@@ -68,7 +71,8 @@ class UIRouter {
       this.spellbookUIRoute,
       this.spellinfoUIRoute,
       this.gamemenuUIRoute,
-      this.castspellUIRoute
+      this.castspellUIRoute,
+      this.gamersListUIRoute
     ];
     // Validation by path.
     for (let i = 0; i < uiRoutes.length; i++) {
@@ -98,6 +102,8 @@ class UIRouter {
       return this.gamemenuUIRoute.processActions(this, parsedPayload, args);
     } else if (args = this.castspellUIRoute.route.match(path)) {
       return this.castspellUIRoute.processActions(this, parsedPayload, args);
+    } else if (args = this.gamersListUIRoute.route.match(path)) {
+      return this.gamersListUIRoute.processActions(this, parsedPayload, args);
     } else {
       let text = 'Route not found.';
       return this.informationMessageUIRoute.getUIMessage(this, { text })

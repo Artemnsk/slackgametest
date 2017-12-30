@@ -34,6 +34,17 @@ class Gamer {
   }
 
   /**
+   * @return string
+   */
+  getGameStats() {
+    if (this.dead) {
+      return `${this.name} DEAD`;
+    } else {
+      return `\`${this.name}\` :heart:${this.health} :large_blue_diamond:${this.mana}`;
+    }
+  }
+
+  /**
    *
    * @return {GamerFirebaseValue}
    */

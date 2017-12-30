@@ -18,6 +18,13 @@ function processActions(uiRouter, parsedPayload, args) {
     case 'spell':
       return uiRouter.castspellUIRoute.getUIMessage(uiRouter, { spellId: action.value });
       break;
+    case 'navigation':
+      switch (action.value) {
+        case 'stats':
+          return uiRouter.gamersListUIRoute.getUIMessage(uiRouter, {});
+          break;
+      }
+      break;
   }
   // TODO: error?
   return null;
