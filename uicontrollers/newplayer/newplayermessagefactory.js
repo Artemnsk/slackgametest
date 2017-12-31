@@ -11,7 +11,7 @@ const CREATE_NEW_PLAYER_YES = 'yes';
  */
 function newPlayerFactory(callback_id) {
   const newPlayerUIMessage = new UIMessage();
-  let uiAttachments = [];
+  let /** @type Array<SlackMessageAttachment> */ uiAttachments = [];
   uiAttachments.push({
     text: 'You have no player in this game yet. Do you want to create new one?',
     color: "#3AA3E3",

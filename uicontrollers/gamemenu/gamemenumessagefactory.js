@@ -12,10 +12,10 @@ const /** @type Array<Spell> */ spells = require('../../storage/spells/spells');
  */
 function gameMenuFactory(callback_id, gamer) {
   const gameMenuUIMessage = new UIMessage();
-  let uiAttachments = [];
+  let /** @type Array<SlackMessageAttachment> */ uiAttachments = [];
   let gamerSpellActions = _getSpellActions(callback_id, gamer);
-  let gametItemActions = _getItemActions(callback_id, gamer);
-  let gamerActions = gamerSpellActions.concat(gametItemActions);
+  let gamerItemActions = _getItemActions(callback_id, gamer);
+  let gamerActions = gamerSpellActions.concat(gamerItemActions);
   let gamerActionsAttachment = {
     text: gamerActions.length > 0 ? "*Available actions*" : "*Nothing to use*",
     color: "#a333a1",
@@ -52,7 +52,7 @@ function gameMenuFactory(callback_id, gamer) {
  *
  * @param {string} callback_id
  * @param {Gamer} gamer
- * @return Array<Object>
+ * @return Array<SlackMessageActionButton>
  * @private
  */
 function _getSpellActions(callback_id, gamer) {

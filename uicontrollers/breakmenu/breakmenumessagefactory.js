@@ -12,7 +12,7 @@ const breakTitleFactory = require('../_partials/breaktitlefactory');
  */
 function breakMenuFactory(callback_id, channel, player) {
   const breakMenuUIMessage = new UIMessage();
-  let uiAttachments = [];
+  let /** @type Array<SlackMessageAttachment> */ uiAttachments = [];
   uiAttachments.push(breakTitleFactory(callback_id, channel, player));
   uiAttachments.push({
     text: '',

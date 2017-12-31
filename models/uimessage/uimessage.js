@@ -1,6 +1,11 @@
 "use strict";
 
 class UIMessage {
+  /**
+   * @constructor
+   * @property {Object} sendParameters
+   * @property {Array<SlackMessageAttachment>} uiAttachments
+   */
   constructor() {
     this.sendParameters = {};
     this.uiAttachments = [];
@@ -8,7 +13,7 @@ class UIMessage {
 
   /**
    *
-   * @param {Array<Object>} uiAttachments
+   * @param {Array<SlackMessageAttachment>} uiAttachments
    */
   setUIAttachments(uiAttachments) {
     this.uiAttachments = uiAttachments;

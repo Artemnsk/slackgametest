@@ -2,8 +2,6 @@
 
 const UIMessage = require('../../../models/uimessage/uimessage');
 const gameTitleFactory = require('../../_partials/gametitlefactory');
-const /** @type Array<Spell> */ spells = require('../../../storage/spells/spells');
-const spellInfoFactory = require('../../_partials/spellinfofactory');
 
 /**
  * Provides with spell UI element.
@@ -16,9 +14,9 @@ const spellInfoFactory = require('../../_partials/spellinfofactory');
  */
 function castSpellFactory(callback_id, channel, game, gamer, spell) {
   const castSpellUIMessage = new UIMessage();
-  let uiAttachments = [];
+  let /** @type Array<SlackMessageAttachment> */ uiAttachments = [];
   uiAttachments.push(gameTitleFactory(callback_id, gamer));
-  uiAttachments.push(spellInfoFactory(spell, callback_id));
+  uiAttachments = uiAttachments.concat(spell.getSlackInfo(callback_id));
   if (gamer.dead === true) {
     let footerUIAttachments = {
       text: '',

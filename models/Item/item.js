@@ -32,16 +32,6 @@ class Item {
     this.quantity = this.consumable ? itemData.quantity : null;
   }
 
-  getInfo() {
-    return [
-      {
-        title: "Description",
-        value: this.description,
-        short: false
-      }
-    ];
-  }
-
   /**
    *
    * @param {Gamer} gamer
@@ -69,7 +59,7 @@ class Item {
    * @param {string} callback_id
    * @param {Game} game
    * @param {Gamer} gamer
-   * @return ?Object
+   * @return ?SlackMessageAction
    */
   getUsageForm(callback_id, game, gamer) {
     if (this.validateGamerUsage(gamer) === true) {
@@ -130,6 +120,27 @@ class Item {
         break;
     }
     return Promise.resolve(false);
+  }
+
+  /**
+   * Responds with array of attachments.
+   * @param {string} callback_id
+   * @return {Array<SlackMessageAttachment>}
+   */
+  getSlackInfo(callback_id) {
+    return [{
+      author_name: `${this.emoji}${this.label}`,
+      fields: [
+        {
+          title: "Description",
+          value: this.description,
+          short: false
+        }
+      ],
+      color: "#3AA3E3",
+      attachment_type: "default",
+      callback_id,
+    }];
   }
 }
 

@@ -6,7 +6,7 @@ module.exports = gameTitleFactory;
  *
  * @param {string} callback_id
  * @param {?Gamer} gamer
- * @return Object
+ * @return SlackMessageAttachment
  */
 function gameTitleFactory(callback_id, gamer) {
   if (!gamer) {
