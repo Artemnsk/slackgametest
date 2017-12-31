@@ -7,16 +7,16 @@ const spells = require('../../../storage/spells/spells');
 /**
  *
  * @param {string} callback_id
- * @return Object
+ * @return SlackMessageAttachment
  * @private
  */
 function _getSpells(callback_id) {
-  let attachment = {
+  let /** @type SlackMessageAttachment */ attachment = {
     color: "#a333a1",
     callback_id,
     attachment_type: "default"
   };
-  var actions = [];
+  let actions = [];
   for (let i = 0; i < spells.length; i++) {
     actions.push({
       name: "spell",
@@ -43,7 +43,7 @@ function _getSpells(callback_id) {
  */
 function spellBookFactory(callback_id, channel, player) {
   const spellBookUIMessage = new UIMessage();
-  let uiAttachments = [];
+  let /** @type Array<SlackMessageAttachment> */ uiAttachments = [];
   uiAttachments.push(breakTitleFactory(callback_id, channel, player));
   uiAttachments.push(_getSpells(callback_id));
   uiAttachments.push({

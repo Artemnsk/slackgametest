@@ -25,20 +25,6 @@ class Spell {
     this.params = spellData.params;
   }
 
-  getInfo() {
-    return [
-      {
-        title: "Description",
-        value: this.description,
-        short: false
-      }, {
-        title: "Damage",
-        value: this.params.damage,
-        short: true
-      }
-    ];
-  }
-
   /**
    *
    * @param {Gamer} gamer
@@ -66,7 +52,7 @@ class Spell {
    * @param {string} callback_id
    * @param {Game} game
    * @param {Gamer} gamer
-   * @return ?Object
+   * @return ?SlackMessageAction
    */
   getCastForm(callback_id, game, gamer) {
     if (this.validateGamerCast(gamer) === true) {
@@ -127,6 +113,32 @@ class Spell {
         break;
     }
     return Promise.resolve(false);
+  }
+
+  /**
+   * Responds with array of attachments.
+   * @param {string} callback_id
+   * @return {Array<SlackMessageAttachment>}
+   */
+  getSlackInfo(callback_id) {
+    let /** @type SlackMessageAttachment */ attachment = {
+      author_name: `${this.emoji}${this.label}`,
+      fields: [
+        {
+          title: "Description",
+          value: this.description,
+          short: false
+        }, {
+          title: "Damage",
+          value: this.params.damage,
+          short: true
+        }
+      ],
+      color: "#3AA3E3",
+      attachment_type: "default",
+      callback_id,
+    };
+    return [ attachment ];
   }
 }
 

@@ -12,7 +12,7 @@ const gameTitleFactory = require('../../_partials/gametitlefactory');
  */
 function gamersListMessageFactory(callback_id, game, gamer) {
   const gamersListUIMessage = new UIMessage();
-  let uiAttachments = [];
+  let /** @type Array<SlackMessageAttachment> */ uiAttachments = [];
   uiAttachments.push(gameTitleFactory(callback_id, gamer));
   let /** @type Array<Gamer> */ gamers = [];
   for (let gamerKey in game.gamers) {

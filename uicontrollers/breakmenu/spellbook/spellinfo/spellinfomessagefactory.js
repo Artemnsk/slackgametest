@@ -2,7 +2,6 @@
 
 const UIMessage = require('../../../../models/uimessage/uimessage');
 const breakTitleFactory = require('../../../_partials/breaktitlefactory');
-const spellInfoFactory = require('../../../_partials/spellinfofactory');
 
 /**
  * Provides with spell UI element.
@@ -14,11 +13,9 @@ const spellInfoFactory = require('../../../_partials/spellinfofactory');
  */
 function spellFactory(callback_id, channel, player, spell) {
   const spellUIMessage = new UIMessage();
-  let uiAttachments = [];
+  let /** @type Array<SlackMessageAttachment> */ uiAttachments = [];
   uiAttachments.push(breakTitleFactory(callback_id, channel, player));
-
-  uiAttachments.push(spellInfoFactory(spell, callback_id));
-
+  uiAttachments = uiAttachments.concat(spell.getSlackInfo(callback_id));
   uiAttachments.push({
     text: '',
     color: "#3AA3E3",

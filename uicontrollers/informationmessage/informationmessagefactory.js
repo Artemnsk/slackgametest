@@ -13,7 +13,7 @@ const INFORMATION_MESSAGE_OK = 'ok';
  */
 function informationMessageFactory(callback_id, text, buttonText) {
   const informationMessageUIMessage = new UIMessage();
-  let uiAttachments = [];
+  let /** @type Array<SlackMessageAttachment> */ uiAttachments = [];
   uiAttachments.push({
     text: text,
     color: "#3AA3E3",

@@ -19,14 +19,6 @@ const CHANNEL_PHASES = require('../models/channel/channel').CHANNEL_PHASES;
  * @return {Promise.<UIMessage,Error>}
  */
 function processActions(uiRouter, parsedPayload, args) {
-  // TODO: actually nothing is supposed to be submitted in 'root'.
-  // TODO: from commands parsedpayload is empty.
-  // if (!parsedPayload || !parsedPayload.actions || parsedPayload.actions.length === 0) {
-  //   if (!uiRouter.player) {
-  //     return uiRouter.newplayerUIRoute.getUIMessage(uiRouter, {});
-  //   }
-  //   return uiRouter.breakmenuUIRoute.getUIMessage(uiRouter, {});
-  // }
   let uiMessage = getUIMessage(uiRouter, {});
   return Promise.resolve(uiMessage);
 }

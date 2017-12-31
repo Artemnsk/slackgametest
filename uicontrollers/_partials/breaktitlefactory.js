@@ -11,7 +11,7 @@ const daySizeMs = 24 * 60 * 60 * 1000;
  * @param {string} callback_id
  * @param {Channel} channel
  * @param {Player} player
- * @return Object
+ * @return SlackMessageAttachment
  */
 function breakTitleFactory(callback_id, channel, player) {
   let newGameTimer = _getNextGameTime(channel.nextGame);
