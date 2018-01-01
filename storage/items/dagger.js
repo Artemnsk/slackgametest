@@ -1,15 +1,15 @@
-const Item = require('../../models/item/item').Item;
-
-const dagger = new Item({
-  emoji: ":dagger_knife:",
-  id: "dagger",
-  label: "Steel Dagger",
-  description: "This is simple steel dagger. Nothing special.",
-  consumable: false,
-  quantity: null,
-  params: {
-    damage: 5
-  }
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const item_1 = require("../../models/Item/item");
+exports.dagger = new item_1.Item({
+    consumable: false,
+    description: "This is simple steel dagger. Nothing special.",
+    emoji: ":dagger_knife:",
+    id: "dagger",
+    label: "Steel Dagger",
+    params: {
+        damage: 5,
+    },
+    quantity: null,
 });
-
-module.exports = dagger;
+//# sourceMappingURL=dagger.js.map

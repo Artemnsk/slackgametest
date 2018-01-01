@@ -1,58 +1,55 @@
-const /** @type admin.app.App */ firebaseApp = require('../../helpers/firebaseapp');
-
-/**
- * Data format received from Firebase.
- * @typedef {Object} PlayerFirebaseValue
- * @property {boolean} active
- * @property {string} name
- * @property {number} gold
- * @property {Object<string,boolean>} [items]
- */
-
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const firebaseapp_1 = require("../../helpers/firebaseapp");
+function processFirebaseRawValues(value) {
+    return Object.assign(value, {
+        items: value.items === undefined ? {} : value.items,
+    });
+}
 /**
  * Load player from DB by teamKey and channelKey and playerKey.
- * @param {string} teamKey
- * @param {string} channelKey
- * @param {string} playerKey
- * @return {Promise.<?PlayerFirebaseValue,Error>}
  */
 function getDBPlayer(teamKey, channelKey, playerKey) {
-  return firebaseApp.database().ref('/players/' + teamKey + '/' + channelKey + '/' + playerKey).once('value')
-    .then((/** admin.database.DataSnapshot */ snapshot) => {
-      if (!snapshot.val()) {
-        // No channel found.
-        return Promise.resolve(null);
-      } else {
-        let /** @type PlayerFirebaseValue */ playerFirebaseValues = snapshot.val();
-        return Promise.resolve(playerFirebaseValues);
-      }
+    return firebaseapp_1.firebaseApp.database().ref(`/players/${teamKey}/${channelKey}/${playerKey}`).once("value")
+        .then((snapshot) => {
+        if (!snapshot.val()) {
+            // No channel found.
+            return Promise.resolve(null);
+        }
+        else {
+            const playerFirebaseValuesRaw = snapshot.val();
+            return Promise.resolve(processFirebaseRawValues(playerFirebaseValuesRaw));
+        }
     });
 }
-
+exports.getDBPlayer = getDBPlayer;
 /**
  * Respond with channels array from DB.
- * @param {string} teamKey
- * @param {string} channelKey
- * @param {boolean} [active] - filter by 'active' field. No filter if not set.
- * @return Promise<Object.<string,PlayerFirebaseValue>,Error>
  */
 function getDBPlayers(teamKey, channelKey, active) {
-  let reference = firebaseApp.database().ref('/players/' + teamKey + '/' + channelKey);
-  if (active !== undefined) {
-    reference = reference.orderByChild('active').equalTo(active);
-  }
-  return reference.once('value')
-    .then((/** admin.database.DataSnapshot */ snapshot) => {
-      if (!snapshot.val()) {
-        // No channels found.
-        return Promise.resolve({});
-      } else {
-        let /** @type {Object<string,PlayerFirebaseValue>} */ playersFirebaseObject = snapshot.val();
-        return Promise.resolve(playersFirebaseObject);
-      }
+    let reference = firebaseapp_1.firebaseApp.database().ref("/players/" + teamKey + "/" + channelKey);
+    if (active !== undefined) {
+        reference = reference.orderByChild("active").equalTo(active);
+    }
+    return reference.once("value")
+        .then((snapshot) => {
+        if (!snapshot.val()) {
+            // No channels found.
+            return Promise.resolve({});
+        }
+        else {
+            const playersFirebaseObjectRaw = snapshot.val();
+            const playersFirebaseObject = {};
+            for (const key in playersFirebaseObjectRaw) {
+                if (playersFirebaseObjectRaw.hasOwnProperty(key)) {
+                    playersFirebaseObject[key] = processFirebaseRawValues(playersFirebaseObjectRaw[key]);
+                }
+            }
+            return Promise.resolve(playersFirebaseObject);
+        }
     });
 }
-
+exports.getDBPlayers = getDBPlayers;
 /**
  * Sets player in DB.
  * @param {PlayerFirebaseValue} playerValues
@@ -62,11 +59,7 @@ function getDBPlayers(teamKey, channelKey, active) {
  * @return Promise.<any,Error>
  */
 function setDBPlayer(playerValues, teamKey, channelKey, playerKey) {
-  return firebaseApp.database().ref('/players/' + teamKey + '/' + channelKey + '/' + playerKey).set(playerValues);
+    return firebaseapp_1.firebaseApp.database().ref(`/players/${teamKey}/${channelKey}/${playerKey}`).set(playerValues);
 }
-
-module.exports = {
-  setDBPlayer,
-  getDBPlayers,
-  getDBPlayer
-};
+exports.setDBPlayer = setDBPlayer;
+//# sourceMappingURL=dbfirebase.js.map
