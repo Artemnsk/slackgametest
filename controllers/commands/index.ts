@@ -1,4 +1,5 @@
 import * as express from "express";
+import { CoreOptions } from "request";
 import * as request from "request";
 import { SlackGameMajorData } from "../../helpers/slackgamedata";
 import { SlackCommandRequestBody } from "../../helpers/slackmessage";
@@ -22,15 +23,15 @@ router.post("/commands", setGameData, (req: express.Request & {slackData: SlackG
         response_type: "ephemeral",
       };
       uiMessage.setSendParameters(sendParameters);
-      request(body.response_url, {
+      const coreOptions: CoreOptions = {
         headers: {
           "Content-type": "application/json",
         },
         json: uiMessage.toJSON(),
         method: "POST",
-        uri: body.response_url,
-      }, (err) => {
-        // TODO: ?
+      };
+      request(body.response_url, coreOptions, () => {
+        // TODO: I'm actually not sure we need to do anything.
       });
     });
   } else {

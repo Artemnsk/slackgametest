@@ -16,13 +16,15 @@ exports.router.post("/actions", slackActions.setGameData, (req, res) => {
             response_type: "ephemeral",
         };
         uiMessage.setSendParameters(sendParameters);
-        request(req.slackData.parsedPayload.response_url, {
+        const coreOptions = {
             headers: {
                 "Content-type": "application/json",
             },
             json: uiMessage.toJSON(),
             method: "POST",
-            uri: req.slackData.parsedPayload.response_url,
+        };
+        request(req.slackData.parsedPayload.response_url, coreOptions, () => {
+            // TODO: I'm actually not sure we need to do anything.
         });
     }, (err) => {
         // TODO: ?

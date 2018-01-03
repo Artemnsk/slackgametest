@@ -12,60 +12,53 @@ exports.router.get("/authorize/request", authorizeRequest);
 exports.router.get("/authorize/complete", authorizeComplete);
 // This URL is used as redirect_uri in OAuth process.
 // TODO: use from current URL?
-const authRedirectURL = url.format({
+const urlObject = {
     hostname: public_1.credentials.host,
     pathname: "/slacktestgame/authorize/complete",
     port: 8080,
     protocol: public_1.credentials.protocol,
-});
+};
+const authRedirectURL = url.format(urlObject);
 /**
  * Simply redirects on Slack"s authorize app page with needed data provided (like client_id).
  */
 function authorizeRequest(req, res) {
-    const redirectURL = url.format({
+    const query = {
+        client_id: public_1.credentials.client_id,
+        redirect_uri: authRedirectURL,
+        scope: "commands,bot,chat:write:bot,groups:write,users:read",
+    };
+    const urlObject = {
         hostname: "slack.com",
         pathname: "oauth/authorize",
         protocol: "https",
-        query: {
-            client_id: public_1.credentials.client_id,
-            redirect_uri: authRedirectURL,
-            scope: "commands,bot,chat:write:bot,groups:write,users:read",
-        },
-    });
+        query,
+    };
+    const redirectURL = url.format(urlObject);
     res.redirect(redirectURL);
 }
 /**
- * @typedef {Object} SuccessfulAuthorizationResponseBot
- * @property {string} bot_user_id
- * @property {string} bot_access_token
- */
-/**
- * @typedef {Object} SuccessfulAuthorizationResponse
- * @property {boolean} ok
- * @property {string} access_token
- * @property {string} scope - permissions for this token
- * @property {string} user_id
- * @property {string} team_name
- * @property {string} team_id
- * @property {SuccessfulAuthorizationResponseBot} bot
- *
  * Exchanges "code" string got from Slack on access_token:
  * 1. That will actually install app in workspace as requested by user.
  * 2. access_token then will be used to make Slack API calls which being allowed by this access_token.
  */
 function authorizeComplete(req, res, next) {
-    const code = req.query.code;
+    const slackRespones = req.query;
+    const code = slackRespones.code;
     if (code) {
         // Prepare data to be send via HTTP request.
-        const data = querystring.stringify({
+        const dataJson = {
+            client_id: public_1.credentials.client_id,
+            client_secret: private_1.credentials.client_secret,
             code,
             redirect_uri: authRedirectURL,
-        });
+        };
+        const data = querystring.stringify(dataJson);
         // Perform Basic auth using client_id and client_secret.
-        const auth = "Basic " + new Buffer(public_1.credentials.client_id + ":" + private_1.credentials.client_secret).toString("base64");
+        // const auth = "Basic " + new Buffer(publicCredentials.client_id + ":" + privateCredentials.client_secret).toString("base64");
         const options = {
             headers: {
-                "Authorization": auth,
+                // "Authorization": auth,
                 "Content-Length": Buffer.byteLength(data),
                 "Content-type": "application/x-www-form-urlencoded",
             },
@@ -82,40 +75,44 @@ function authorizeComplete(req, res, next) {
                 responseMessage += chunk;
             });
             response.on("end", () => {
-                const /** @type SuccessfulAuthorizationResponse */ responseJSON = JSON.parse(responseMessage);
+                const responseJSON = JSON.parse(responseMessage);
                 if (responseJSON.ok === true) {
                     // At first get team info in app.
                     team_1.Team.getTeam(responseJSON.team_id)
                         .then((team) => {
-                        if (team && team.admin && team.admin !== responseJSON.user_id) {
+                        if (team !== null && team.admin && team.admin !== responseJSON.user_id) {
                             res.status(500).send("App is already installed by admin and you are not app admin so we won't replace admin token with yours.");
                         }
                         else {
-                            // Save access and bot tokens into database now.
-                            // TODO: type
-                            const /** @type TeamFirebaseValue */ teamFirebaseValue = {
-                                active: true,
-                                admin: team && team.admin ? team.admin : responseJSON.user_id,
-                                botId: responseJSON.bot.bot_user_id,
-                                botToken: responseJSON.bot.bot_access_token,
-                                name: responseJSON.team_name,
-                                token: responseJSON.access_token,
-                                userId: responseJSON.user_id,
-                            };
-                            team_1.Team.setTeam(teamFirebaseValue, responseJSON.team_id)
-                                .then(() => {
-                                res.send("DONE!");
-                            }, (error) => {
-                                const errorTitle = "Something went wrong. Despite the fact app being installed in your team it probably will not work properly. Better to reinstall it. Error: " + error.message;
-                                res.status(500).send(errorTitle);
-                            });
+                            if (responseJSON.bot !== undefined) {
+                                // Save access and bot tokens into database now.
+                                const teamFirebaseValue = {
+                                    active: true,
+                                    admin: team && team.admin ? team.admin : responseJSON.user_id,
+                                    botId: responseJSON.bot.bot_user_id,
+                                    botToken: responseJSON.bot.bot_access_token,
+                                    name: responseJSON.team_name,
+                                    token: responseJSON.access_token,
+                                    userId: responseJSON.user_id,
+                                };
+                                team_1.Team.setTeam(teamFirebaseValue, responseJSON.team_id)
+                                    .then(() => {
+                                    res.send("DONE!");
+                                }, (error) => {
+                                    const errorTitle = "Something went wrong. Despite the fact app being installed in your team it probably will not work properly. Better to reinstall it. Error: " + error.message;
+                                    res.status(500).send(errorTitle);
+                                });
+                            }
+                            else {
+                                res.status(500).send("Something went wrong. Bot credentials weren't created.");
+                            }
                         }
                     }, (error) => {
                         res.status(500).send(error.message);
                     });
                 }
                 else {
-                    res.send("Something went wrong");
+                    res.status(500).send(`Something went wrong. Error code: "${responseJSON.error}".`);
                 }
             });
         });

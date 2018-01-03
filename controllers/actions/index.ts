@@ -1,4 +1,5 @@
 import * as express from "express";
+import { CoreOptions } from "request";
 import * as request from "request";
 import { SlackGameMajorData } from "../../helpers/slackgamedata";
 import { ParsedSlackActionPayload } from "../../helpers/slackmessage";
@@ -18,13 +19,15 @@ router.post("/actions", slackActions.setGameData, (req: express.Request & {slack
       response_type: "ephemeral",
     };
     uiMessage.setSendParameters(sendParameters);
-    request(req.slackData.parsedPayload.response_url, {
+    const coreOptions: CoreOptions = {
       headers: {
         "Content-type": "application/json",
       },
       json: uiMessage.toJSON(),
       method: "POST",
-      uri: req.slackData.parsedPayload.response_url,
+    };
+    request(req.slackData.parsedPayload.response_url, coreOptions, () => {
+      // TODO: I'm actually not sure we need to do anything.
     });
   }, (err) => {
     // TODO: ?
