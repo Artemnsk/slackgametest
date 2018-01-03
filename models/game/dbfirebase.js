@@ -1,94 +1,84 @@
-const /** @type admin.app.App */ firebaseApp = require('../../helpers/firebaseapp');
-
-/**
- * Data format received from Firebase.
- * @typedef {Object} GameFirebaseValue
- * @property {number} timeStep
- * @property {string} phase
- * @property {Object.<string,GamerFirebaseValue>} [gamers]
- */
-
-/**
- * Load game from DB by teamKey, channelKey and gameKey.
- * @param {string} teamKey
- * @param {string} channelKey
- * @param {string} gameKey
- * @return {Promise.<?GameFirebaseValue,Error>}
- */
-function getDBGame(teamKey, channelKey, gameKey) {
-  return firebaseApp.database().ref(`/games/${teamKey}/${channelKey}/${gameKey}`).once('value')
-    .then((/** admin.database.DataSnapshot */ snapshot) => {
-      if (!snapshot.val()) {
-        // No game found.
-        return Promise.resolve(null);
-      } else {
-        let /** @type GameFirebaseValue */ gameFirebaseValue = snapshot.val();
-        return Promise.resolve(gameFirebaseValue);
-      }
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const firebaseapp_1 = require("../../helpers/firebaseapp");
+const dbfirebase_1 = require("../gamer/dbfirebase");
+function processFirebaseRawValues(value) {
+    const gamers = {};
+    if (value.gamers !== undefined) {
+        for (const key in value.gamers) {
+            if (value.gamers.hasOwnProperty(key)) {
+                gamers[key] = dbfirebase_1.processFirebaseRawValues(value.gamers[key]);
+            }
+        }
+    }
+    return Object.assign(value, {
+        gamers,
     });
 }
-
 /**
  * Load game from DB by teamKey, channelKey and gameKey.
- * @param {string} teamKey
- * @param {string} channelKey
- * @param {string} [phase] - filter by phase
+ */
+function getDBGame(teamKey, channelKey, gameKey) {
+    return firebaseapp_1.firebaseApp.database().ref(`/games/${teamKey}/${channelKey}/${gameKey}`).once("value")
+        .then((snapshot) => {
+        if (!snapshot.val()) {
+            // No game found.
+            return Promise.resolve(null);
+        }
+        else {
+            const gameFirebaseValueRaw = snapshot.val();
+            return Promise.resolve(processFirebaseRawValues(gameFirebaseValueRaw));
+        }
+    });
+}
+exports.getDBGame = getDBGame;
+/**
+ * Load game from DB by teamKey, channelKey and gameKey.
  * @return {Promise.<Object.<string,GameFirebaseValue>,Error>}
  */
 function getDBGames(teamKey, channelKey, phase) {
-  let reference = firebaseApp.database().ref(`/games/${teamKey}/${channelKey}`);
-  if (phase !== undefined) {
-    reference = reference.orderByChild('phase').equalTo(phase);
-  }
-  return reference.once('value')
-    .then((/** admin.database.DataSnapshot */ snapshot) => {
-      if (!snapshot.val()) {
-        // No games found.
-        return Promise.resolve({});
-      } else {
-        let /** @type Object.<string,GameFirebaseValue> */ gamesFirebaseObject = snapshot.val();
-        return Promise.resolve(gamesFirebaseObject);
-      }
+    let reference = firebaseapp_1.firebaseApp.database().ref(`/games/${teamKey}/${channelKey}`);
+    if (phase !== undefined) {
+        reference = reference.orderByChild("phase").equalTo(phase);
+    }
+    return reference.once("value")
+        .then((/** admin.database.DataSnapshot */ snapshot) => {
+        if (!snapshot.val()) {
+            // No games found.
+            return Promise.resolve({});
+        }
+        else {
+            const gamesFirebaseObjectRaw = snapshot.val();
+            const gamesFirebaseObject = {};
+            for (const key in gamesFirebaseObjectRaw) {
+                if (gamesFirebaseObjectRaw.hasOwnProperty(key)) {
+                    gamesFirebaseObject[key] = processFirebaseRawValues(gamesFirebaseObjectRaw[key]);
+                }
+            }
+            return Promise.resolve(gamesFirebaseObject);
+        }
     });
 }
-
+exports.getDBGames = getDBGames;
 /**
  * Returns new game Firebase reference.
- * @param {string} teamKey
- * @param {string} channelKey
- * @return {admin.database.ThenableReference}
  */
 function getNewGameDBRef(teamKey, channelKey) {
-  return firebaseApp.database().ref(`/games/${teamKey}/${channelKey}`).push();
+    return firebaseapp_1.firebaseApp.database().ref(`/games/${teamKey}/${channelKey}`).push();
 }
-
+exports.getNewGameDBRef = getNewGameDBRef;
 /**
  * Sets game in DB.
- * @param {GameFirebaseValue} gameValues
- * @param {string} teamKey
- * @param {string} channelKey
- * @param {string} gameKey
- * @return Promise.<any,Error>
  */
 function setDBGame(gameValues, teamKey, channelKey, gameKey) {
-  return firebaseApp.database().ref(`/games/${teamKey}/${channelKey}/${gameKey}`).set(gameValues);
+    return firebaseapp_1.firebaseApp.database().ref(`/games/${teamKey}/${channelKey}/${gameKey}`).set(gameValues);
 }
-
+exports.setDBGame = setDBGame;
 /**
  * Remove game from DB.
- * @param {string} teamKey
- * @param {string} channelKey
- * @param {string} gameKey
- * @return Promise.<any,Error>
  */
 function removeDBGame(teamKey, channelKey, gameKey) {
-  return firebaseApp.database().ref(`/games/${teamKey}/${channelKey}/${gameKey}`).remove();
+    return firebaseapp_1.firebaseApp.database().ref(`/games/${teamKey}/${channelKey}/${gameKey}`).remove();
 }
-
-module.exports = {
-  getDBGame,
-  getNewGameDBRef,
-  setDBGame,
-  getDBGames,
-  removeDBGame
-};
+exports.removeDBGame = removeDBGame;
+//# sourceMappingURL=dbfirebase.js.map

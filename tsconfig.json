@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "module": "commonjs",
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "outDir": "./",
+    "moduleResolution": "node",
+    "sourceMap": true
+  },
+  "files": [
+    "./node_modules/@types/node/index.d.ts"
+  ],
+  "include": [
+    "./**/*.ts",
+    "./credentials/private.js",
+    "./credentials/public.js"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

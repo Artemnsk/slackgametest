@@ -1,34 +1,30 @@
 "use strict";
-
-module.exports = gameTitleFactory;
-
-/**
- *
- * @param {string} callback_id
- * @param {?Gamer} gamer
- * @return SlackMessageAttachment
- */
-function gameTitleFactory(callback_id, gamer) {
-  if (!gamer) {
-    return {
-      text: `you're not participate in this game`,
-      color: "#950001",
-      callback_id,
-      attachment_type: "default"
-    };
-  } else if (gamer.dead === true) {
-    return {
-      text: `you're dead`,
-      color: "#950001",
-      callback_id,
-      attachment_type: "default"
-    };
-  } else {
-    return {
-      text: `:heart:${gamer.health} :large_blue_diamond:${gamer.mana}`,
-      color: "#950001",
-      callback_id,
-      attachment_type: "default"
-    };
-  }
+Object.defineProperty(exports, "__esModule", { value: true });
+function gameTitleFactory(callbackId, gamer) {
+    if (!gamer) {
+        return {
+            attachment_type: "default",
+            callback_id: callbackId,
+            color: "#950001",
+            text: `you're not participate in this game`,
+        };
+    }
+    else if (gamer.dead === true) {
+        return {
+            attachment_type: "default",
+            callback_id: callbackId,
+            color: "#950001",
+            text: `you're dead`,
+        };
+    }
+    else {
+        return {
+            attachment_type: "default",
+            callback_id: callbackId,
+            color: "#950001",
+            text: `:heart:${gamer.health} :large_blue_diamond:${gamer.mana}`,
+        };
+    }
 }
+exports.gameTitleFactory = gameTitleFactory;
+//# sourceMappingURL=gametitlefactory.js.map

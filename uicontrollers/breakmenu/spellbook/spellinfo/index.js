@@ -1,61 +1,40 @@
 "use strict";
-
-const Route = require('route-parser');
-const spellInfoMessageFactory = require('./spellinfomessagefactory');
-const /** @type Array<Spell> */ spells = require('../../../../storage/spells/spells');
-
-/**
- *
- * @param {UIRouter} uiRouter
- * @param {ParsedSlackActionPayload} parsedPayload
- * @param {{}} args
- * @return {Promise<UIMessage,Error>}
- */
-function processActions(uiRouter, parsedPayload, args) {
-  // Parse submitted actions to know which window to render.
-  let action = parsedPayload.actions[0];
-  switch (action.name) {
-    case 'back':
-      return uiRouter.spellbookUIRoute.getUIMessage(uiRouter, {});
-      break;
-  }
-  return null;
-}
-
-/**
- *
- * @param {UIRouter} uiRouter
- * @param {{spellId: string}} args
- * @return {Promise<UIMessage,Error>}
- */
-function getUIMessage(uiRouter, args) {
-  const spell = spells.find(item => item.id === args.spellId);
-  if (spell) {
-    let uiMessage = spellInfoMessageFactory(uiRouter.spellinfoUIRoute.route.reverse({ spellName: spell.id }), uiRouter.channel, uiRouter.player, spell);
-    return Promise.resolve(uiMessage);
-  }
-  let text = "Spell not found.";
-  return uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text });
-}
-
-/**
- *
- * @param {UIRouter} uiRouter
- * @param {string} path
- * @param {ParsedSlackActionPayload} [parsedPayload]
- * @return ?UIMessage
- */
-function validateRoute(uiRouter, path, parsedPayload) {
-  return null;
-}
-
-const /** @type UIRoute */ uiRoute = {
-  route: new Route('/breakmenu/spellbook/:spellName'),
-  processActions,
-  getUIMessage,
-  validateRoute
+Object.defineProperty(exports, "__esModule", { value: true });
+const spells_1 = require("../../../../storage/spells/spells");
+const uiroute_1 = require("../../../uiroute");
+const spellinfomessagefactory_1 = require("./spellinfomessagefactory");
+const processActions = (uiRouter, parsedPayload, args) => {
+    // Parse submitted actions to know which window to render.
+    const action = parsedPayload.actions[0];
+    switch (action.name) {
+        case "back":
+            return uiRouter.spellbookUIRoute.getUIMessage(uiRouter, {});
+    }
+    const text = "Channel is invalid.";
+    return uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text });
 };
-
-module.exports = {
-  uiRoute
+const getUIMessage = (uiRouter, args) => {
+    if (uiRouter.player === null) {
+        const text = "Route validation for /breakmenu/spellbook/:spellName fails.";
+        return uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text });
+    }
+    const spell = spells_1.spells.find((item) => item.id === args.spellId);
+    if (spell) {
+        const path = uiRouter.spellinfoUIRoute.route.reverse({ spellName: spell.id });
+        if (path !== false) {
+            const uiMessage = spellinfomessagefactory_1.spellInfoMessageFactory(path, uiRouter.channel, uiRouter.player, spell);
+            return Promise.resolve(uiMessage);
+        }
+        else {
+            const text = "Unknown error.";
+            return uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text });
+        }
+    }
+    const text = "Spell not found.";
+    return uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text });
 };
+const validateRoute = (uiRouter, path, parsedPayload) => {
+    return Promise.resolve(null);
+};
+exports.uiRoute = new uiroute_1.UIRoute("/breakmenu/spellbook/:spellName", processActions, getUIMessage, validateRoute);
+//# sourceMappingURL=index.js.map

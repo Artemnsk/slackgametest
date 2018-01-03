@@ -1,12 +1,12 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const admin = require("firebase-admin");
-const config = require("../credentials/private");
-
-const /** @type admin.app.App */ firebaseApp = admin.initializeApp({
-  credential: admin.credential.cert(config.firebase.serviceAccount),
-  databaseURL: config.firebase.databaseURL,
-  databaseAuthVariableOverride: {
-    uid: "game-webserver"
-  }
+const private_1 = require("../credentials/private");
+exports.firebaseApp = admin.initializeApp({
+    credential: admin.credential.cert(private_1.credentials.firebase.serviceAccount),
+    databaseAuthVariableOverride: {
+        uid: "game-webserver",
+    },
+    databaseURL: private_1.credentials.firebase.databaseURL,
 });
-
-module.exports = firebaseApp;
+//# sourceMappingURL=firebaseapp.js.map

@@ -1,40 +1,22 @@
 "use strict";
-
+Object.defineProperty(exports, "__esModule", { value: true });
 class UIMessage {
-  /**
-   * @constructor
-   * @property {Object} sendParameters
-   * @property {Array<SlackMessageAttachment>} uiAttachments
-   */
-  constructor() {
-    this.sendParameters = {};
-    this.uiAttachments = [];
-  }
-
-  /**
-   *
-   * @param {Array<SlackMessageAttachment>} uiAttachments
-   */
-  setUIAttachments(uiAttachments) {
-    this.uiAttachments = uiAttachments;
-  }
-
-  /**
-   *
-   * @param {Object} params
-   */
-  setSendParameters(params) {
-    Object.assign(this.sendParameters, params);
-  }
-
-  /**
-   * Sends UIMessage to Slack.
-   */
-  toJSON() {
-    let json = Object.assign({}, this.sendParameters);
-    json.attachments = this.uiAttachments;
-    return json;
-  }
+    constructor() {
+        this.sendParameters = {};
+        this.uiAttachments = [];
+    }
+    setUIAttachments(uiAttachments) {
+        this.uiAttachments = uiAttachments;
+    }
+    setSendParameters(params) {
+        Object.assign(this.sendParameters, params);
+    }
+    /**
+     * Prepare JSON to send to Slack.
+     */
+    toJSON() {
+        return Object.assign({}, this.sendParameters, { attachments: this.uiAttachments });
+    }
 }
-
-module.exports = UIMessage;
+exports.UIMessage = UIMessage;
+//# sourceMappingURL=uimessage.js.map

@@ -1,38 +1,30 @@
 "use strict";
-
-const UIMessage = require('../../models/uimessage/uimessage');
-// That is used as name and value for 'ok' button.
-const INFORMATION_MESSAGE_OK = 'ok';
-
+Object.defineProperty(exports, "__esModule", { value: true });
+const uimessage_1 = require("../../models/uimessage/uimessage");
+// That is used as name and value for "ok" button.
+exports.INFORMATION_MESSAGE_OK = "ok";
 /**
  * Provides with information UI element.
- * @param {string} callback_id
- * @param {string} text
- * @param {string} buttonText
- * @return {UIMessage}
  */
-function informationMessageFactory(callback_id, text, buttonText) {
-  const informationMessageUIMessage = new UIMessage();
-  let /** @type Array<SlackMessageAttachment> */ uiAttachments = [];
-  uiAttachments.push({
-    text: text,
-    color: "#3AA3E3",
-    attachment_type: "default",
-    callback_id,
-    actions: [
-      {
-        name: INFORMATION_MESSAGE_OK,
-        text: buttonText,
-        type: "button",
-        value: INFORMATION_MESSAGE_OK
-      }
-    ]
-  });
-  informationMessageUIMessage.setUIAttachments(uiAttachments);
-  return informationMessageUIMessage;
+function informationMessageFactory(callbackId, text, buttonText) {
+    const informationMessageUIMessage = new uimessage_1.UIMessage();
+    const uiAttachments = [];
+    uiAttachments.push({
+        actions: [
+            {
+                name: exports.INFORMATION_MESSAGE_OK,
+                text: buttonText,
+                type: "button",
+                value: exports.INFORMATION_MESSAGE_OK,
+            },
+        ],
+        attachment_type: "default",
+        callback_id: callbackId,
+        color: "#3AA3E3",
+        text,
+    });
+    informationMessageUIMessage.setUIAttachments(uiAttachments);
+    return informationMessageUIMessage;
 }
-
-module.exports = {
-  informationMessageFactory,
-  INFORMATION_MESSAGE_OK
-};
+exports.informationMessageFactory = informationMessageFactory;
+//# sourceMappingURL=informationmessagefactory.js.map

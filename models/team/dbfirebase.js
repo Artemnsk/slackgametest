@@ -1,69 +1,49 @@
-const /** @type admin.app.App */ firebaseApp = require('../../helpers/firebaseapp');
-
-/**
- * Data format received from Firebase.
- * @typedef {Object} TeamFirebaseValue
- * @property {boolean} active
- * @property {string} name
- * @property {string} [admin]
- * @property {string} [token]
- * @property {string} [userId]
- * @property {string} [botId]
- * @property {string} [botToken]
- */
-
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const firebaseapp_1 = require("../../helpers/firebaseapp");
 /**
  * Load team from DB by teamId.
- * @param {string} teamId
- * @return {Promise.<?TeamFirebaseValue,Error>}
  */
 function getDBTeam(teamId) {
-  return firebaseApp.database().ref('/teams/' + teamId).once('value')
-    .then((/** admin.database.DataSnapshot */ snapshot) => {
-      if (!snapshot.val()) {
-        // No team found.
-        return Promise.resolve(null);
-      } else {
-        let /** @type TeamFirebaseValue */ teamFirebaseValue = snapshot.val();
-        return Promise.resolve(teamFirebaseValue);
-      }
+    return firebaseapp_1.firebaseApp.database().ref("/teams/" + teamId).once("value")
+        .then((snapshot) => {
+        if (!snapshot.val()) {
+            // No team found.
+            return Promise.resolve(null);
+        }
+        else {
+            const teamFirebaseValue = snapshot.val();
+            return Promise.resolve(teamFirebaseValue);
+        }
     });
 }
-
+exports.getDBTeam = getDBTeam;
 /**
  * Respond with teams array from DB.
- * @param {boolean} [active] - filter by 'active' field. No filter if not set.
- * @return Promise<Object.<string,TeamFirebaseValue>,Error>
  */
 function getDBTeams(active) {
-  let reference = firebaseApp.database().ref('/teams');
-  if (active !== undefined) {
-    reference = reference.orderByChild('active').equalTo(active);
-  }
-  return reference.once('value')
-    .then((/** admin.database.DataSnapshot */ snapshot) => {
-      if (!snapshot.val()) {
-        // No teams found.
-        return Promise.resolve({});
-      } else {
-        let /** @type {Object.<string,TeamFirebaseValue>} */ teamsFirebaseObject = snapshot.val();
-        return Promise.resolve(teamsFirebaseObject);
-      }
+    let reference = firebaseapp_1.firebaseApp.database().ref("/teams");
+    if (active !== undefined) {
+        reference = reference.orderByChild("active").equalTo(active);
+    }
+    return reference.once("value")
+        .then((snapshot) => {
+        if (!snapshot.val()) {
+            // No teams found.
+            return Promise.resolve({});
+        }
+        else {
+            const teamsFirebaseObject = snapshot.val();
+            return Promise.resolve(teamsFirebaseObject);
+        }
     });
 }
-
+exports.getDBTeams = getDBTeams;
 /**
  * Sets team data into DB.
- * @param {TeamFirebaseValue} teamValues
- * @param {string} teamId
- * @return Promise.<any,Error>
  */
 function setDBTeam(teamValues, teamId) {
-  return firebaseApp.database().ref('/teams/' + teamId).set(teamValues);
+    return firebaseapp_1.firebaseApp.database().ref("/teams/" + teamId).set(teamValues);
 }
-
-module.exports = {
-  setDBTeam,
-  getDBTeams,
-  getDBTeam
-};
+exports.setDBTeam = setDBTeam;
+//# sourceMappingURL=dbfirebase.js.map

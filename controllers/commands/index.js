@@ -1,39 +1,39 @@
 "use strict";
-
-const express = require('express');
-const router = express.Router();
-const UIRouter = require('../../uicontrollers/uirouter');
-const tokenVerification = require('../../middlewares/tokenverification');
-const setGameData = require('../../middlewares/slackcommands').setGameData;
-const request = require('request');
-
-router.use('/commands', tokenVerification);
-
-router.post('/commands', setGameData, (/** SlackCommandRequest */ req, res) => {
-  var text = req.body.text;
-  if (text === 'menu' || !text) {
-    res.status(200).send('');
-    const uiRouter = new UIRouter(req.slackData.team, req.slackData.channel, req.slackData.player, req.slackData.game, req.slackData.gamer);
-    const uiMessagePromise = uiRouter.getUIMessage('/');
-    uiMessagePromise.then((uiMessage) => {
-      let sendParameters = {
-        response_type: 'ephemeral'
-      };
-      uiMessage.setSendParameters(sendParameters);
-      request(req.body.response_url, {
-        uri: req.body.response_url,
-        method: 'POST',
-        json: uiMessage.toJSON(),
-        headers: {
-          'Content-type': 'application/json'
-        },
-      }, (err) => {
-        // TODO: ?
-      });
-    });
-  } else {
-    res.status(500).send('Error');
-  }
+Object.defineProperty(exports, "__esModule", { value: true });
+const express = require("express");
+const request = require("request");
+const slackcommands_1 = require("../../middlewares/slackcommands");
+const tokenverification_1 = require("../../middlewares/tokenverification");
+const uirouter_1 = require("../../uicontrollers/uirouter");
+exports.router = express.Router();
+exports.router.use("/commands", tokenverification_1.verifyToken);
+// todo: type.
+exports.router.post("/commands", slackcommands_1.setGameData, (req, res) => {
+    const body = req.body;
+    const text = body.text;
+    if (text === "menu" || !text) {
+        res.status(200).send("");
+        const uiRouter = new uirouter_1.UIRouter(req.slackData.team, req.slackData.channel, req.slackData.player, req.slackData.game, req.slackData.gamer);
+        const uiMessagePromise = uiRouter.getUIMessage("/");
+        uiMessagePromise.then((uiMessage) => {
+            const sendParameters = {
+                response_type: "ephemeral",
+            };
+            uiMessage.setSendParameters(sendParameters);
+            request(body.response_url, {
+                headers: {
+                    "Content-type": "application/json",
+                },
+                json: uiMessage.toJSON(),
+                method: "POST",
+                uri: body.response_url,
+            }, (err) => {
+                // TODO: ?
+            });
+        });
+    }
+    else {
+        res.status(500).send("Error");
+    }
 });
-
-module.exports = router;
+//# sourceMappingURL=index.js.map

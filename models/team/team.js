@@ -1,102 +1,89 @@
-const getDBTeam = require('./dbfirebase').getDBTeam;
-const getDBTeams = require('./dbfirebase').getDBTeams;
-const setDBTeam = require('./dbfirebase').setDBTeam;
-
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const dbfirebase_1 = require("./dbfirebase");
 class Team {
-  /**
-   *
-   * @param {TeamFirebaseValue & {$key: (undefined|string)}} values
-   * @constructor
-   * @extends TeamFirebaseValue
-   * @property {string} $key - Database key of this team.
-   */
-  constructor(values) {
-    this.active = values.active;
-    this.name = values.name;
-    if (values.token) {
-      this.token = values.token;
+    /**
+     * Load team from DB by teamId.
+     */
+    static getTeam(teamId) {
+        return dbfirebase_1.getDBTeam(teamId)
+            .then((teamFirebaseValue) => {
+            if (teamFirebaseValue) {
+                const teamConstructorValues = Object.assign(teamFirebaseValue, { $key: teamId });
+                const team = new Team(teamConstructorValues);
+                return Promise.resolve(team);
+            }
+            else {
+                return Promise.resolve(teamFirebaseValue);
+            }
+        });
     }
-    if (values.admin) {
-      this.admin = values.admin;
+    /**
+     * Respond with teams array from DB.
+     */
+    static getTeams(active) {
+        return dbfirebase_1.getDBTeams(active)
+            .then((teamsFirebaseObject) => {
+            const teamsArray = [];
+            for (const teamKey in teamsFirebaseObject) {
+                if (teamsFirebaseObject.hasOwnProperty(teamKey)) {
+                    const teamFirebaseValue = teamsFirebaseObject[teamKey];
+                    const teamConstructorValues = Object.assign(teamFirebaseValue, { $key: teamKey });
+                    const team = new Team(teamConstructorValues);
+                    teamsArray.push(team);
+                }
+            }
+            return Promise.resolve(teamsArray);
+        });
     }
-    if (values.userId) {
-      this.userId = values.userId;
+    /**
+     * Sets team data into DB.
+     */
+    static setTeam(teamValues, teamId) {
+        return dbfirebase_1.setDBTeam(teamValues, teamId);
     }
-    if (values.botId) {
-      this.botId = values.botId;
-    }
-    if (values.botToken) {
-      this.botToken = values.botToken;
-    }
-    if (values.$key) {
-      this.$key = values.$key;
-    }
-  }
-
-  /**
-   *
-   * @return {TeamFirebaseValue}
-   */
-  getFirebaseValue() {
-    return Object.assign({}, {
-      active: this.active,
-      name: this.name,
-      admin: this.admin,
-      token: this.token,
-      userId: this.userId,
-      botId: this.botId,
-      botToken: this.botToken,
-    });
-  }
-
-  /**
-   * Load team from DB by teamId.
-   * @param {string} teamId
-   * @return {Promise.<?Team,Error>}
-   */
-  static getTeam(teamId) {
-    return getDBTeam(teamId)
-      .then(teamFirebaseValue => {
-        if (teamFirebaseValue) {
-          let teamConstructorValues = Object.assign(teamFirebaseValue, { $key: teamId });
-          let team = new Team(teamConstructorValues);
-          return Promise.resolve(team);
-        } else {
-          return Promise.resolve(teamFirebaseValue);
+    /**
+     *
+     * @param {TeamFirebaseValue & {$key: (undefined|string)}} values
+     * @constructor
+     * @extends TeamFirebaseValue
+     * @property {string} $key - Database key of this team.
+     */
+    constructor(values) {
+        this.active = values.active;
+        this.name = values.name;
+        if (values.token) {
+            this.token = values.token;
         }
-      });
-  }
-
-  /**
-   * Respond with teams array from DB.
-   * @param {boolean} [active] - filter by 'active' field. No filter if not set.
-   * @return Promise<Array<Team>,Error>
-   */
-  static getTeams(active) {
-    return getDBTeams(active)
-      .then(teamsFirebaseObject => {
-        const teamsArray = [];
-        for (let teamKey in teamsFirebaseObject) {
-          let teamFirebaseValue = teamsFirebaseObject[teamKey];
-          let teamConstructorValues = Object.assign(teamFirebaseValue, { $key: teamKey });
-          let team = new Team(teamConstructorValues);
-          teamsArray.push(team);
+        if (values.admin) {
+            this.admin = values.admin;
         }
-        return Promise.resolve(teamsArray);
-      });
-  }
-
-  /**
-   * Sets team data into DB.
-   * @param {TeamFirebaseValue} teamValues
-   * @param {string} teamId
-   * @return Promise.<any,Error>
-   */
-  static setTeam(teamValues, teamId) {
-    return setDBTeam(teamValues, teamId);
-  }
+        if (values.userId) {
+            this.userId = values.userId;
+        }
+        if (values.botId) {
+            this.botId = values.botId;
+        }
+        if (values.botToken) {
+            this.botToken = values.botToken;
+        }
+        this.$key = values.$key;
+    }
+    /**
+     *
+     * @return {TeamFirebaseValue}
+     */
+    getFirebaseValue() {
+        return Object.assign({}, {
+            active: this.active,
+            admin: this.admin,
+            botId: this.botId,
+            botToken: this.botToken,
+            name: this.name,
+            token: this.token,
+            userId: this.userId,
+        });
+    }
 }
-
-module.exports = {
-  Team
-};
+exports.Team = Team;
+//# sourceMappingURL=team.js.map

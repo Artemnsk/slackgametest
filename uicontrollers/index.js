@@ -1,71 +1,27 @@
 "use strict";
-
-const Route = require('route-parser');
-const CHANNEL_PHASES = require('../models/channel/channel').CHANNEL_PHASES;
-
-/**
- * @typedef {Object} UIRoute
- * @property {Route} route
- * @property {Function} processActions
- * @property {Function} getUIMessage
- * @property {Function} validateRoute
- */
-
-/**
- *
- * @param {UIRouter} uiRouter
- * @param {ParsedSlackActionPayload} parsedPayload
- * @param {{}} args
- * @return {Promise.<UIMessage,Error>}
- */
-function processActions(uiRouter, parsedPayload, args) {
-  let uiMessage = getUIMessage(uiRouter, {});
-  return Promise.resolve(uiMessage);
-}
-
-/**
- *
- * @param {UIRouter} uiRouter
- * @param {{}} args
- * @return {Promise.<UIMessage,Error>}
- */
-function getUIMessage(uiRouter, args) {
-  if (!uiRouter.player) {
-    return uiRouter.newplayerUIRoute.getUIMessage(uiRouter, {});
-  }
-  switch (uiRouter.channel.phase) {
-    case CHANNEL_PHASES.BREAK:
-      return uiRouter.breakmenuUIRoute.getUIMessage(uiRouter, {});
-      break;
-    case CHANNEL_PHASES.IN_GAME:
-      // TODO: game menu.
-      return uiRouter.gamemenuUIRoute.getUIMessage(uiRouter, {});
-      break;
-    default:
-      let text = 'Channel is invalid.';
-      return uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text });
-      break;
-  }
-}
-
-/**
- *
- * @param {UIRouter} uiRouter
- * @param {string} path
- * @param {ParsedSlackActionPayload} [parsedPayload]
- * @return ?UIMessage
- */
-function validateRoute(uiRouter, path, parsedPayload) {
-  return null;
-}
-
-const /** @type UIRoute */ uiRoute = {
-  route: new Route('/'),
-  processActions,
-  getUIMessage,
-  validateRoute
+Object.defineProperty(exports, "__esModule", { value: true });
+const uiroute_1 = require("./uiroute");
+const processActions = (uiRouter, parsedPayload, args) => {
+    const uiMessage = getUIMessage(uiRouter, {});
+    return Promise.resolve(uiMessage);
 };
-
-module.exports = {
-  uiRoute
+const getUIMessage = (uiRouter, args) => {
+    if (!uiRouter.player) {
+        return uiRouter.newplayerUIRoute.getUIMessage(uiRouter, {});
+    }
+    switch (uiRouter.channel.phase) {
+        case "BREAK" /* BREAK */:
+            return uiRouter.breakmenuUIRoute.getUIMessage(uiRouter, {});
+        case "IN_GAME" /* IN_GAME */:
+            // TODO: game menu.
+            return uiRouter.gamemenuUIRoute.getUIMessage(uiRouter, {});
+        default:
+            const text = "Channel is invalid.";
+            return uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text });
+    }
 };
+const validateRoute = (uiRouter, path, parsedPayload) => {
+    return Promise.resolve(null);
+};
+exports.uiRoute = new uiroute_1.UIRoute("/", processActions, getUIMessage, validateRoute);
+//# sourceMappingURL=index.js.map

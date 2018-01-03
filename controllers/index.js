@@ -1,12 +1,13 @@
 "use strict";
-
-const express = require('express');
-const router = express.Router();
-const bodyParser = require('body-parser');
-
-router.use(bodyParser.urlencoded());
-router.use('/', require('./authorize'));
-router.use('/', require('./commands'));
-router.use('/', require('./actions'));
-
-module.exports = router;
+Object.defineProperty(exports, "__esModule", { value: true });
+const bodyParser = require("body-parser");
+const express = require("express");
+const actions_1 = require("./actions");
+const authorize_1 = require("./authorize");
+const commands_1 = require("./commands");
+exports.router = express.Router();
+exports.router.use(bodyParser.urlencoded());
+exports.router.use("/", authorize_1.router);
+exports.router.use("/", commands_1.router);
+exports.router.use("/", actions_1.router);
+//# sourceMappingURL=index.js.map
