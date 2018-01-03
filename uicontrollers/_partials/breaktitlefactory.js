@@ -1,42 +1,28 @@
 "use strict";
-
-const moment = require('moment');
-
-module.exports = breakTitleFactory;
-
+Object.defineProperty(exports, "__esModule", { value: true });
+const moment = require("moment");
 const daySizeMs = 24 * 60 * 60 * 1000;
-
-/**
- *
- * @param {string} callback_id
- * @param {Channel} channel
- * @param {Player} player
- * @return SlackMessageAttachment
- */
-function breakTitleFactory(callback_id, channel, player) {
-  let newGameTimer = _getNextGameTime(channel.nextGame);
-  return {
-    text: `:moneybag:${player.gold} Next game in ${newGameTimer}`,
-    color: "#950001",
-    callback_id,
-    attachment_type: "default"
-  };
+function breakTitleFactory(callbackId, channel, player) {
+    const nextGameInfo = channel.nextGame ? `Next game in ${_getNextGameTime(channel.nextGame)}` : "";
+    return {
+        attachment_type: "default",
+        callback_id: callbackId,
+        color: "#950001",
+        text: `:moneybag:${player.gold} ${nextGameInfo}`,
+    };
 }
-
-/**
- *
- * @param {number} timestamp_ms
- * @return string
- * @private
- */
-function _getNextGameTime(timestamp_ms) {
-  let difference = timestamp_ms - Date.now();
-  if (difference < 0) {
-    return '..now!';
-  } else if (difference > daySizeMs) {
-    return '> 1 day';
-  } else {
-    let date = moment(difference).utc(false);
-    return date.format("H:mm:ss");
-  }
+exports.breakTitleFactory = breakTitleFactory;
+function _getNextGameTime(timestampMs) {
+    const difference = timestampMs - Date.now();
+    if (difference < 0) {
+        return "..now!";
+    }
+    else if (difference > daySizeMs) {
+        return "> 1 day";
+    }
+    else {
+        const date = moment(difference).utc(false);
+        return date.format("H:mm:ss");
+    }
 }
+//# sourceMappingURL=breaktitlefactory.js.map

@@ -79,6 +79,7 @@ export type SlackMessageAttachmentField = {
 
 export type SlackMessageAttachment = {
   color: string,
+  mrkdwn_in?: string[],
   callback_id: string,
   text?: string,
   author_name?: string,
@@ -86,4 +87,3 @@ export type SlackMessageAttachment = {
   fields?: SlackMessageAttachmentField[],
   actions?: SlackMessageAction[],
 };
-

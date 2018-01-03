@@ -3,8 +3,7 @@ import * as request from "request";
 import { SlackGameMajorData } from "../../helpers/slackgamedata";
 import { ParsedSlackActionPayload } from "../../helpers/slackmessage";
 import * as slackActions from "../../middlewares/slackactions";
-
-import UIRouter = require("../../uicontrollers/uirouter");
+import { UIRouter } from "../../uicontrollers/uirouter";
 
 export const router = express.Router();
 

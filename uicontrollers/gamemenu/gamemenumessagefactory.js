@@ -1,89 +1,81 @@
 "use strict";
-
-const UIMessage = require('../../models/uimessage/uimessage');
-const gameTitleFactory = require('../_partials/gametitlefactory');
-const /** @type Array<Spell> */ spells = require('../../storage/spells/spells');
-
+Object.defineProperty(exports, "__esModule", { value: true });
+const uimessage_1 = require("../../models/uimessage/uimessage");
+const gametitlefactory_1 = require("../_partials/gametitlefactory");
 /**
  * Provides with game menu UI element.
- * @param {string} callback_id
- * @param {?Gamer} gamer
- * @return {UIMessage}
  */
-function gameMenuFactory(callback_id, gamer) {
-  const gameMenuUIMessage = new UIMessage();
-  let /** @type Array<SlackMessageAttachment> */ uiAttachments = [];
-  let gamerSpellActions = _getSpellActions(callback_id, gamer);
-  let gamerItemActions = _getItemActions(callback_id, gamer);
-  let gamerActions = gamerSpellActions.concat(gamerItemActions);
-  let gamerActionsAttachment = {
-    text: gamerActions.length > 0 ? "*Available actions*" : "*Nothing to use*",
-    color: "#a333a1",
-    callback_id,
-    attachment_type: "default",
-    actions: gamerActions
-  };
-  if (!gamer) {
-    // Non-gamer menu.
-    uiAttachments.push(gameTitleFactory(callback_id, gamer));
-  } else {
-    // Both Dead gamer menu and Default game menu.
-    uiAttachments.push(gameTitleFactory(callback_id, gamer));
-    uiAttachments.push(gamerActionsAttachment);
-  }
-  let bottomMenu = {
-    text: '',
-    color: "#950001",
-    callback_id,
-    attachment_type: "default",
-    actions: [{
-      name: "navigation",
-      text: ":man-woman-girl-boy: Stats",
-      type: "button",
-      value: 'stats'
-    }]
-  };
-  uiAttachments.push(bottomMenu);
-  gameMenuUIMessage.setUIAttachments(uiAttachments);
-  return gameMenuUIMessage;
+function gameMenuMessageFactory(callbackId, gamer) {
+    const gameMenuUIMessage = new uimessage_1.UIMessage();
+    const uiAttachments = [];
+    const gamerSpellActions = _getSpellActions(callbackId, gamer);
+    const gamerItemActions = _getItemActions(callbackId, gamer);
+    const gamerActions = gamerSpellActions.concat(gamerItemActions);
+    const gamerActionsAttachment = {
+        actions: gamerActions,
+        attachment_type: "default",
+        callback_id: callbackId,
+        color: "#a333a1",
+        text: gamerActions.length > 0 ? "*Available actions*" : "*Nothing to use*",
+    };
+    if (!gamer) {
+        // Non-gamer menu.
+        uiAttachments.push(gametitlefactory_1.gameTitleFactory(callbackId, gamer));
+    }
+    else {
+        // Both Dead gamer menu and Default game menu.
+        uiAttachments.push(gametitlefactory_1.gameTitleFactory(callbackId, gamer));
+        uiAttachments.push(gamerActionsAttachment);
+    }
+    const bottomMenu = {
+        actions: [{
+                name: "navigation",
+                text: ":man-woman-girl-boy: Stats",
+                type: "button",
+                value: "stats",
+            }],
+        attachment_type: "default",
+        callback_id: callbackId,
+        color: "#950001",
+        text: "",
+    };
+    uiAttachments.push(bottomMenu);
+    gameMenuUIMessage.setUIAttachments(uiAttachments);
+    return gameMenuUIMessage;
 }
-
-/**
- *
- * @param {string} callback_id
- * @param {Gamer} gamer
- * @return Array<SlackMessageActionButton>
- * @private
- */
-function _getSpellActions(callback_id, gamer) {
-  let gamerSpells = gamer.getSpells();
-  return gamerSpells.map(item => {
-      return {
-        name: "spell",
-        text: item.emoji,
-        type: "button",
-        value: item.id
-      };
-  });
+exports.gameMenuMessageFactory = gameMenuMessageFactory;
+function _getSpellActions(callbackId, gamer) {
+    if (gamer !== null) {
+        const gamerSpells = gamer.getSpells();
+        return gamerSpells.map((item) => {
+            const button = {
+                name: "spell",
+                text: item.emoji,
+                type: "button",
+                value: item.id,
+            };
+            return button;
+        });
+    }
+    else {
+        return [];
+    }
 }
-
-/**
- *
- * @param {string} callback_id
- * @param {Gamer} gamer
- * @return Array<Object>
- * @private
- */
-function _getItemActions(callback_id, gamer) {
-  let gamerSpells = gamer.getItems();
-  return gamerSpells.map(item => {
-      return {
-        name: "item",
-        text: item.emoji,
-        type: "button",
-        value: item.id
-      };
-  });
+function _getItemActions(callbackId, gamer) {
+    if (gamer !== null) {
+        const gamerItems = gamer.getItems();
+        return gamerItems.map((item) => {
+            const button = {
+                name: "item",
+                text: item.emoji,
+                type: "button",
+                value: item.id,
+            };
+            return button;
+        });
+    }
+    else {
+        return [];
+    }
 }
-
-module.exports = gameMenuFactory;
+//# sourceMappingURL=gamemenumessagefactory.js.map

@@ -35,6 +35,8 @@
   },
   "devDependencies": {
     "@types/body-parser": "^1.16.8",
-    "@types/request": "^2.0.9"
+    "@types/request": "^2.0.9",
+    "@types/route-parser": "^0.1.1",
+    "@types/slack-node": "^0.1.2"
   }
 }

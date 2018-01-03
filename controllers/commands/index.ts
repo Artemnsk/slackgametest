@@ -4,8 +4,7 @@ import { SlackGameMajorData } from "../../helpers/slackgamedata";
 import { SlackCommandRequestBody } from "../../helpers/slackmessage";
 import { setGameData } from "../../middlewares/slackcommands";
 import { verifyToken } from "../../middlewares/tokenverification";
-
-import UIRouter = require("../../uicontrollers/uirouter");
+import { UIRouter } from "../../uicontrollers/uirouter";
 
 export const router = express.Router();
 

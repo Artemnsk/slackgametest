@@ -1,61 +1,52 @@
 "use strict";
-
-const UIMessage = require('../../../models/uimessage/uimessage');
-const gameTitleFactory = require('../../_partials/gametitlefactory');
-const /** @type Array<Spell> */ spells = require('../../../storage/spells/spells');
-
+Object.defineProperty(exports, "__esModule", { value: true });
+const uimessage_1 = require("../../../models/uimessage/uimessage");
+const gametitlefactory_1 = require("../../_partials/gametitlefactory");
 /**
  * Provides with spell UI element.
- * @param {string} callback_id
- * @param {Channel} channel
- * @param {Game} game
- * @param {Gamer} gamer
- * @param {Item} item
- * @return {UIMessage}
  */
-function useItemMessageFactory(callback_id, channel, game, gamer, item) {
-  const useItemUIMessage = new UIMessage();
-  let /** @type Array<SlackMessageAttachment> */ uiAttachments = [];
-  uiAttachments.push(gameTitleFactory(callback_id, gamer));
-  uiAttachments = uiAttachments.concat(item.getSlackInfo(callback_id));
-  // TODO: delegate that to validator?
-  if (gamer.dead === true) {
-    let footerUIAttachments = {
-      text: '',
-      color: "#1E09C9",
-      attachment_type: "default",
-      callback_id: callback_id,
-      actions: [{
-        name: "back",
-        text: ":back:",
-        type: "button",
-        value: "back"
-      }]
-    };
-    uiAttachments.push(footerUIAttachments);
-  } else {
-    let validateItem = item.validateGamerUsage(gamer);
-    let footerUIAttachments = {
-      text: validateItem === true ? '' : validateItem,
-      color: "#1E09C9",
-      attachment_type: "default",
-      callback_id: callback_id,
-      actions: []
-    };
-    footerUIAttachments.actions.push({
-      name: "back",
-      text: ":back:",
-      type: "button",
-      value: "back"
-    });
-    let useItemAction = item.getUsageForm(callback_id, game, gamer);
-    if (useItemAction) {
-      footerUIAttachments.actions.push(useItemAction);
+function useItemMessageFactory(callbackId, channel, game, gamer, item) {
+    const useItemUIMessage = new uimessage_1.UIMessage();
+    const uiAttachments = [gametitlefactory_1.gameTitleFactory(callbackId, gamer), ...item.getSlackInfo(callbackId)];
+    // TODO: delegate that to validator?
+    if (gamer.dead === true) {
+        const footerUIAttachment = {
+            actions: [{
+                    name: "back",
+                    text: ":back:",
+                    type: "button",
+                    value: "back",
+                }],
+            attachment_type: "default",
+            callback_id: callbackId,
+            color: "#1E09C9",
+            text: "",
+        };
+        uiAttachments.push(footerUIAttachment);
     }
-    uiAttachments.push(footerUIAttachments);
-  }
-  useItemUIMessage.setUIAttachments(uiAttachments);
-  return useItemUIMessage;
+    else {
+        const validateItem = item.validateGamerUsage(gamer);
+        const footerUIAttachment = {
+            attachment_type: "default",
+            callback_id: callbackId,
+            color: "#1E09C9",
+            text: validateItem === true ? "" : validateItem,
+        };
+        const backButton = {
+            name: "back",
+            text: ":back:",
+            type: "button",
+            value: "back",
+        };
+        footerUIAttachment.actions = [backButton];
+        const useItemAction = item.getUsageForm(callbackId, game, gamer);
+        if (useItemAction) {
+            footerUIAttachment.actions.push(useItemAction);
+        }
+        uiAttachments.push(footerUIAttachment);
+    }
+    useItemUIMessage.setUIAttachments(uiAttachments);
+    return useItemUIMessage;
 }
-
-module.exports = useItemMessageFactory;
+exports.useItemMessageFactory = useItemMessageFactory;
+//# sourceMappingURL=useitemmessagefactory.js.map

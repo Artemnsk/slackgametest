@@ -4,7 +4,7 @@ const express = require("express");
 const request = require("request");
 const slackcommands_1 = require("../../middlewares/slackcommands");
 const tokenverification_1 = require("../../middlewares/tokenverification");
-const UIRouter = require("../../uicontrollers/uirouter");
+const uirouter_1 = require("../../uicontrollers/uirouter");
 exports.router = express.Router();
 exports.router.use("/commands", tokenverification_1.verifyToken);
 // todo: type.
@@ -13,7 +13,7 @@ exports.router.post("/commands", slackcommands_1.setGameData, (req, res) => {
     const text = body.text;
     if (text === "menu" || !text) {
         res.status(200).send("");
-        const uiRouter = new UIRouter(req.slackData.team, req.slackData.channel, req.slackData.player, req.slackData.game, req.slackData.gamer);
+        const uiRouter = new uirouter_1.UIRouter(req.slackData.team, req.slackData.channel, req.slackData.player, req.slackData.game, req.slackData.gamer);
         const uiMessagePromise = uiRouter.getUIMessage("/");
         uiMessagePromise.then((uiMessage) => {
             const sendParameters = {

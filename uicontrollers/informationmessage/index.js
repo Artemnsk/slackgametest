@@ -1,61 +1,35 @@
 "use strict";
-
-const Route = require('route-parser');
-const informationMessageFactory = require('./informationmessagefactory').informationMessageFactory;
-const INFORMATION_MESSAGE_OK = require('./informationmessagefactory').INFORMATION_MESSAGE_OK;
-
-/**
- *
- * @param {UIRouter} uiRouter
- * @param {ParsedSlackActionPayload} parsedPayload
- * @return {Promise<UIMessage, Error>}
- */
-function processActions(uiRouter, parsedPayload) {
-  // TODO: that is actually bad.
-  let action = parsedPayload.actions[0];
-  switch (action.name) {
-    case INFORMATION_MESSAGE_OK:
-      switch (action.value) {
-        case INFORMATION_MESSAGE_OK:
-          return uiRouter.rootUIRoute.getUIMessage(uiRouter, {});
-          break;
-      }
-      break;
-  }
-  // Anyway return root if no match.
-  return uiRouter.rootUIRoute.getUIMessage(uiRouter, {});
-}
-
-/**
- * @param {UIRouter} uiRouter
- * @param {{text: string, buttonText: [string]}} args
- * @return {Promise<UIMessage,Error>}
- */
-function getUIMessage(uiRouter, args) {
-  let buttonText = args.buttonText ? args.buttonText : 'Ok';
-  let uiMessage = informationMessageFactory(uiRouter.informationMessageUIRoute.route.reverse({}), args.text, buttonText);
-  return Promise.resolve(uiMessage);
-}
-
-const /** @type UIRoute */ uiRoute = {
-  route: new Route('/informationmessage'),
-  processActions,
-  getUIMessage,
-  validateRoute
+Object.defineProperty(exports, "__esModule", { value: true });
+const uiroute_1 = require("../uiroute");
+const informationmessagefactory_1 = require("./informationmessagefactory");
+const processActions = (uiRouter, parsedPayload, args) => {
+    // TODO: that is actually bad.
+    const action = parsedPayload.actions[0];
+    switch (action.name) {
+        case informationmessagefactory_1.INFORMATION_MESSAGE_OK:
+            switch (action.value) {
+                case informationmessagefactory_1.INFORMATION_MESSAGE_OK:
+                    return uiRouter.rootUIRoute.getUIMessage(uiRouter, {});
+            }
+            break;
+    }
+    // Anyway return root if no match.
+    return uiRouter.rootUIRoute.getUIMessage(uiRouter, {});
 };
-
-/**
- *
- * @param {UIRouter} uiRouter
- * @param {string} path
- * @param {ParsedSlackActionPayload} [parsedPayload]
- * @return ?UIMessage
- */
-function validateRoute(uiRouter, path, parsedPayload) {
-  return null;
-}
-
-
-module.exports = {
-  uiRoute
+const getUIMessage = (uiRouter, args) => {
+    const buttonText = args.buttonText ? args.buttonText : "Ok";
+    const path = uiRouter.informationMessageUIRoute.route.reverse({});
+    if (path !== false) {
+        const uiMessage = informationmessagefactory_1.informationMessageFactory(path, args.text, buttonText);
+        return Promise.resolve(uiMessage);
+    }
+    else {
+        const text = "Error: unknown error.";
+        return uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text });
+    }
 };
+const validateRoute = (uiRouter, path, parsedPayload) => {
+    return Promise.resolve(null);
+};
+exports.uiRoute = new uiroute_1.UIRoute("/informationmessage", processActions, getUIMessage, validateRoute);
+//# sourceMappingURL=index.js.map
