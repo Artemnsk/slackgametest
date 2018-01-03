@@ -16,6 +16,10 @@ const processActions: ProcessActionsFunction = (uiRouter, parsedPayload, args: {
 };
 
 const getUIMessage: GetUIMessageFunction = (uiRouter, args: {}) => {
+  if (uiRouter.game === null) {
+    const text = "Route validation for /gamemenu/gamerslist fails.";
+    return uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text });
+  }
   const path = uiRouter.gamersListUIRoute.route.reverse(args);
   if (path !== false) {
     return Promise.resolve(gamersListMessageFactory(path, uiRouter.game, uiRouter.gamer));

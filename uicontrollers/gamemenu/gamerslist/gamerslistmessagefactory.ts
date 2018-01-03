@@ -7,7 +7,7 @@ import { gameTitleFactory } from "../../_partials/gametitlefactory";
 /**
  * Provides with spell UI element.
  */
-export function gamersListMessageFactory(callbackId: string, game: Game, gamer: Gamer): UIMessage {
+export function gamersListMessageFactory(callbackId: string, game: Game, gamer: Gamer|null): UIMessage {
   const gamersListUIMessage = new UIMessage();
   const uiAttachments: SlackMessageAttachment[] = [];
   uiAttachments.push(gameTitleFactory(callbackId, gamer));

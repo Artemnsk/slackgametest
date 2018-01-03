@@ -1,7 +1,7 @@
-import express = require("express");
-import https = require("https");
-import querystring = require("querystring");
-import url = require("url");
+import * as express from "express";
+import * as https from "https";
+import * as querystring from "querystring";
+import * as url from "url";
 import { credentials as privateCredentials } from "../../credentials/private";
 import { credentials as publicCredentials } from "../../credentials/public";
 import { Team } from "../../models/team/team";

@@ -17,6 +17,10 @@ const processActions = (uiRouter, parsedPayload, args) => {
     return uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text });
 };
 const getUIMessage = (uiRouter, args) => {
+    if (uiRouter.player === null) {
+        const text = "Route validation for /breakmenu fails.";
+        return uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text });
+    }
     const path = uiRouter.breakmenuUIRoute.route.reverse({});
     if (path !== false) {
         const uiMessage = breakmenumessagefactory_1.breakMenuMessageFactory(path, uiRouter.channel, uiRouter.player);

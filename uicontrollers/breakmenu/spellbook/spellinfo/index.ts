@@ -14,6 +14,10 @@ const processActions: ProcessActionsFunction = (uiRouter, parsedPayload, args: {
 };
 
 const getUIMessage: GetUIMessageFunction = (uiRouter, args: {spellId: string}) => {
+  if (uiRouter.player === null) {
+    const text = "Route validation for /breakmenu/spellbook/:spellName fails.";
+    return uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text });
+  }
   const spell = spells.find((item) => item.id === args.spellId);
   if (spell) {
     const path = uiRouter.spellinfoUIRoute.route.reverse({ spellName: spell.id });

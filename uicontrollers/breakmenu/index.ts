@@ -18,6 +18,10 @@ const processActions: ProcessActionsFunction = (uiRouter, parsedPayload, args: {
 };
 
 const getUIMessage: GetUIMessageFunction = (uiRouter, args: {}) => {
+  if (uiRouter.player === null) {
+    const text = "Route validation for /breakmenu fails.";
+    return uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text });
+  }
   const path = uiRouter.breakmenuUIRoute.route.reverse({});
   if (path !== false) {
     const uiMessage = breakMenuMessageFactory(path, uiRouter.channel, uiRouter.player);

@@ -4,32 +4,44 @@ import { GetUIMessageFunction, ProcessActionsFunction, UIRoute, ValidateRouteFun
 import { useItemMessageFactory } from "./useitemmessagefactory";
 
 const processActions: ProcessActionsFunction = (uiRouter, parsedPayload, args: {itemId: string}) => {
+  if (uiRouter.game === null || uiRouter.gamer === null) {
+    const text = "Route validation for /gamemenu/useitem/:itemId/* fails.";
+    return uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text });
+  }
   const action = parsedPayload.actions[0];
   switch (action.name) {
     case "back":
       return uiRouter.gamemenuUIRoute.getUIMessage(uiRouter, {});
   }
   // Delegate that to spell now.
-  const item = items.find(currentItem => currentItem.id === args.itemId);
-  const itemBeingProcessedPromise = item.processUsageForm(uiRouter.game, uiRouter.gamer, parsedPayload);
-  return itemBeingProcessedPromise
-    .then((processed) => {
-      if (processed) {
-        return uiRouter.gamemenuUIRoute.getUIMessage(uiRouter, {});
-      } else {
-        // ..proceed with other checks. Currently no other checks.
-        // TODO: error?
-        return null;
-      }
-    }, (err) => {
-      return uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text: `Error: Something went wrong. ${err.message}` });
-    });
+  const item = items.find((currentItem) => currentItem.id === args.itemId);
+  if (item !== undefined) {
+    const itemBeingProcessedPromise = item.processUsageForm(uiRouter.game, uiRouter.gamer, parsedPayload);
+    return itemBeingProcessedPromise
+      .then((processed) => {
+        if (processed) {
+          return uiRouter.gamemenuUIRoute.getUIMessage(uiRouter, {});
+        } else {
+          // ..proceed with other checks. Currently no other checks.
+          const text = "Unknown error.";
+          return uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text });
+        }
+      }, (err) => {
+        return uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text: `Error: Something went wrong. ${err.message}` });
+      });
+  }
+  const text = "Unknown error.";
+  return uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text });
 };
 
 const getUIMessage: GetUIMessageFunction = (uiRouter, args: {itemId: string}) => {
+  if (uiRouter.game === null || uiRouter.gamer === null) {
+    const text = "Route validation for /gamemenu/useitem/:itemId/* fails.";
+    return uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text });
+  }
   const path = uiRouter.useItemUIRoute.route.reverse(args);
-  if (path !== false) {
-    const item = items.find((currentItem) => currentItem.id === args.itemId);
+  const item = items.find((currentItem) => currentItem.id === args.itemId);
+  if (path !== false && item !== undefined) {
     return Promise.resolve(useItemMessageFactory(path, uiRouter.channel, uiRouter.game, uiRouter.gamer, item));
   } else {
     const text = "Route not found.";

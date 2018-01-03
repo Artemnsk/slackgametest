@@ -5,6 +5,10 @@ const spells_1 = require("../../../storage/spells/spells");
 const castspellmessagefactory_1 = require("./castspellmessagefactory");
 const uiroute_1 = require("../../uiroute");
 const processActions = (uiRouter, parsedPayload, args) => {
+    if (uiRouter.game === null || uiRouter.gamer === null) {
+        const text = "Route validation for /gamemenu/castspell/:spellId/* fails.";
+        return uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text });
+    }
     const action = parsedPayload.actions[0];
     switch (action.name) {
         case "back":
@@ -12,25 +16,33 @@ const processActions = (uiRouter, parsedPayload, args) => {
     }
     // Delegate that to spell now.
     const spell = spells_1.spells.find((item) => item.id === args.spellId);
-    const spellBeingProcessedPromise = spell.processCastForm(uiRouter.game, uiRouter.gamer, parsedPayload);
-    return spellBeingProcessedPromise
-        .then((processed) => {
-        if (processed) {
-            return uiRouter.gamemenuUIRoute.getUIMessage(uiRouter, {});
-        }
-        else {
-            // ..proceed with other checks. Currently no other checks.
-            // TODO: error?
-            return null;
-        }
-    }, (err) => {
-        return uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text: `Error: Something went wrong. ${err.message}` });
-    });
+    if (spell !== undefined) {
+        const spellBeingProcessedPromise = spell.processCastForm(uiRouter.game, uiRouter.gamer, parsedPayload);
+        return spellBeingProcessedPromise
+            .then((processed) => {
+            if (processed) {
+                return uiRouter.gamemenuUIRoute.getUIMessage(uiRouter, {});
+            }
+            else {
+                // ..proceed with other checks. Currently no other checks.
+                const text = "Unknown error.";
+                return uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text });
+            }
+        }, (err) => {
+            return uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text: `Error: Something went wrong. ${err.message}` });
+        });
+    }
+    const text = "Unknown error.";
+    return uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text });
 };
 const getUIMessage = (uiRouter, args) => {
+    if (uiRouter.game === null || uiRouter.gamer === null) {
+        const text = "Route validation for /gamemenu/castspell/:spellId/* fails.";
+        return uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text });
+    }
     const spell = spells_1.spells.find((item) => item.id === args.spellId);
     const path = uiRouter.castspellUIRoute.route.reverse(args);
-    if (path !== false) {
+    if (path !== false && spell !== undefined) {
         return Promise.resolve(castspellmessagefactory_1.castSpellMessageFactory(path, uiRouter.channel, uiRouter.game, uiRouter.gamer, spell));
     }
     else {
