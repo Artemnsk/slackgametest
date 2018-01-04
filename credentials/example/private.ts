@@ -1,4 +1,14 @@
-export const credentials = {
+import { ServiceAccount } from "firebase-admin";
+
+type privateCredentials = {
+  client_secret: string,
+  firebase: {
+    databaseURL: string,
+    serviceAccount: ServiceAccount & any,
+  },
+};
+
+export const credentials: privateCredentials = {
   client_secret: "",
   firebase: {
     databaseURL: "",
