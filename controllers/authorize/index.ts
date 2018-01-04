@@ -1,7 +1,6 @@
 import * as express from "express";
 import * as https from "https";
-import { RequestOptions } from "https";
-import * as querystring from "querystring";
+import * as Slack from "slack-node";
 import * as url from "url";
 import { UrlObject } from "url";
 import { credentials as privateCredentials } from "../../credentials/private";
@@ -53,74 +52,51 @@ function authorizeComplete(req: express.Request, res: express.Response, next: ex
   const slackRespones: SlackOAuthResponseStep2 = req.query;
   const code = slackRespones.code;
   if (code) {
+    const slack = new Slack();
     // Prepare data to be send via HTTP request.
-    const dataJson: SlackOAuthRequestStep3 = {
+    const apiCallArgs: SlackOAuthRequestStep3 = {
       client_id: publicCredentials.client_id,
       client_secret: privateCredentials.client_secret,
       code,
       redirect_uri: authRedirectURL,
     };
-    const data: string = querystring.stringify(dataJson);
-    // Perform Basic auth using client_id and client_secret.
-    // const auth = "Basic " + new Buffer(publicCredentials.client_id + ":" + privateCredentials.client_secret).toString("base64");
-    const options: RequestOptions = {
-      headers: {
-        // "Authorization": auth,
-        "Content-Length": Buffer.byteLength(data),
-        "Content-type": "application/x-www-form-urlencoded",
-      },
-      host: "slack.com",
-      method: "POST",
-      path: "/api/oauth.access",
-      port: 443,
-    };
-    // Send request to Slack.
-    const request = https.request(options, (response) => {
-      let responseMessage: string = "";
-      response.setEncoding("utf8");
-      response.on("data", (chunk) => {
-        responseMessage += chunk;
-      });
-      response.on("end", () => {
-        const responseJSON: SlackOAuthResponseStep3 = JSON.parse(responseMessage);
-        if (responseJSON.ok === true) {
-          // At first get team info in app.
-          Team.getTeam(responseJSON.team_id)
-            .then((team) => {
-              if (team !== null && team.admin && team.admin !== responseJSON.user_id) {
-                res.status(500).send("App is already installed by admin and you are not app admin so we won't replace admin token with yours.");
+    slack.api("oauth.access", apiCallArgs, (err, response: SlackOAuthResponseStep3) => {
+      // const responseJSON: SlackOAuthResponseStep3 = JSON.parse(responseMessage);
+      if (response.ok === true) {
+        // At first get team info in app.
+        Team.getTeam(response.team_id)
+          .then((team) => {
+            if (team !== null && team.admin && team.admin !== response.user_id) {
+              res.status(500).send("App is already installed by admin and you are not app admin so we won't replace admin token with yours.");
+            } else {
+              if (response.bot !== undefined) {
+                // Save access and bot tokens into database now.
+                const teamFirebaseValue: TeamFirebaseValue = {
+                  active: true,
+                  admin: team && team.admin ? team.admin : response.user_id,
+                  botId: response.bot.bot_user_id,
+                  botToken: response.bot.bot_access_token,
+                  name: response.team_name,
+                  token: response.access_token,
+                  userId: response.user_id,
+                };
+                Team.setTeam(teamFirebaseValue, response.team_id)
+                  .then(() => {
+                    res.send("DONE!");
+                  }, (error) => {
+                    const errorTitle = "Something went wrong. Despite the fact app being installed in your team it probably will not work properly. Better to reinstall it. Error: " + error.message;
+                    res.status(500).send(errorTitle);
+                  });
               } else {
-                if (responseJSON.bot !== undefined) {
-                  // Save access and bot tokens into database now.
-                  const teamFirebaseValue: TeamFirebaseValue = {
-                    active: true,
-                    admin: team && team.admin ? team.admin : responseJSON.user_id,
-                    botId: responseJSON.bot.bot_user_id,
-                    botToken: responseJSON.bot.bot_access_token,
-                    name: responseJSON.team_name,
-                    token: responseJSON.access_token,
-                    userId: responseJSON.user_id,
-                  };
-                  Team.setTeam(teamFirebaseValue, responseJSON.team_id)
-                    .then(() => {
-                      res.send("DONE!");
-                    }, (error) => {
-                      const errorTitle = "Something went wrong. Despite the fact app being installed in your team it probably will not work properly. Better to reinstall it. Error: " + error.message;
-                      res.status(500).send(errorTitle);
-                    });
-                } else {
-                  res.status(500).send("Something went wrong. Bot credentials weren't created.");
-                }
+                res.status(500).send("Something went wrong. Bot credentials weren't created.");
               }
-            }, (error) => {
-              res.status(500).send(error.message);
-            });
-        } else {
-          res.status(500).send(`Something went wrong. Error code: "${responseJSON.error}".`);
-        }
-      });
+            }
+          }, (error) => {
+            res.status(500).send(error.message);
+          });
+      } else {
+        res.status(500).send(`Something went wrong. Error code: "${response.error}".`);
+      }
     });
-    request.write(data);
-    request.end();
   }
 }

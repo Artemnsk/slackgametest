@@ -9,3 +9,9 @@ credentials/*
 /.firebaserc
 /firebase/db/rules.json
 .DS_Store
+# All js files except some (legacy)
+*.js
+*.js.map
+!./gameloop
+!./models/action
+!./models/state

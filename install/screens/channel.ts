@@ -25,13 +25,12 @@ export function channelRoute(args: {team: Team, channelKey: string}, router: Ins
         stdout.write(`phase: "${channel.phase}"\n`);
         stdout.write(`timeStep: ${channel.timeStep}\n`);
         stdout.write(`breakTime: ${channel.breakTime}\n`);
-        stdout.write(`nextGame: ${channel.nextGame ? channel.nextGame : "NOT SET"} ${channel.nextGame? `[${new Date(channel.nextGame)}]` : ""}\n`);
+        stdout.write(`nextGame: ${channel.nextGame ? channel.nextGame : "NOT SET"} ${channel.nextGame ? `[${new Date(channel.nextGame)}]` : ""}\n`);
         stdout.write(`currentGame: [${channel.currentGame ? channel.currentGame : "NOT SET"}]\n`);
         stdout.write(`active: ${(channel.active === true ? "true" : "false")}\n`);
         // TODO: show details of current game if exists.
         inquirer.prompt([
           {
-            // TODO:
             choices: [
               {
                 disabled: channel.phase !== CHANNEL_PHASES.BREAK ? `Disabled: phase is not "${CHANNEL_PHASES.BREAK}"` : "",

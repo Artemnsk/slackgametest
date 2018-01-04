@@ -1,1 +1,0 @@
-{"version":3,"file":"fireball.js","sourceRoot":"","sources":["fireball.ts"],"names":[],"mappings":";;AAAA,oDAAiD;AAEpC,QAAA,QAAQ,GAAG,IAAI,aAAK,CAAC;IAChC,WAAW,EAAE,yBAAyB;IACtC,KAAK,EAAE,QAAQ;IACf,EAAE,EAAE,UAAU;IACd,KAAK,EAAE,UAAU;IACjB,MAAM,EAAE;QACN,MAAM,EAAE,EAAE;QACV,QAAQ,EAAE,EAAE;KACb;CACF,CAAC,CAAC"}

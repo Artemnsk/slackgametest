@@ -1,5 +1,6 @@
 import * as inquirer from "inquirer";
 import * as Slack from "slack-node";
+import { SlackUsersInfoRequest, SlackUsersInfoResponse } from "../../helpers/slackapicalls";
 import { Team } from "../../models/team/team";
 import { clearConsole, loadingScreen, separator } from "../helpers";
 import { InstallationRouter } from "../router";
@@ -17,13 +18,12 @@ export function teamRoute(args: {teamKey: string}, router: InstallationRouter): 
     .then((team) => {
       if (team !== null) {
         if (team.admin) {
-          const apiCallArgs = {
-            // TODO:
+          const apiCallArgs: SlackUsersInfoRequest = {
             include_locale: false,
             user: team.admin,
           };
           const slack = new Slack(team.token);
-          slack.api("users.info", apiCallArgs, (err, /** SlackUserInfoResponse */ response) => {
+          slack.api("users.info", apiCallArgs, (err, response: SlackUsersInfoResponse) => {
             if (err || response.ok !== true) {
               clearInterval(loadingScreenInterval);
               clearConsole();
@@ -51,15 +51,15 @@ export function teamRoute(args: {teamKey: string}, router: InstallationRouter): 
 
 function teamViewPart(args: {teamKey: string}, router: InstallationRouter, team: Team, teamAdminLabel: string): void {
   stdout.write("TEAM INFO\n");
-  stdout.write("$key: " + team.$key + "\n");
-  stdout.write("name: " + team.name + "\n");
-  stdout.write("token: " + team.token + "\n");
-  stdout.write("userId: " + team.userId + "\n");
-  stdout.write("botId: " + team.botId + "\n");
-  stdout.write("botToken: " + team.botToken + "\n");
-  stdout.write("admin: " + teamAdminLabel + "\n");
-  stdout.write("active: " + (team.active === true ? "true" : "false") + "\n");
-  const choices = team.admin ? [TEAM_EDIT, TEAM_CHANNELS, TEAM_BACK] : [TEAM_EDIT, { name: TEAM_CHANNELS, disabled: "Set app admin for this Slack team first."}, TEAM_BACK];
+  stdout.write(`$key: ${team.$key}\n`);
+  stdout.write(`name: ${team.name}\n`);
+  stdout.write(`token: ${team.token}\n`);
+  stdout.write(`userId: ${team.userId}\n`);
+  stdout.write(`botId: ${team.botId}\n`);
+  stdout.write(`botToken: ${team.botToken}\n`);
+  stdout.write(`admin: ${teamAdminLabel}\n`);
+  stdout.write(`active: ${team.active === true ? "true" : "false"}\n`);
+  const choices = team.admin ? [ TEAM_EDIT, TEAM_CHANNELS, TEAM_BACK ] : [ TEAM_EDIT, { name: TEAM_CHANNELS, disabled: "Set app admin for this Slack team first."}, TEAM_BACK ];
   inquirer.prompt([
     {
       choices,
@@ -87,7 +87,7 @@ function _errorCallback(message: string, args: {teamKey: string}, router: Instal
   clearConsole();
   inquirer.prompt([
     {
-      choices: [ERROR_TRY_AGAIN, ERROR_BACK],
+      choices: [ ERROR_TRY_AGAIN, ERROR_BACK ],
       message: "Error occurred: " + message,
       name: "option",
       type: "list",

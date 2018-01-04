@@ -8,10 +8,8 @@ import { UIRouter } from "../../uicontrollers/uirouter";
 
 export const router = express.Router();
 
-// TODO: SlackActionRequest type
 router.post("/actions", slackActions.setGameData, (req: express.Request & {slackData: SlackGameMajorData & {parsedPayload: ParsedSlackActionPayload}}, res: express.Response) => {
   res.status(200).send("");
-  // TODO: display error route UI if there is no route.
   const uiRouter = new UIRouter(req.slackData.team, req.slackData.channel, req.slackData.player, req.slackData.game, req.slackData.gamer);
   const uiMessagePromise = uiRouter.getUIMessage(req.slackData.parsedPayload.callback_id, req.slackData.parsedPayload);
   uiMessagePromise.then((uiMessage) => {
@@ -27,9 +25,9 @@ router.post("/actions", slackActions.setGameData, (req: express.Request & {slack
       method: "POST",
     };
     request(req.slackData.parsedPayload.response_url, coreOptions, () => {
-      // TODO: I'm actually not sure we need to do anything.
+      // I'm actually not sure we need to do anything.
     });
   }, (err) => {
-    // TODO: ?
+    // TODO: I don't think we ever reject promise from getUIMessage().
   });
 });

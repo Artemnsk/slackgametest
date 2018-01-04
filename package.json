@@ -38,6 +38,7 @@
     "@types/inquirer": "0.0.36",
     "@types/request": "^2.0.9",
     "@types/route-parser": "^0.1.1",
-    "@types/slack-node": "^0.1.2"
+    "@types/slack-node": "^0.1.2",
+    "tslint": "^5.8.0"
   }
 }
