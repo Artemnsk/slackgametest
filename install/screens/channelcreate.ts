@@ -1,5 +1,6 @@
 import * as inquirer from "inquirer";
 import * as Slack from "slack-node";
+import { SlackGroupsCreateRequest, SlackGroupsCreateResponse, SlackGroupsInviteRequest, SlackGroupsInviteResponse } from "../../helpers/slackapicalls";
 import { Channel } from "../../models/channel/channel";
 import { CHANNEL_PHASES, ChannelFirebaseValue } from "../../models/channel/dbfirebase";
 import { Team } from "../../models/team/team";
@@ -10,13 +11,9 @@ const CHANNEL_CREATE = "Create channel";
 const CHANNEL_CANCEL = "Cancel";
 const ERROR_BACK = "Back";
 
-/**
- * @typedef {Function} ChannelCreateRoute
- * @param {{team: Team}} args
- * @param {InstallationRouter} router
- */
-export function channelCreateRoute(args: {team: Team}, router: InstallationRouter) {
-  if (args.team !== null && args.team.botId !== undefined) {
+export function channelCreateRoute(args: {team: Team}, router: InstallationRouter): void {
+  const botId = args.team.botId;
+  if (botId !== undefined) {
     inquirer.prompt([
       {
         message: "Channel name:",
@@ -61,23 +58,14 @@ export function channelCreateRoute(args: {team: Team}, router: InstallationRoute
       clearConsole();
       switch (answers.option) {
         case CHANNEL_CREATE:
-          const apiCallArgs: {name: string, validate?: boolean} = {
+          const apiCallArgs: SlackGroupsCreateRequest = {
             name: answers.name,
             validate: true,
           };
           const slack = new Slack(args.team.token);
-          /**
-           * @typedef {Object} SlackGroupsCreateResponse
-           * @property {boolean} ok
-           * @property {Object} group
-           * @property {string} group.name
-           * @property {string} group.id
-           * @property {string} group.creator
-           * // TODO: other fields if needed.
-           */
           process.stdout.write("About to create new private channel (group).\n");
           let loadingScreenInterval = loadingScreen();
-          slack.api("groups.create", apiCallArgs, (err, /** SlackGroupsCreateResponse */ response) => {
+          slack.api("groups.create", apiCallArgs, (err, response: SlackGroupsCreateResponse) => {
             if (err) {
               clearInterval(loadingScreenInterval);
               _errorCallback(err.message, args, router);
@@ -86,16 +74,11 @@ export function channelCreateRoute(args: {team: Team}, router: InstallationRoute
               process.stdout.write("\nAbout to invite bot to newly created channel.\n");
               loadingScreenInterval = loadingScreen();
               // Invite app bot into channel.
-              const apiCallArgs: {channel: string, user: string} = {
+              const apiCallArgs: SlackGroupsInviteRequest = {
                 channel: response.group.id,
-                user: args.team.botId,
+                user: botId,
               };
-              /**
-               * @typedef {Object} SlackGroupsInviteResponse
-               * @property {boolean} ok
-               * @property {Object} group
-               */
-              slack.api("groups.invite", apiCallArgs, (err, /** SlackGroupsInviteResponse */ response2) => {
+              slack.api("groups.invite", apiCallArgs, (err, response2: SlackGroupsInviteResponse) => {
                 if (err) {
                   clearInterval(loadingScreenInterval);
                   _errorCallback(err.message, args, router);
@@ -121,16 +104,16 @@ export function channelCreateRoute(args: {team: Team}, router: InstallationRoute
                       router.channelsRoute(args, router);
                     }, (error) => {
                       clearInterval(loadingScreenInterval);
-                      _errorCallback("Actually Slack Channel being created... BUT!\n\n" + error.message, args, router);
+                      _errorCallback(`Actually Slack Channel being created... BUT!\n\n${error.message}`, args, router);
                     });
                 } else {
                   clearInterval(loadingScreenInterval);
-                  _errorCallback("Something went wrong during invitation of bot user into channel.", args, router);
+                  _errorCallback(`Something went wrong during invitation of bot user into channel: ${response2.error}`, args, router);
                 }
               });
             } else {
               clearInterval(loadingScreenInterval);
-              _errorCallback("Something went wrong. Probably this channel name already being taken by some archived channel.", args, router);
+              _errorCallback(`Something went wrong. Probably this channel name already being taken by some archived channel: ${response.error}`, args, router);
             }
           });
           break;
@@ -143,15 +126,15 @@ export function channelCreateRoute(args: {team: Team}, router: InstallationRoute
       }
     });
   } else {
-    // TODO: case.
+    _errorCallback("Something went wrong: botId is not set for this team.", args, router);
   }
 }
 
-function _errorCallback(message: string, args: {team: Team}, router: InstallationRouter) {
+function _errorCallback(message: string, args: {team: Team}, router: InstallationRouter): void {
   inquirer.prompt([
     {
       choices: [ ERROR_BACK ],
-      message: "Error occurred: " + message,
+      message: `Error occurred: ${message}`,
       name: "option",
       type: "list",
     },

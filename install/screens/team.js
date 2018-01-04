@@ -17,12 +17,11 @@ function teamRoute(args, router) {
         if (team !== null) {
             if (team.admin) {
                 const apiCallArgs = {
-                    // TODO:
                     include_locale: false,
                     user: team.admin,
                 };
                 const slack = new Slack(team.token);
-                slack.api("users.info", apiCallArgs, (err, /** SlackUserInfoResponse */ response) => {
+                slack.api("users.info", apiCallArgs, (err, response) => {
                     if (err || response.ok !== true) {
                         clearInterval(loadingScreenInterval);
                         helpers_1.clearConsole();
@@ -53,14 +52,14 @@ function teamRoute(args, router) {
 exports.teamRoute = teamRoute;
 function teamViewPart(args, router, team, teamAdminLabel) {
     stdout.write("TEAM INFO\n");
-    stdout.write("$key: " + team.$key + "\n");
-    stdout.write("name: " + team.name + "\n");
-    stdout.write("token: " + team.token + "\n");
-    stdout.write("userId: " + team.userId + "\n");
-    stdout.write("botId: " + team.botId + "\n");
-    stdout.write("botToken: " + team.botToken + "\n");
-    stdout.write("admin: " + teamAdminLabel + "\n");
-    stdout.write("active: " + (team.active === true ? "true" : "false") + "\n");
+    stdout.write(`$key: ${team.$key}\n`);
+    stdout.write(`name: ${team.name}\n`);
+    stdout.write(`token: ${team.token}\n`);
+    stdout.write(`userId: ${team.userId}\n`);
+    stdout.write(`botId: ${team.botId}\n`);
+    stdout.write(`botToken: ${team.botToken}\n`);
+    stdout.write(`admin: ${teamAdminLabel}\n`);
+    stdout.write(`active: ${team.active === true ? "true" : "false"}\n`);
     const choices = team.admin ? [TEAM_EDIT, TEAM_CHANNELS, TEAM_BACK] : [TEAM_EDIT, { name: TEAM_CHANNELS, disabled: "Set app admin for this Slack team first." }, TEAM_BACK];
     inquirer.prompt([
         {

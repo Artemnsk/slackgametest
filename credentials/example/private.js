@@ -1,10 +1,22 @@
 "use strict";
-
-module.exports = {
-  // This data is used during OAuth authentication to Slack. Must be securely stored. Obtained on Slack app dashboard in OAuth tab.
-  client_secret: '<>',
-  firebase: {
-    serviceAccount: require('./slackgametest-firebase-adminsdk-ksdm4-fc488f576c'),
-    databaseURL: ''
-  }
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.credentials = {
+    client_secret: "",
+    firebase: {
+        databaseURL: "",
+        // Firebase.
+        serviceAccount: {
+            auth_provider_x509_cert_url: "",
+            auth_uri: "",
+            client_email: "",
+            client_id: "",
+            client_x509_cert_url: "",
+            private_key: "",
+            private_key_id: "",
+            project_id: "",
+            token_uri: "",
+            type: "",
+        },
+    },
 };
+//# sourceMappingURL=private.js.map

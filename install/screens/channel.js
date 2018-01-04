@@ -28,7 +28,6 @@ function channelRoute(args, router) {
             // TODO: show details of current game if exists.
             inquirer.prompt([
                 {
-                    // TODO:
                     choices: [
                         {
                             disabled: channel.phase !== "BREAK" /* BREAK */ ? `Disabled: phase is not "${"BREAK" /* BREAK */}"` : "",

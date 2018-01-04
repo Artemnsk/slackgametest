@@ -31,7 +31,7 @@ function channelsRoute(args, router) {
         inquirer.prompt([
             {
                 choices: channelOptions,
-                message: args.team.name + " team channels:",
+                message: `${args.team.name} team channels:`,
                 name: "channel",
                 type: "list",
             },

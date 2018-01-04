@@ -32,7 +32,7 @@ export function channelsRoute(args: {team: Team}, router: InstallationRouter): v
       inquirer.prompt([
         {
           choices: channelOptions,
-          message: args.team.name + " team channels:",
+          message: `${args.team.name} team channels:`,
           name: "channel",
           type: "list",
         },
