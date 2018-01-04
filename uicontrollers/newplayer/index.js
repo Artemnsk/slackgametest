@@ -7,42 +7,21 @@ const uiroute_1 = require("../uiroute");
 const newplayermessagefactory_1 = require("./newplayermessagefactory");
 const CREATE_NEW_PLAYER_YES = "yes";
 const processActions = (uiRouter, parsedPayload, args) => {
-    // Parse submitted actions to know which window to render.
-    // TODO: that is actually bad.
     const action = parsedPayload.actions[0];
     switch (action.name) {
         case "option":
             switch (action.value) {
                 case CREATE_NEW_PLAYER_YES:
                     // Get user info from Slack.
-                    // https://api.slack.com/methods/users.info
                     const apiCallArgs = {
-                        // TODO:
                         include_locale: false,
                         user: parsedPayload.user.id,
                     };
                     const slack = new Slack(uiRouter.team.token);
-                    /**
-                     * @typedef {Object} SlackUserInfoResponseSuccess
-                     * @property {boolean} ok
-                     * @property {Object} user
-                     * @property {string} user.id
-                     * @property {Object} user.profile
-                     * @property {string} user.profile.real_name
-                     * // TODO: other fields if needed.
-                     */
-                    /**
-                     * @typedef {Object} SlackUserInfoResponseError
-                     * @property {boolean} ok
-                     * @property {string} error
-                     */
-                    /**
-                     * @typedef {SlackUserInfoResponseSuccess|SlackUserInfoResponseError} SlackUserInfoResponse
-                     */
                     return new Promise((resolve, reject) => {
-                        slack.api("users.info", apiCallArgs, (err, /** SlackUserInfoResponse */ response) => {
+                        slack.api("users.info", apiCallArgs, (err, response) => {
                             if (err) {
-                                const text = "Error: Cannot retrieve your user info from Slack: " + response.error;
+                                const text = `Error: Cannot retrieve your user info from Slack: ${response.error}`;
                                 const uiMessage = uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text });
                                 resolve(uiMessage);
                             }
@@ -62,7 +41,7 @@ const processActions = (uiRouter, parsedPayload, args) => {
                                         const uiMessage = uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text });
                                         resolve(uiMessage);
                                     }, (error) => {
-                                        const text = "Error: Player cannot be created into DB in some reason: " + error.message;
+                                        const text = `Error: Player cannot be created into DB in some reason: ${error.message}`;
                                         const uiMessage = uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text });
                                         resolve(uiMessage);
                                     });

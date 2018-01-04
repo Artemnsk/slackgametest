@@ -10,7 +10,7 @@ import { UIRouter } from "../../uicontrollers/uirouter";
 export const router = express.Router();
 
 router.use("/commands", verifyToken);
-// todo: type.
+
 router.post("/commands", setGameData, (req: express.Request & {slackData: SlackGameMajorData}, res: express.Response) => {
   const body: SlackCommandRequestBody = req.body;
   const text = body.text;
@@ -31,7 +31,7 @@ router.post("/commands", setGameData, (req: express.Request & {slackData: SlackG
         method: "POST",
       };
       request(body.response_url, coreOptions, () => {
-        // TODO: I'm actually not sure we need to do anything.
+        // I'm actually not sure we need to do anything.
       });
     });
   } else {

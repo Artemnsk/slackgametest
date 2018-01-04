@@ -170,5 +170,3 @@ type SlackGroupsInviteResponseSuccess = {
 };
 
 export type SlackGroupsInviteResponse = SlackAPIError & SlackGroupsInviteResponseSuccess;
-
-

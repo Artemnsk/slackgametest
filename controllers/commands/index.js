@@ -7,7 +7,6 @@ const tokenverification_1 = require("../../middlewares/tokenverification");
 const uirouter_1 = require("../../uicontrollers/uirouter");
 exports.router = express.Router();
 exports.router.use("/commands", tokenverification_1.verifyToken);
-// todo: type.
 exports.router.post("/commands", slackcommands_1.setGameData, (req, res) => {
     const body = req.body;
     const text = body.text;
@@ -28,7 +27,7 @@ exports.router.post("/commands", slackcommands_1.setGameData, (req, res) => {
                 method: "POST",
             };
             request(body.response_url, coreOptions, () => {
-                // TODO: I'm actually not sure we need to do anything.
+                // I'm actually not sure we need to do anything.
             });
         });
     }
