@@ -18,7 +18,7 @@ if (publicCredentials.useSSL) {
   const letsEncryptGateway = "https://acme-v01.api.letsencrypt.org/directory";
   const lex = greenlockExpress.create({
     agreeTos: true,
-    approveDomains: (opts, certs, cb) => {
+    approveDomains: (opts: any, certs: any, cb: any) => {
       if (certs) {
         opts.domains = certs.altnames;
         // console.log(certs.altnames);
