@@ -10,10 +10,10 @@ functions:
   # When create new gamer appropriate player must exist.
   - isValidGamer(teamKey, channelKey, gamerKey): prev.exists() || playerExists(teamKey, channelKey, gamerKey)
 
-  # Raw Actions validation.
-  - validRawAction(rawAction): validCastSpellRawAction(rawAction) || validUseItemRawAction(rawAction)
-  - validCastSpellRawAction(rawAction): rawAction.type === 'CAST_SPELL' && rawAction.params.spellId.exists()
-  - validUseItemRawAction(rawAction): rawAction.type === 'USE_ITEM' && rawAction.params.itemId.exists()
+  # Action Requests validation.
+  - validActionRequest(actionRequest): validCastSpellActionRequest(actionRequest) || validUseItemActionRequest(actionRequest)
+  - validCastSpellActionRequest(actionRequest): actionRequest.type === 'CAST_SPELL' && actionRequest.spellId.exists()
+  - validUseItemActionRequest(actionRequest): actionRequest.type === 'USE_ITEM' && actionRequest.itemId.exists()
 
 schema:
   type: object
@@ -163,7 +163,7 @@ schema:
                       ~$itemId:
                         type: boolean
     # Raw Actions for games.
-    rawActions:
+    actionRequests:
       type: object
       constraint: teamExists($teamKey)
       $teamKey:
@@ -174,64 +174,26 @@ schema:
           constraint: gameExists($teamKey, $channelKey, $gameKey)
           $gameKey:
             type: object
-            $rawActionKey:
+            $actionRequestKey:
               type: object
-              constraint: (!next.exists() || validRawAction(next))
-              required: ['type']
+              constraint: (!next.exists() || validActionRequest(next))
+              required: ['type', 'created']
               properties:
                 type:
                   type: string
                   enum: ['CAST_SPELL', 'USE_ITEM']
+                created:
+                  type: number
                 target:
                   type: string
                   constraint: (!next.exists() || gamerExists($teamKey, $channelKey, $gameKey, next))
                 initiator:
                   type: string
                   constraint: (!next.exists() || gamerExists($teamKey, $channelKey, $gameKey, next))
-                params:
-                  type: object
-                  additionalProperties: false
-                  properties:
-                    spellId:
-                      type: string
-                    itemId:
-                      type: string
-
-
-
-
-    # TODO: REMOVE states AND actions DEPRECATED STUFF BELOW.
-    # Stores information about game states in channels.
-    states:
-      type: object
-      $channelKey:
-        type: object
-        constraint: channelExists($channelKey)
-        additionalProperties: false
-        properties:
-          number:
-            type: number
-    # Actions.
-    actions:
-      type: object
-      constraint: teamExists($teamKey)
-      $teamKey:
-        type: object
-        $channelKey:
-          type: object
-          constraint: channelExists($channelKey)
-          indexOn: ['startAt']
-          $actionKey:
-            type: object
-            additionalProperties: false
-            required: ['type', 'startAt', 'number']
-            properties:
-              type:
-                type: string
-              startAt:
-                type: number
-              number:
-                type: number
+                spellId:
+                  type: string
+                itemId:
+                  type: string
 
 access:
   - location: /teams
@@ -254,9 +216,9 @@ access:
   - location: /games/$teamKey/$channelKey/$gameKey
     write: webserverUser()
 
-  - location: /rawActions/$teamKey/$channelKey/$gameKey
+  - location: /actionRequests/$teamKey/$channelKey/$gameKey
     read: webserverUser()
-  - location: /rawActions/$teamKey/$channelKey/$gameKey/$rawActionKey
+  - location: /actionRequests/$teamKey/$channelKey/$gameKey/$actionRequestKey
     write: webserverUser()
 
 
@@ -270,9 +232,4 @@ access:
   - location: /states
     read: webserverUser()
   - location: /states/$channelKey
-    write: webserverUser()
-
-  - location: /actions
-    read: webserverUser()
-  - location: /actions/$channelKey/$actionKey
     write: webserverUser()
