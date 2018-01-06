@@ -1,4 +1,5 @@
-import { ACTION_TYPES, GameActionRequest } from "../gameactionrequest/gameactionrequest";
+import { ACTION_TYPES } from "../gameaction/gameaction";
+import { GameActionRequest } from "../gameactionrequest/gameactionrequest";
 import { GameActionRequestCastSpellFirebaseValue } from "./dbfirebase";
 
 export class GameActionRequestCastSpell extends GameActionRequest {

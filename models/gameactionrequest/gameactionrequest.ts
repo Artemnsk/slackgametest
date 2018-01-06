@@ -1,11 +1,7 @@
+import { ACTION_TYPES } from "../gameaction/gameaction";
 import { GameActionRequestFirebaseValue } from "./dbfirebase";
 
-export const enum ACTION_TYPES {
-  CAST_SPELL = "CAST_SPELL",
-  USE_ITEM = "USE_ITEM",
-}
-
-export class GameActionRequest {
+export abstract class GameActionRequest {
   public type: ACTION_TYPES;
   public created: number;
   public initiator: string|null;

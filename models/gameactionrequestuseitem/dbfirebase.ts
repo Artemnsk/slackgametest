@@ -1,4 +1,4 @@
-import { ACTION_TYPES } from "../gameactionrequest/gameactionrequest";
+import { ACTION_TYPES } from "../gameaction/gameaction";
 
 export type GameActionRequestUseItemFirebaseValueRaw = {
   type: ACTION_TYPES.USE_ITEM,

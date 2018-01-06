@@ -1,4 +1,4 @@
-import { ACTION_TYPES } from "../gameactionrequest/gameactionrequest";
+import { ACTION_TYPES } from "../gameaction/gameaction";
 
 export type GameActionRequestCastSpellFirebaseValueRaw = {
   type: ACTION_TYPES.CAST_SPELL,
