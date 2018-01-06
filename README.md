@@ -20,26 +20,25 @@ Do the steps below in the Slack app settings.
 4. Create a bot user under **Bot Users** tab.
 5. Add permissions at **OAuth And Permissions** > **Scopes** > **Select Permission Scopes**. List of required permissions is located in `/controllers/authorize/index.js:authorizeRequest()->'scope'`. If some settings/permissions change in the future you can keep reinstalling the app.
 
-Go to your project app. Copy `private.js` and `public.js` from `/credentials/example` directory into `/credentials`.
+Go to your project app. Copy `private.ts` and `public.ts` from `/credentials/example` directory into `/credentials`.
 Set the following keys there:
 
-##### public.js:
+##### public.ts:
 - **useSSL**: false
 - **protocol**: http
 - **host**: localhost
 - **client_id**: Get it in **Settings** > **Basic Information**
 - **verification_token**: Get it in **Settings** > **Basic Information**
 
-##### private.js:
+##### private.ts:
 - **client_secret**: Get it in **Settings** > **Basic Information**
 
 ### 2. Firebase.
 #### 2a. Fill credentials.
 Create your own Firebase instance. Go to **Project Overview** > **Project Settings** >
 **Service Accounts**. Generate *serviceAccount* file for **Firebase Admin SDK**
-on **NodeJS** (**Generate New Private Key** button). Put this file into `/credentials` directory. In your `private.js` file
-set `firebase.serviceAccount` to
-`require('./serviceAccountFileName')`.
+on **NodeJS** (**Generate New Private Key** button). In your `private.js`
+file set `firebase.serviceAccount` to downloaded service account JSON.
 
 Go to **Database** tab (under **Develop**) on Firebase. Copy database URL from there. In your `private.js` file
 set `firebase.databaseURL` to this value.
@@ -146,3 +145,19 @@ Ensure that newly created private channel appears in your team and the game app 
 ### 4. GAME LOOP.
 
 ... TODO.
+
+## Dev notes
+
+#### Technologies/Tags:
+
+- Typescript
+- Firebase
+- Firebase Admin SDK
+- Firebase DB rules
+- Blaze compiler for Firebase DB rules
+- TSLint
+- NodeJS
+- ExpressJS framework
+- Slack API
+
+`TODO:` tsc installation and IDE setup? Mmm.. later.
