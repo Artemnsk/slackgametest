@@ -1,12 +1,12 @@
 import * as Route from "route-parser";
-import { spells } from "../../../storage/spells/spells";
 import { castSpellMessageFactory } from "./castspellmessagefactory";
 
 import { GetUIMessageFunction, ProcessActionsFunction, UIRoute, ValidateRouteFunction } from "../../uiroute";
+import {UsableSpell} from "../../../models/spell/usablespell";
 
-const processActions: ProcessActionsFunction = (uiRouter, parsedPayload, args: {spellId: string}) => {
+const processActions: ProcessActionsFunction = (uiRouter, parsedPayload, args: {spellKey: string}) => {
   if (uiRouter.game === null || uiRouter.gamer === null) {
-    const text = "Route validation for /gamemenu/castspell/:spellId/* fails.";
+    const text = "Route validation for /gamemenu/castspell/:spellKey/* fails.";
     return uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text });
   }
   const action = parsedPayload.actions[0];
@@ -15,9 +15,9 @@ const processActions: ProcessActionsFunction = (uiRouter, parsedPayload, args: {
       return uiRouter.gamemenuUIRoute.getUIMessage(uiRouter, {});
   }
   // Delegate that to spell now.
-  const spell = spells.find((item) => item.id === args.spellId);
-  if (spell !== undefined) {
-    const spellBeingProcessedPromise = spell.processCastForm(uiRouter.game, uiRouter.gamer, parsedPayload);
+  const spell = uiRouter.gamer.getSpell(args.spellKey);
+  if (spell !== null && spell instanceof UsableSpell) {
+    const spellBeingProcessedPromise = spell.processUsageForm(uiRouter.game, uiRouter.gamer, parsedPayload);
     return spellBeingProcessedPromise
       .then((processed) => {
         if (processed) {
@@ -35,14 +35,14 @@ const processActions: ProcessActionsFunction = (uiRouter, parsedPayload, args: {
   return uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text });
 };
 
-const getUIMessage: GetUIMessageFunction = (uiRouter, args: {spellId: string}) => {
+const getUIMessage: GetUIMessageFunction = (uiRouter, args: {spellKey: string}) => {
   if (uiRouter.game === null || uiRouter.gamer === null) {
-    const text = "Route validation for /gamemenu/castspell/:spellId/* fails.";
+    const text = "Route validation for /gamemenu/castspell/:spellKey/* fails.";
     return uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text });
   }
-  const spell = spells.find((item) => item.id === args.spellId);
+  const spell = uiRouter.gamer.getSpell(args.spellKey);
   const path = uiRouter.castspellUIRoute.route.reverse(args);
-  if (path !== false && spell !== undefined) {
+  if (path !== false && spell !== null && spell instanceof UsableSpell) {
     return Promise.resolve(castSpellMessageFactory(path, uiRouter.channel, uiRouter.game, uiRouter.gamer, spell));
   } else {
     const text = "Unknown error.";
@@ -51,18 +51,17 @@ const getUIMessage: GetUIMessageFunction = (uiRouter, args: {spellId: string}) =
 };
 
 const validateRoute: ValidateRouteFunction = (uiRouter, path, parsedPayload) => {
-  const validateRoute = new Route("/gamemenu/castspell/:spellId/*");
+  const validateRoute = new Route("/gamemenu/castspell/:spellKey/*");
   const args = validateRoute.match(path);
   if (args !== false) {
+    const validArgs = args as { spellKey: string };
     if (!uiRouter.gamer) {
       return Promise.reject({ message: "Error: You are not participate in this game." });
-    } else if (!spells.find((item) => item.id === args.spellId)) {
-      return Promise.reject({ message: "Error: spell with this spell ID doesn't exist." });
-    } else if (!uiRouter.gamer.spells || uiRouter.gamer.spells[args.spellId] !== true) {
+    } else if (!uiRouter.gamer.getSpell(validArgs.spellKey) === null) {
       return Promise.reject({ message: "Error: You have no this spell." });
     }
   }
   return Promise.resolve(null);
 };
 
-export const uiRoute = new UIRoute("/gamemenu/castspell/:spellId", processActions, getUIMessage, validateRoute);
+export const uiRoute = new UIRoute("/gamemenu/castspell/:spellKey", processActions, getUIMessage, validateRoute);

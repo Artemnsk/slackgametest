@@ -1,10 +1,13 @@
+import { ItemFirebaseValueRaw } from "../Item/dbfirebase";
+import {SpellFirebaseValueRaw} from "../spell/dbfirebase";
+
 export type GamerFirebaseValueRaw = {
   name: string,
   dead: boolean,
   health: number,
   mana: number,
-  spells?: {[key: string]: boolean},
-  items?: {[key: string]: boolean},
+  spells?: {[key: string]: SpellFirebaseValueRaw},
+  items?: {[key: string]: ItemFirebaseValueRaw},
 };
 
 export type GamerFirebaseValue = {
@@ -12,8 +15,8 @@ export type GamerFirebaseValue = {
   dead: boolean,
   health: number,
   mana: number,
-  spells: {[key: string]: boolean},
-  items: {[key: string]: boolean},
+  spells: {[key: string]: SpellFirebaseValueRaw},
+  items: {[key: string]: ItemFirebaseValueRaw},
 };
 
 export function processFirebaseRawValues(value: GamerFirebaseValueRaw): GamerFirebaseValue {

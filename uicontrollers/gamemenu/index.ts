@@ -7,9 +7,9 @@ const processActions: ProcessActionsFunction = (uiRouter, parsedPayload, args: {
   const action = parsedPayload.actions[0];
   switch (action.name) {
     case "spell":
-      return uiRouter.castspellUIRoute.getUIMessage(uiRouter, { spellId: action.value });
+      return uiRouter.castspellUIRoute.getUIMessage(uiRouter, { spellKey: action.value });
     case "item":
-      return uiRouter.useItemUIRoute.getUIMessage(uiRouter, { itemId: action.value });
+      return uiRouter.useItemUIRoute.getUIMessage(uiRouter, { itemKey: action.value });
     case "navigation":
       switch (action.value) {
         case "stats":

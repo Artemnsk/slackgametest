@@ -46,13 +46,12 @@ export function gameMenuMessageFactory(callbackId: string, gamer: Gamer|null): U
 
 function _getSpellActions(callbackId: string, gamer: Gamer|null): SlackMessageActionButton[] {
   if (gamer !== null) {
-    const gamerSpells = gamer.getSpells();
-    return gamerSpells.map((item) => {
+    return gamer.spells.map((spell) => {
       const button: SlackMessageActionButton = {
         name: "spell",
-        text: item.emoji,
+        text: spell.emoji,
         type: "button",
-        value: item.id,
+        value: spell.$key,
       };
       return button;
     });
@@ -63,13 +62,12 @@ function _getSpellActions(callbackId: string, gamer: Gamer|null): SlackMessageAc
 
 function _getItemActions(callbackId: string, gamer: Gamer|null): SlackMessageActionButton[] {
   if (gamer !== null) {
-    const gamerItems = gamer.getItems();
-    return gamerItems.map((item) => {
+    return gamer.items.map((item) => {
       const button: SlackMessageActionButton = {
         name: "item",
         text: item.emoji,
         type: "button",
-        value: item.id,
+        value: item.$key,
       };
       return button;
     });

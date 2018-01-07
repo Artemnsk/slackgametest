@@ -1,7 +1,7 @@
-import { ACTION_TYPES } from "../gameaction/gameaction";
+import { GAME_ACTION_REQUEST_TYPES } from "../../gameactionrequest";
 
 export type GameActionRequestUseItemFirebaseValueRaw = {
-  type: ACTION_TYPES.USE_ITEM,
+  type: GAME_ACTION_REQUEST_TYPES.USE_ITEM,
   created: number,
   initiator?: string,
   target?: string,
@@ -9,7 +9,7 @@ export type GameActionRequestUseItemFirebaseValueRaw = {
 };
 
 export type GameActionRequestUseItemFirebaseValue = {
-  type: ACTION_TYPES.USE_ITEM,
+  type: GAME_ACTION_REQUEST_TYPES.USE_ITEM,
   created: number,
   initiator: string|null,
   target: string|null,

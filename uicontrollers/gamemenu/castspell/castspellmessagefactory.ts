@@ -5,11 +5,12 @@ import { Gamer } from "../../../models/gamer/gamer";
 import { Spell } from "../../../models/spell/spell";
 import { UIMessage } from "../../../models/uimessage/uimessage";
 import { gameTitleFactory } from "../../_partials/gametitlefactory";
+import {UsableSpell} from "../../../models/spell/usablespell";
 
 /**
  * Provides with spell UI element.
  */
-export function castSpellMessageFactory(callbackId: string, channel: Channel, game: Game, gamer: Gamer, spell: Spell): UIMessage {
+export function castSpellMessageFactory(callbackId: string, channel: Channel, game: Game, gamer: Gamer, spell: UsableSpell): UIMessage {
   const castSpellUIMessage = new UIMessage();
   const uiAttachments: SlackMessageAttachment[] = [ gameTitleFactory(callbackId, gamer), ...spell.getSlackInfo(callbackId) ];
   if (gamer.dead === true) {
@@ -27,7 +28,7 @@ export function castSpellMessageFactory(callbackId: string, channel: Channel, ga
     };
     uiAttachments.push(footerUIAttachments);
   } else {
-    const validateSpell = spell.validateGamerCast(gamer);
+    const validateSpell = spell.validateGamerUsage(gamer);
     const footerUIAttachments: SlackMessageAttachment = {
       attachment_type: "default",
       callback_id: callbackId,
@@ -41,7 +42,7 @@ export function castSpellMessageFactory(callbackId: string, channel: Channel, ga
       value: "back",
     };
     footerUIAttachments.actions = [ backButton ];
-    const castSpellAction = spell.getCastForm(callbackId, game, gamer);
+    const castSpellAction = spell.getUsageForm(callbackId, game, gamer);
     if (castSpellAction) {
       footerUIAttachments.actions.push(castSpellAction);
     }

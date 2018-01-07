@@ -5,11 +5,12 @@ import { Gamer } from "../../../models/gamer/gamer";
 import { Item } from "../../../models/Item/item";
 import { UIMessage } from "../../../models/uimessage/uimessage";
 import { gameTitleFactory } from "../../_partials/gametitlefactory";
+import {UsableItem} from "../../../models/Item/usableitem";
 
 /**
  * Provides with spell UI element.
  */
-export function useItemMessageFactory(callbackId: string, channel: Channel, game: Game, gamer: Gamer, item: Item): UIMessage {
+export function useItemMessageFactory(callbackId: string, channel: Channel, game: Game, gamer: Gamer, item: UsableItem): UIMessage {
   const useItemUIMessage = new UIMessage();
   const uiAttachments: SlackMessageAttachment[] = [ gameTitleFactory(callbackId, gamer), ...item.getSlackInfo(callbackId) ];
   // TODO: delegate that to validator?
@@ -28,6 +29,7 @@ export function useItemMessageFactory(callbackId: string, channel: Channel, game
     };
     uiAttachments.push(footerUIAttachment);
   } else {
+    // TODO: for special interface only
     const validateItem = item.validateGamerUsage(gamer);
     const footerUIAttachment: SlackMessageAttachment = {
       attachment_type: "default",
