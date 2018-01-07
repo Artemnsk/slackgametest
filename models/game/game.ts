@@ -77,11 +77,11 @@ export class Game {
   }
 
   public timeStep: number;
-  public phase: string; // TODO: enum.
+  public phase: GAME_PHASES;
   public $key: string;
   public $channelKey: string;
   public $teamKey: string;
-  public gamers: {[key: string]: GamerFirebaseValue};
+  public gamers: Gamer[];
 
   constructor(values: GameFirebaseValue & {$key: string, $channelKey: string, $teamKey: string}) {
     this.timeStep = values.timeStep;
@@ -89,30 +89,31 @@ export class Game {
     this.$key = values.$key;
     this.$channelKey = values.$channelKey;
     this.$teamKey = values.$teamKey;
-    this.gamers = values.gamers ? values.gamers : {};
-  }
-
-  public getGamer(userKey: string): Gamer|null {
-    if (this.gamers[userKey]) {
-      const gamerConstructorValue = Object.assign(this.gamers[userKey], {
-        $channelKey: this.$channelKey,
-        $gameKey: this.$key,
-        $key: userKey,
-        $teamKey: this.$teamKey,
-      });
-      return new Gamer(gamerConstructorValue);
-    } else {
-      return null;
+    // Construct gamers.
+    const gamers: Gamer[] = [];
+    for (const gamerKey in values.gamers) {
+      if (values.gamers.hasOwnProperty(gamerKey)) {
+        const gamer = new Gamer(Object.assign(values.gamers[gamerKey], { $gameKey: values.$key, $channelKey: values.$channelKey, $teamKey: values.$teamKey }), gamerKey);
+        if (gamer !== null) {
+          gamers.push(gamer);
+        }
+      }
     }
+    this.gamers = gamers;
   }
 
-  /**
-   *
-   * @return {GameFirebaseValue}
-   */
+  public getGamer(gamerKey: string): Gamer|null {
+    const gamer = this.gamers.find((item) => item.$key === gamerKey);
+    return gamer === undefined ? null : gamer;
+  }
+
   public getFirebaseValue(): GameFirebaseValue {
+    const gamers: { [key: string]: GamerFirebaseValue } = {};
+    for (const gamer of this.gamers) {
+      gamers[gamer.$key] = gamer.getFirebaseValue();
+    }
     return Object.assign({}, {
-      gamers: this.gamers,
+      gamers,
       phase: this.phase,
       timeStep: this.timeStep,
     });

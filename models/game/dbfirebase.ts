@@ -1,16 +1,17 @@
 import * as admin from "firebase-admin";
 import { firebaseApp } from "../../helpers/firebaseapp";
 import { GamerFirebaseValue, GamerFirebaseValueRaw, processFirebaseRawValues as processGamerFirebaseRawValues } from "../gamer/dbfirebase";
+import { GAME_PHASES } from "./game";
 
 export type GameFirebaseValueRaw = {
   timeStep: number,
-  phase: string, // TODO: enum.
+  phase: GAME_PHASES,
   gamers?: {[key: string]: GamerFirebaseValueRaw},
 };
 
 export type GameFirebaseValue = {
   timeStep: number,
-  phase: string, // TODO: enum.
+  phase: GAME_PHASES,
   gamers: {[key: string]: GamerFirebaseValue},
 };
 
