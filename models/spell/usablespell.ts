@@ -32,11 +32,11 @@ export abstract class UsableSpell extends Spell {
   public getUsageForm(callbackId: string, game: Game, gamer: Gamer): SlackMessageAction|null {
     if (this.validateGamerUsage(gamer) === true) {
       const options = [];
-      for (const gamerKey in game.gamers) {
-        if (game.gamers[gamerKey].dead === false) {
+      for (const gameGamer of game.gamers) {
+        if (gameGamer.dead === false) {
           options.push({
-            text: game.gamers[gamerKey].name,
-            value: gamerKey,
+            text: gameGamer.name,
+            value: gameGamer.$key,
           });
         }
       }
