@@ -1,5 +1,4 @@
 import * as admin from "firebase-admin";
-import { spells } from "../../storage/spells/spells";
 import { GamerFirebaseValue } from "../gamer/dbfirebase";
 import { Gamer } from "../gamer/gamer";
 import { GameFirebaseValue, getDBGame, getDBGames, getNewGameDBRef, removeDBGame, setDBGame } from "./dbfirebase";

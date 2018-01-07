@@ -8,8 +8,6 @@ const processActions: ProcessActionsFunction = (uiRouter, parsedPayload, args: {
   // TODO:
   const action = parsedPayload.actions[0];
   switch (action.name) {
-    case "spellbook":
-      return uiRouter.spellbookUIRoute.getUIMessage(uiRouter, {});
     case "shop":
       return uiRouter.shopUIRoute.getUIMessage(uiRouter, {});
   }
