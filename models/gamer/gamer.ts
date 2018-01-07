@@ -1,10 +1,10 @@
 import { Item } from "../Item/item";
 import { Spell } from "../spell/spell";
 import { GamerFirebaseValue } from "./dbfirebase";
-import {ItemFirebaseValueRaw} from "../Item/dbfirebase";
+import {ItemFirebaseValue, ItemFirebaseValueRaw} from "../Item/dbfirebase";
 import {buildItem} from "../Item/itemfactory";
 import {buildSpell} from "../spell/spellfactory";
-import {SpellFirebaseValueRaw} from "../spell/dbfirebase";
+import {SpellFirebaseValue, SpellFirebaseValueRaw} from "../spell/dbfirebase";
 
 export class Gamer {
   public name: string;
@@ -18,7 +18,7 @@ export class Gamer {
   public $channelKey: string;
   public $teamKey: string;
 
-  constructor(values: GamerFirebaseValue & {$key: string, $gameKey: string, $channelKey: string, $teamKey: string}) {
+  constructor(values: GamerFirebaseValue & {$gameKey: string, $channelKey: string, $teamKey: string}, $key: string) {
     this.name = values.name;
     this.dead = values.dead;
     this.health = values.health;
@@ -45,7 +45,7 @@ export class Gamer {
       }
     }
     this.items = items;
-    this.$key = values.$key;
+    this.$key = $key;
     this.$gameKey = values.$gameKey;
     this.$channelKey = values.$channelKey;
     this.$teamKey = values.$teamKey;
@@ -70,11 +70,11 @@ export class Gamer {
   }
 
   public getFirebaseValue(): GamerFirebaseValue {
-    const items: { [key: string]: ItemFirebaseValueRaw } = {};
+    const items: { [key: string]: ItemFirebaseValue } = {};
     for (const item of this.items) {
       items[item.$key] = item.getFirebaseValues();
     }
-    const spells: { [key: string]: SpellFirebaseValueRaw } = {};
+    const spells: { [key: string]: SpellFirebaseValue } = {};
     for (const spell of this.spells) {
       spells[spell.$key] = spell.getFirebaseValues();
     }

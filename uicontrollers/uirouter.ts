@@ -11,8 +11,6 @@ import { UIRoute } from "./uiroute";
 import { uiRoute as rootUIRoute } from "./";
 import { uiRoute as breakmenuUIRoute } from "./breakmenu";
 import { uiRoute as shopUIRoute } from "./breakmenu/shop";
-import { uiRoute as spellbookUIRoute } from "./breakmenu/spellbook";
-import { uiRoute as spellinfoUIRoute } from "./breakmenu/spellbook/spellinfo";
 import { uiRoute as gamemenuUIRoute } from "./gamemenu";
 import { uiRoute as castspellUIRoute } from "./gamemenu/castspell";
 import { uiRoute as gamersListUIRoute } from "./gamemenu/gamerslist";
@@ -31,8 +29,6 @@ export class UIRouter {
   public informationMessageUIRoute: UIRoute;
   public newplayerUIRoute: UIRoute;
   public breakmenuUIRoute: UIRoute;
-  public spellbookUIRoute: UIRoute;
-  public spellinfoUIRoute: UIRoute;
   public shopUIRoute: UIRoute;
   public gamemenuUIRoute: UIRoute;
   public castspellUIRoute: UIRoute;
@@ -51,8 +47,6 @@ export class UIRouter {
     this.newplayerUIRoute = newplayerUIRoute;
     this.breakmenuUIRoute = breakmenuUIRoute;
     this.shopUIRoute = shopUIRoute;
-    this.spellbookUIRoute = spellbookUIRoute;
-    this.spellinfoUIRoute = spellinfoUIRoute;
     this.gamemenuUIRoute = gamemenuUIRoute;
     this.castspellUIRoute = castspellUIRoute;
     this.useItemUIRoute = useItemUIRoute;
@@ -70,8 +64,6 @@ export class UIRouter {
       this.newplayerUIRoute,
       this.breakmenuUIRoute,
       this.shopUIRoute,
-      this.spellbookUIRoute,
-      this.spellinfoUIRoute,
       this.gamemenuUIRoute,
       this.castspellUIRoute,
       this.useItemUIRoute,

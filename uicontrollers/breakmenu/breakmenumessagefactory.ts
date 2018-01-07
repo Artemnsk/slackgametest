@@ -14,11 +14,6 @@ export function breakMenuMessageFactory(callbackId: string, channel: Channel, pl
   uiAttachments.push({
     actions: [
       {
-        name: "spellbook",
-        text: ":sparkles:Spellbook",
-        type: "button",
-        value: "spellbook",
-      }, {
         name: "shop",
         text: ":scales:Shop",
         type: "button",
