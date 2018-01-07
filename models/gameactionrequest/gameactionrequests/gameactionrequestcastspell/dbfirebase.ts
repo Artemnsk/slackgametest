@@ -1,7 +1,7 @@
-import { ACTION_TYPES } from "../gameaction/gameaction";
+import { GAME_ACTION_REQUEST_TYPES } from "../../gameactionrequest";
 
 export type GameActionRequestCastSpellFirebaseValueRaw = {
-  type: ACTION_TYPES.CAST_SPELL,
+  type: GAME_ACTION_REQUEST_TYPES.CAST_SPELL,
   created: number,
   initiator?: string,
   target?: string,
@@ -9,7 +9,7 @@ export type GameActionRequestCastSpellFirebaseValueRaw = {
 };
 
 export type GameActionRequestCastSpellFirebaseValue = {
-  type: ACTION_TYPES.CAST_SPELL,
+  type: GAME_ACTION_REQUEST_TYPES.CAST_SPELL,
   created: number,
   initiator: string|null,
   target: string|null,

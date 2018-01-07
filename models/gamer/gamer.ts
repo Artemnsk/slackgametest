@@ -1,16 +1,18 @@
-import { items } from "../../storage/items/items";
-import { spells } from "../../storage/spells/spells";
 import { Item } from "../Item/item";
 import { Spell } from "../spell/spell";
 import { GamerFirebaseValue } from "./dbfirebase";
+import {ItemFirebaseValueRaw} from "../Item/dbfirebase";
+import {buildItem} from "../Item/itemfactory";
+import {buildSpell} from "../spell/spellfactory";
+import {SpellFirebaseValueRaw} from "../spell/dbfirebase";
 
 export class Gamer {
   public name: string;
   public dead: boolean;
   public health: number;
   public mana: number;
-  public spells: {[key: string]: boolean};
-  public items: {[key: string]: boolean};
+  public spells: Spell[];
+  public items: Item[];
   public $key: string;
   public $gameKey: string;
   public $channelKey: string;
@@ -21,12 +23,42 @@ export class Gamer {
     this.dead = values.dead;
     this.health = values.health;
     this.mana = values.mana;
-    this.spells = values.spells ? values.spells : {};
-    this.items = values.items ? values.items : {};
+    // Construct spells.
+    const spells: Spell[] = [];
+    for (const spellKey in values.spells) {
+      if (values.spells.hasOwnProperty(spellKey)) {
+        const spell = buildSpell(values.spells[spellKey], spellKey);
+        if (spell !== null) {
+          spells.push(spell);
+        }
+      }
+    }
+    this.spells = spells;
+    // Construct items.
+    const items: Item[] = [];
+    for (const itemKey in values.items) {
+      if (values.items.hasOwnProperty(itemKey)) {
+        const item = buildItem(values.items[itemKey], itemKey);
+        if (item !== null) {
+          items.push(item);
+        }
+      }
+    }
+    this.items = items;
     this.$key = values.$key;
     this.$gameKey = values.$gameKey;
     this.$channelKey = values.$channelKey;
     this.$teamKey = values.$teamKey;
+  }
+
+  public getItem(itemKey: string): Item|null {
+    const gamerItem = this.items.find((item) => item.$key === itemKey);
+    return gamerItem ? gamerItem : null;
+  }
+
+  public getSpell(spellKey: string): Spell|null {
+    const gamerSpell = this.spells.find((spell) => spell.$key === spellKey);
+    return gamerSpell ? gamerSpell : null;
   }
 
   public getGameStats(): string {
@@ -37,24 +69,22 @@ export class Gamer {
     }
   }
 
-  // TODO: maybe Game stores all spells and gamer uses Game?
-  public getSpells(): Spell[] {
-    return spells.filter((spell) => this.spells && this.spells[spell.id] === true);
-  }
-
-  // TODO: maybe Game stores all items and gamer uses Game?
-  public getItems(): Item[] {
-    return items.filter((item) => this.items && this.items[item.id] === true);
-  }
-
   public getFirebaseValue(): GamerFirebaseValue {
+    const items: { [key: string]: ItemFirebaseValueRaw } = {};
+    for (const item of this.items) {
+      items[item.$key] = item.getFirebaseValues();
+    }
+    const spells: { [key: string]: SpellFirebaseValueRaw } = {};
+    for (const spell of this.spells) {
+      spells[spell.$key] = spell.getFirebaseValues();
+    }
     return Object.assign({}, {
       dead: this.dead,
       health: this.health,
-      items: this.items,
+      items,
       mana: this.mana,
       name: this.name,
-      spells: this.spells,
+      spells,
     });
   }
 }

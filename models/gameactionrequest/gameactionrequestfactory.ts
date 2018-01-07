@@ -1,10 +1,9 @@
-import { ACTION_TYPES } from "../gameaction/gameaction";
-import { GameActionRequestCastSpellFirebaseValueRaw, processFirebaseRawValues as processCastSpellFBRaw } from "../gameactionrequestcastspell/dbfirebase";
-import { GameActionRequestCastSpell } from "../gameactionrequestcastspell/gameactionrequestcastspell";
-import { GameActionRequestUseItemFirebaseValueRaw, processFirebaseRawValues as processUseItemFBRaw } from "../gameactionrequestuseitem/dbfirebase";
-import { GameActionRequestUseItem } from "../gameactionrequestuseitem/gameactionrequestuseitem";
 import { getRecentAction as getRecentActionDB } from "./dbfirebase";
-import { GameActionRequest} from "./gameactionrequest";
+import { GAME_ACTION_REQUEST_TYPES, GameActionRequest } from "./gameactionrequest";
+import { GameActionRequestCastSpellFirebaseValueRaw, processFirebaseRawValues as processCastSpellFBRaw } from "./gameactionrequests/gameactionrequestcastspell/dbfirebase";
+import { GameActionRequestCastSpell } from "./gameactionrequests/gameactionrequestcastspell/gameactionrequestcastspell";
+import { GameActionRequestUseItemFirebaseValueRaw, processFirebaseRawValues as processUseItemFBRaw } from "./gameactionrequests/gameactionrequestuseitem/dbfirebase";
+import { GameActionRequestUseItem } from "./gameactionrequests/gameactionrequestuseitem/gameactionrequestuseitem";
 
 export function getRecentAction(): Promise<GameActionRequest|null> {
   return getRecentActionDB()
@@ -14,11 +13,11 @@ export function getRecentAction(): Promise<GameActionRequest|null> {
       } else {
         // TSC cannot understand that these Action Types already mean that we have certain object type inside. That's why we use assertion.
         switch (value.type) {
-          case ACTION_TYPES.CAST_SPELL:
+          case GAME_ACTION_REQUEST_TYPES.CAST_SPELL:
             const assertFirebaseValueRawCS = value as GameActionRequestCastSpellFirebaseValueRaw;
             const gameActionRequestCastSpell = new GameActionRequestCastSpell(processCastSpellFBRaw(assertFirebaseValueRawCS));
             return Promise.resolve(gameActionRequestCastSpell);
-          case ACTION_TYPES.USE_ITEM:
+          case GAME_ACTION_REQUEST_TYPES.USE_ITEM:
             const assertFirebaseValueRawUI = value as GameActionRequestUseItemFirebaseValueRaw;
             const gameActionRequestUseItem = new GameActionRequestUseItem(processUseItemFBRaw(assertFirebaseValueRawUI));
             return Promise.resolve(gameActionRequestUseItem);
