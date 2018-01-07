@@ -5,9 +5,9 @@ import {SpellIceLanceFirebaseValue} from "./dbfirebase";
 export class SpellIceLance extends UsableSpell {
   public id: SPELLS = SPELLS.ICE_LANCE;
   public $key: string;
-  public emoji: string = ":shield:";
-  public label: string = "Steel shield";
-  public description: string = "This is simple steel shield. Nothing special.";
+  public emoji: string = ":comet:";
+  public label: string = "Ice Lance";
+  public description: string = "Send ice lance to enemy.";
   public damage: number;
 
   constructor(values: SpellIceLanceFirebaseValue, itemKey: string) {

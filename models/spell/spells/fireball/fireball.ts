@@ -4,9 +4,9 @@ import {UsableSpell} from "../../usablespell";
 
 export class SpellFireball extends UsableSpell {
   public id: SPELLS = SPELLS.FIREBALL;
-  public emoji: string = ":dagger_knife:";
-  public label: string = "Steel Dagger";
-  public description: string = "This is simple steel dagger. Nothing special.";
+  public emoji: string = ":fire:";
+  public label: string = "Fireball";
+  public description: string = "Send fireball to enemy.";
   public damage: number;
 
   constructor(values: SpellFireballFirebaseValue, itemKey: string) {
