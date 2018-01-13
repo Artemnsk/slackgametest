@@ -10,7 +10,7 @@ export class Channel {
    * Load channel from DB by channelId.
    */
   public static getChannel(team: Team, channelKey: string): Promise<Channel|null> {
-    return getDBChannel(team.$key, channelKey)
+    return getDBChannel(team.getKey(), channelKey)
       .then((channelFirebaseValue): Promise<Channel|null> => {
         if (channelFirebaseValue) {
           const channel = new Channel(team, channelFirebaseValue, channelKey);
@@ -25,7 +25,7 @@ export class Channel {
    * Respond with channels array from DB.
    */
   public static getChannels(team: Team, active?: boolean): Promise<Channel[]> {
-    return getDBChannels(team.$key, active)
+    return getDBChannels(team.getKey(), active)
       .then((teamsFirebaseObject): Promise<Channel[]> => {
         const channelsArray = [];
         for (const channelKey in teamsFirebaseObject) {
@@ -43,7 +43,7 @@ export class Channel {
    * Sets channel in DB.
    */
   public static setChannel(team: Team, channelValues: ChannelFirebaseValue, channelKey: string): Promise<void> {
-    return setDBChannel(channelValues, team.$key, channelKey);
+    return setDBChannel(channelValues, team.getKey(), channelKey);
   }
 
   public active: boolean;
@@ -51,10 +51,10 @@ export class Channel {
   public timeStep: number;
   public phase: CHANNEL_PHASES;
   public breakTime: number;
-  public $key: string;
-  public team: Team;
   public nextGame: number|null;
   public currentGame: string|null;
+  private $key: string;
+  private team: Team;
 
   constructor(team: Team, values: ChannelFirebaseValue, $key: string) {
     this.team = team;
@@ -72,6 +72,14 @@ export class Channel {
     }
   }
 
+  public getTeamKey(): string {
+    return this.team.getKey();
+  }
+
+  public getKey(): string {
+    return this.$key;
+  }
+
   public startGame(): Promise<Game> {
     if (this.phase === CHANNEL_PHASES.BREAK) {
       // Ensure there are no 'RUNNING' games.
@@ -82,7 +90,7 @@ export class Channel {
               .then((players): Promise<Game> => {
                 // Create gamers object.
                 const gamers: {[key: string]: GamerFirebaseValue} = players.reduce((gamersObj: {[key: string]: GamerFirebaseValue}, currentPlayer) => {
-                  gamersObj[currentPlayer.$key] = currentPlayer.getGamerFirebaseValue();
+                  gamersObj[currentPlayer.getKey()] = currentPlayer.getGamerFirebaseValue();
                   return gamersObj;
                 }, {});
                 const ref = Game.getNewGameRef(this);
@@ -104,7 +112,7 @@ export class Channel {
                       this.phase = CHANNEL_PHASES.IN_GAME;
                       // TODO: decide what to do. Seems like if phase is IN_GAME we do not take care of this value at all.
                       this.nextGame = 0;
-                      return Channel.setChannel(this.team, this.getFirebaseValue(), this.$key)
+                      return Channel.setChannel(this.team, this.getFirebaseValue(), this.getKey())
                         .then((): Promise<Game> => {
                           const newGame = new Game(this, gameFirebaseValue, newGameKey);
                           return Promise.resolve(newGame);
@@ -123,7 +131,7 @@ export class Channel {
                             }, (err) => {
                               // Respond with error.
                               const error = {
-                                message: `Game games/'${this.team.$key}/${this.$key}/${newGameKey}' being created but data of appropriate channel wasn't updated. Ask admin to fix that! Error: ${err.message}`,
+                                message: `Game games/'${this.team.getKey()}/${this.getKey()}/${newGameKey}' being created but data of appropriate channel wasn't updated. Ask admin to fix that! Error: ${err.message}`,
                               };
                               return Promise.reject(error);
                             });
@@ -156,21 +164,21 @@ export class Channel {
             const currentGame = games[0];
             const gameOldFirebaseValue = currentGame.getFirebaseValue();
             currentGame.phase = GAME_PHASES.OVER;
-            return Game.setGame(this, currentGame.getFirebaseValue(), currentGame.$key)
+            return Game.setGame(this, currentGame.getFirebaseValue(), currentGame.getKey())
               .then(() => {
                 // Update Channel now.
                 const channelOldFirebaseValue = this.getFirebaseValue();
                 this.phase = CHANNEL_PHASES.BREAK;
                 this.currentGame = null;
                 this.nextGame = Date.now() + this.breakTime;
-                return Channel.setChannel(this.team, this.getFirebaseValue(), this.$key)
+                return Channel.setChannel(this.team, this.getFirebaseValue(), this.getKey())
                   .then(() => {
                     return Promise.resolve(currentGame);
                   }, (updateChannelErr) => {
                     this.phase = channelOldFirebaseValue.phase;
                     this.currentGame = channelOldFirebaseValue.currentGame;
                     // If problem during channel update appeared we need to 'revert' this process - change updated game values back.
-                    return Game.setGame(this, gameOldFirebaseValue, currentGame.$key)
+                    return Game.setGame(this, gameOldFirebaseValue, currentGame.getKey())
                       .then(() => {
                         currentGame.phase = gameOldFirebaseValue.phase;
                         const error = {
@@ -180,7 +188,7 @@ export class Channel {
                       }, (err) => {
                         // Respond with error.
                         const error = {
-                          message: `Game games/'${this.team.$key}/${this.$key}/${currentGame.$key}' being updated but data of appropriate channel wasn't updated. Ask admin to fix that! Error: ${err.message}`,
+                          message: `Game games/'${this.team.getKey()}/${this.getKey()}/${currentGame.getKey()}' being updated but data of appropriate channel wasn't updated. Ask admin to fix that! Error: ${err.message}`,
                         };
                         return Promise.reject(error);
                       });
@@ -188,7 +196,7 @@ export class Channel {
               }, (err) => {
                 currentGame.phase = gameOldFirebaseValue.phase;
                 const error = {
-                  message: `Game games/'${this.team.$key}/${this.$key}/${currentGame.$key}' wasn't updated! Error: ${err.message}`,
+                  message: `Game games/'${this.team.getKey()}/${this.getKey()}/${currentGame.getKey()}' wasn't updated! Error: ${err.message}`,
                 };
                 return Promise.reject(error);
               });

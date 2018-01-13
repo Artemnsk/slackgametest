@@ -4,7 +4,6 @@ import { ItemShieldFirebaseValue } from "./dbfirebase";
 
 export class ItemShield extends UsableItem {
   public id: ITEMS = ITEMS.SHIELD;
-  public $key: string;
   public emoji: string = ":shield:";
   public label: string = "Steel shield";
   public description: string = "This is simple steel shield. Nothing special.";

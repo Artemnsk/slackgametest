@@ -36,7 +36,7 @@ export abstract class UsableItem extends Item implements IUsableInGame {
         if (gameGamer.dead === false) {
           options.push({
             text: gameGamer.name,
-            value: gameGamer.$key,
+            value: gameGamer.getKey(),
           });
         }
       }
@@ -66,7 +66,7 @@ export abstract class UsableItem extends Item implements IUsableInGame {
             if (targetKey) {
               const gameActionRequestFirebaseValue: GameActionRequestUseItemFirebaseValue = {
                 created: Date.now(),
-                initiator: gamer.$key,
+                initiator: gamer.getKey(),
                 itemId: this.id,
                 target: targetKey,
                 type: GAME_ACTION_REQUEST_TYPES.USE_ITEM,

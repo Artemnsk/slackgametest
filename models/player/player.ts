@@ -10,7 +10,7 @@ export class Player {
    * Load player from DB by teamKey and channelKey and playerKey.
    */
   public static getPlayer(channel: Channel, playerKey: string): Promise<Player | null> {
-    return getDBPlayer(channel.team.$key, channel.$key, playerKey)
+    return getDBPlayer(channel.getTeamKey(), channel.getKey(), playerKey)
       .then((playerFirebaseValue): Promise<Player | null> => {
         if (playerFirebaseValue) {
           const player = new Player(channel, playerFirebaseValue, playerKey);
@@ -25,7 +25,7 @@ export class Player {
    * Respond with channels array from DB.
    */
   public static getPlayers(channel: Channel, active?: boolean): Promise<Player[]> {
-    return getDBPlayers(channel.team.$key, channel.$key, active)
+    return getDBPlayers(channel.getTeamKey(), channel.getKey(), active)
       .then((playersFirebaseObject): Promise<Player[]> => {
         const playersArray = [];
         for (const playerKey in playersFirebaseObject) {
@@ -43,15 +43,15 @@ export class Player {
    * Sets player in DB.
    */
   public static setPlayer(channel: Channel, playerValues: PlayerFirebaseValue, playerKey: string): Promise<void> {
-    return setDBPlayer(playerValues, channel.team.$key, channel.$key, playerKey);
+    return setDBPlayer(playerValues, channel.getTeamKey(), channel.getKey(), playerKey);
   }
 
   public active: boolean;
   public name: string;
-  public $key: string;
-  public channel: Channel;
   public gold: number;
   public items: Item[];
+  private channel: Channel;
+  private $key: string;
 
   constructor(channel: Channel, values: PlayerFirebaseValue, $key: string) {
     this.$key = $key;
@@ -72,13 +72,25 @@ export class Player {
     this.items = items;
   }
 
+  public getTeamKey(): string {
+    return this.channel.getTeamKey();
+  }
+
+  public getChannelKey() {
+    return this.channel.getKey();
+  }
+
+  public getKey(): string {
+    return this.$key;
+  }
+
   /**
    * Initialize gamer by player. TODO: that probably must be declared inside Game?
    */
   public getGamerFirebaseValue(): GamerFirebaseValue {
     const items: { [key: string]: ItemFirebaseValue } = {};
     for (const item of this.items) {
-      items[ item.$key ] = item.getFirebaseValues();
+      items[ item.getKey() ] = item.getFirebaseValues();
     }
     return {
       dead: false,
@@ -95,7 +107,7 @@ export class Player {
   public getFirebaseValue(): PlayerFirebaseValue {
     const items: { [key: string]: ItemFirebaseValue } = {};
     for (const item of this.items) {
-      items[ item.$key ] = item.getFirebaseValues();
+      items[ item.getKey() ] = item.getFirebaseValues();
     }
     return Object.assign({}, {
       active: this.active,

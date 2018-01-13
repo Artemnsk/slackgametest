@@ -49,7 +49,7 @@ export class Team {
   public userId?: string;
   public botId?: string;
   public botToken?: string;
-  public $key: string;
+  private $key: string;
 
   constructor(values: TeamFirebaseValue, $key: string) {
     this.active = values.active;
@@ -70,6 +70,10 @@ export class Team {
       this.botToken = values.botToken;
     }
     this.$key = $key;
+  }
+
+  public getKey(): string {
+    return this.$key;
   }
 
   /**

@@ -1,6 +1,4 @@
-import { ParsedSlackActionPayload, SlackMessageAction, SlackMessageAttachment } from "../../helpers/slackmessage";
 import { ItemFirebaseValue } from "./dbfirebase";
-import {ItemDaggerFirebaseValue} from "./items/dagger/dbfirebase";
 
 export const enum ITEMS {
   DAGGER = "DAGGER",
@@ -9,10 +7,10 @@ export const enum ITEMS {
 
 export abstract class Item {
   public abstract id: ITEMS;
-  public $key: string;
   public abstract emoji: string;
   public abstract label: string;
   public abstract description: string;
+  private $key: string;
 
   constructor(values: ItemFirebaseValue, itemKey: string) {
     this.$key = itemKey;
@@ -25,6 +23,10 @@ export abstract class Item {
     if (values.description !== undefined) {
       this.description = values.description;
     }
+  }
+
+  public getKey(): string {
+    return this.$key;
   }
 
   public abstract getFirebaseValues(): ItemFirebaseValue;

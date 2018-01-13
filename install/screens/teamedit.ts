@@ -38,7 +38,7 @@ export function teamEditRoute(args: {team: Team}, router: InstallationRouter): v
           return optionName;
         });
         stdout.write("TEAM INFO\n");
-        stdout.write(`$key: ${args.team.$key}\n`);
+        stdout.write(`$key: ${args.team.getKey()}\n`);
         stdout.write(`name: ${args.team.name}\n`);
         stdout.write(`token: ${args.team.token}\n`);
         stdout.write(`userId: ${args.team.userId}\n`);
@@ -76,18 +76,18 @@ export function teamEditRoute(args: {team: Team}, router: InstallationRouter): v
               const active = answers.active === TEAM_ACTIVE_TRUE;
               teamFirebaseValues.active = active;
               const loadingScreenInterval = loadingScreen();
-              Team.setTeam(teamFirebaseValues, args.team.$key)
+              Team.setTeam(teamFirebaseValues, args.team.getKey())
                 .then(() => {
                   clearInterval(loadingScreenInterval);
                   clearConsole();
-                  router.teamRoute({ teamKey: args.team.$key }, router);
+                  router.teamRoute({ teamKey: args.team.getKey() }, router);
                 }, (error) => {
                   clearInterval(loadingScreenInterval);
                   _errorCallback(error.message, args, router);
                 });
               break;
             case TEAM_EDIT_CANCEL:
-              router.teamRoute({ teamKey: args.team.$key }, router);
+              router.teamRoute({ teamKey: args.team.getKey() }, router);
               break;
           }
         });
@@ -115,7 +115,7 @@ function _errorCallback(message: string, args: {team: Team}, router: Installatio
         router.teamEditRoute(args, router);
         break;
       case ERROR_BACK:
-        router.teamRoute({ teamKey: args.team.$key }, router);
+        router.teamRoute({ teamKey: args.team.getKey() }, router);
         break;
     }
   });

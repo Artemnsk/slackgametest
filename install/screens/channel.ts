@@ -20,7 +20,7 @@ export function channelRoute(args: {team: Team, channelKey: string}, router: Ins
       if (channel !== null) {
         clearConsole();
         stdout.write("CHANNEL INFO\n");
-        stdout.write(`$key: ${channel.$key}\n`);
+        stdout.write(`$key: ${channel.getKey()}\n`);
         stdout.write(`name: ${channel.name}\n`);
         stdout.write(`phase: "${channel.phase}"\n`);
         stdout.write(`timeStep: ${channel.timeStep}\n`);
@@ -49,10 +49,10 @@ export function channelRoute(args: {team: Team, channelKey: string}, router: Ins
           clearConsole();
           switch (answers.option) {
             case CHANNEL_OVER_GAME:
-              router.channelOverGameRoute({ channel }, router);
+              router.channelOverGameRoute({ team: args.team, channel }, router);
               break;
             case CHANNEL_START_GAME:
-              router.channelStartGameRoute({ channel }, router);
+              router.channelStartGameRoute({ team: args.team, channel }, router);
               break;
             case CHANNEL_BACK:
               router.channelsRoute({ team: args.team }, router);

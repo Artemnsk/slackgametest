@@ -51,7 +51,7 @@ function _getSpellActions(callbackId: string, gamer: Gamer|null): SlackMessageAc
         name: "spell",
         text: spell.emoji,
         type: "button",
-        value: spell.$key,
+        value: spell.getKey(),
       };
       return button;
     });
@@ -67,7 +67,7 @@ function _getItemActions(callbackId: string, gamer: Gamer|null): SlackMessageAct
         name: "item",
         text: item.emoji,
         type: "button",
-        value: item.$key,
+        value: item.getKey(),
       };
       return button;
     });

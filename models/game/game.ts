@@ -35,7 +35,7 @@ export class Game {
    * Load game from DB by teamKey, channelKey and gameKey.
    */
   public static getGame(channel: Channel, gameKey: string): Promise<Game|null> {
-    return getDBGame(channel.team.$key, channel.$key, gameKey)
+    return getDBGame(channel.getTeamKey(), channel.getKey(), gameKey)
       .then((gameFirebaseValue): Promise<Game|null> => {
         if (gameFirebaseValue !== null) {
           const game = new Game(channel, gameFirebaseValue, gameKey);
@@ -49,7 +49,7 @@ export class Game {
    * Load game from DB by teamKey, channelKey and gameKey.
    */
   public static getGames(channel: Channel, phase?: string): Promise<Game[]> {
-    return getDBGames(channel.team.$key, channel.$key, phase)
+    return getDBGames(channel.getTeamKey(), channel.getKey(), phase)
       .then((gamesFirebaseObject): Promise<Game[]> => {
         const gamesArray = [];
         for (const gameKey in gamesFirebaseObject) {
@@ -67,22 +67,22 @@ export class Game {
    * Returns new game Firebase reference.
    */
   public static getNewGameRef(channel: Channel): admin.database.ThenableReference {
-    return getNewGameDBRef(channel.team.$key, channel.$key);
+    return getNewGameDBRef(channel.getTeamKey(), channel.getKey());
   }
 
   public static setGame(channel: Channel, gameValues: GameFirebaseValue, gameKey: string): Promise<void> {
-    return setDBGame(gameValues, channel.team.$key, channel.$key, gameKey);
+    return setDBGame(gameValues, channel.getTeamKey(), channel.getKey(), gameKey);
   }
 
   public static removeGame(channel: Channel, gameKey: string): Promise<void> {
-    return removeDBGame(channel.team.$key, channel.$key, gameKey);
+    return removeDBGame(channel.getTeamKey(), channel.getKey(), gameKey);
   }
 
   public timeStep: number;
   public phase: GAME_PHASES;
-  public $key: string;
-  public channel: Channel;
   public gamers: Gamer[];
+  private channel: Channel;
+  private $key: string;
 
   constructor(channel: Channel, values: GameFirebaseValue, $key: string) {
     this.channel = channel;
@@ -102,15 +102,27 @@ export class Game {
     this.gamers = gamers;
   }
 
+  public getTeamKey(): string {
+    return this.channel.getTeamKey();
+  }
+
+  public getChannelKey() {
+    return this.channel.getKey();
+  }
+
+  public getKey(): string {
+    return this.$key;
+  }
+
   public getGamer(gamerKey: string): Gamer|null {
-    const gamer = this.gamers.find((item) => item.$key === gamerKey);
+    const gamer = this.gamers.find((item) => item.getKey() === gamerKey);
     return gamer === undefined ? null : gamer;
   }
 
   public getFirebaseValue(): GameFirebaseValue {
     const gamers: { [key: string]: GamerFirebaseValue } = {};
     for (const gamer of this.gamers) {
-      gamers[gamer.$key] = gamer.getFirebaseValue();
+      gamers[gamer.getKey()] = gamer.getFirebaseValue();
     }
     return Object.assign({}, {
       gamers,

@@ -23,7 +23,7 @@ export function channelsRoute(args: {team: Team}, router: InstallationRouter): v
         });
       } else {
         channels.map((channel) => {
-          channelOptions.push(`${channel.name} [${channel.$key}] ${channel.active ? "ACTIVE" : "NON-ACTIVE"}`);
+          channelOptions.push(`${channel.name} [${channel.getKey()}] ${channel.active ? "ACTIVE" : "NON-ACTIVE"}`);
         });
       }
       channelOptions.push(new inquirer.Separator());
@@ -43,7 +43,7 @@ export function channelsRoute(args: {team: Team}, router: InstallationRouter): v
             router.channelCreateRoute(args, router);
             break;
           case LIST_BACK:
-            router.teamRoute({ teamKey: args.team.$key }, router);
+            router.teamRoute({ teamKey: args.team.getKey() }, router);
             break;
           default:
             // We suppose some channel being chosen.
@@ -79,7 +79,7 @@ function _errorCallback(message: string, args: {team: Team}, router: Installatio
         router.channelsRoute(args, router);
         break;
       case ERROR_BACK:
-        router.teamRoute({ teamKey: args.team.$key }, router);
+        router.teamRoute({ teamKey: args.team.getKey() }, router);
         break;
     }
   });

@@ -10,10 +10,10 @@ export const SPELLS_QUANTITY = 2;
 
 export abstract class Spell {
   public abstract id: SPELLS;
-  public $key: string;
   public abstract emoji: string;
   public abstract label: string;
   public abstract description: string;
+  private $key: string;
 
   constructor(values: SpellFirebaseValue, itemKey: string) {
     this.$key = itemKey;
@@ -26,6 +26,10 @@ export abstract class Spell {
     if (values.description !== undefined) {
       this.description = values.description;
     }
+  }
+
+  public getKey(): string {
+    return this.$key;
   }
 
   public abstract getFirebaseValues(): SpellFirebaseValue;

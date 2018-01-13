@@ -1,10 +1,9 @@
-import {UsableSpell} from "../../usablespell";
-import {SPELLS} from "../../spell";
-import {SpellIceLanceFirebaseValue} from "./dbfirebase";
+import { SPELLS } from "../../spell";
+import { UsableSpell } from "../../usablespell";
+import { SpellIceLanceFirebaseValue } from "./dbfirebase";
 
 export class SpellIceLance extends UsableSpell {
   public id: SPELLS = SPELLS.ICE_LANCE;
-  public $key: string;
   public emoji: string = ":comet:";
   public label: string = "Ice Lance";
   public description: string = "Send ice lance to enemy.";

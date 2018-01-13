@@ -14,8 +14,8 @@ export class Gamer {
   public mana: number;
   public spells: Spell[];
   public items: Item[];
-  public $key: string;
-  public game: Game;
+  private $key: string;
+  private game: Game;
 
   constructor(game: Game, values: GamerFirebaseValue, $key: string) {
     this.game = game;
@@ -48,13 +48,29 @@ export class Gamer {
     this.$key = $key;
   }
 
+  public getTeamKey(): string {
+    return this.game.getTeamKey();
+  }
+
+  public getChannelKey() {
+    return this.game.getChannelKey();
+  }
+
+  public getGameKey() {
+    return this.game.getKey();
+  }
+
+  public getKey(): string {
+    return this.$key;
+  }
+
   public getItem(itemKey: string): Item | null {
-    const gamerItem = this.items.find((item) => item.$key === itemKey);
+    const gamerItem = this.items.find((item) => item.getKey() === itemKey);
     return gamerItem ? gamerItem : null;
   }
 
   public getSpell(spellKey: string): Spell | null {
-    const gamerSpell = this.spells.find((spell) => spell.$key === spellKey);
+    const gamerSpell = this.spells.find((spell) => spell.getKey() === spellKey);
     return gamerSpell ? gamerSpell : null;
   }
 
@@ -69,11 +85,11 @@ export class Gamer {
   public getFirebaseValue(): GamerFirebaseValue {
     const items: { [key: string]: ItemFirebaseValue } = {};
     for (const item of this.items) {
-      items[ item.$key ] = item.getFirebaseValues();
+      items[ item.getKey() ] = item.getFirebaseValues();
     }
     const spells: { [key: string]: SpellFirebaseValue } = {};
     for (const spell of this.spells) {
-      spells[ spell.$key ] = spell.getFirebaseValues();
+      spells[ spell.getKey() ] = spell.getFirebaseValues();
     }
     return Object.assign({}, {
       dead: this.dead,
