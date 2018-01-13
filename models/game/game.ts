@@ -13,12 +13,12 @@ export const enum GAME_PHASES {
 }
 
 export class Game {
-  public static assignSpells(gamers: {[key: string]: GamerFirebaseValue}, quantity: number): {[key: string]: GamerFirebaseValue} {
+  public static assignSpells(gamers: { [key: string]: GamerFirebaseValue }, quantity: number): { [key: string]: GamerFirebaseValue } {
     for (const gamerKey in gamers) {
       if (gamers.hasOwnProperty(gamerKey)) {
-        const currentGamerSpells: {[key: string]: SpellFirebaseValue} = {};
+        const currentGamerSpells: { [key: string]: SpellFirebaseValue } = {};
         for (let i = 0; i < quantity; i++) {
-          let spellFbValue: SpellFirebaseValue|null = null;
+          let spellFbValue: SpellFirebaseValue | null = null;
           // If it is first iteration or this spell already being added.
           while (spellFbValue === null || currentGamerSpells[spellFbValue.id] === spellFbValue) {
             spellFbValue = getRandomSpell();
@@ -34,9 +34,9 @@ export class Game {
   /**
    * Load game from DB by teamKey, channelKey and gameKey.
    */
-  public static getGame(channel: Channel, gameKey: string): Promise<Game|null> {
+  public static getGame(channel: Channel, gameKey: string): Promise<Game | null> {
     return getDBGame(channel.getTeamKey(), channel.getKey(), gameKey)
-      .then((gameFirebaseValue): Promise<Game|null> => {
+      .then((gameFirebaseValue): Promise<Game | null> => {
         if (gameFirebaseValue !== null) {
           const game = new Game(channel, gameFirebaseValue, gameKey);
           return Promise.resolve(game);
@@ -114,7 +114,7 @@ export class Game {
     return this.$key;
   }
 
-  public getGamer(gamerKey: string): Gamer|null {
+  public getGamer(gamerKey: string): Gamer | null {
     const gamer = this.gamers.find((item) => item.getKey() === gamerKey);
     return gamer === undefined ? null : gamer;
   }

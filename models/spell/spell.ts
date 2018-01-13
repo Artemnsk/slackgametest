@@ -13,9 +13,10 @@ export abstract class Spell {
   public abstract emoji: string;
   public abstract label: string;
   public abstract description: string;
-  private $key: string;
+  // Same as id.
+  protected abstract $key: SPELLS;
 
-  constructor(values: SpellFirebaseValue, itemKey: string) {
+  constructor(values: SpellFirebaseValue, itemKey: SPELLS) {
     this.$key = itemKey;
     if (values.emoji !== undefined) {
       this.emoji = values.emoji;

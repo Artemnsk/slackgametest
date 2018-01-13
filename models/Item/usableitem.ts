@@ -57,17 +57,17 @@ export abstract class UsableItem extends Item implements IUsableInGame {
   }
 
   public processUsageForm(game: Game, gamer: Gamer, parsedPayload: ParsedSlackActionPayload): Promise<boolean> {
-    const action = parsedPayload.actions[ 0 ];
+    const action = parsedPayload.actions[0];
     if (action.selected_options !== undefined) {
       switch (action.name) {
         case "target":
           if (this.validateGamerUsage(gamer) === true) {
-            const targetKey = action.selected_options && action.selected_options[ 0 ] && action.selected_options[ 0 ].value ? action.selected_options[ 0 ].value : null;
+            const targetKey = action.selected_options && action.selected_options[0] && action.selected_options[0].value ? action.selected_options[0].value : null;
             if (targetKey) {
               const gameActionRequestFirebaseValue: GameActionRequestUseItemFirebaseValue = {
                 created: Date.now(),
                 initiator: gamer.getKey(),
-                itemId: this.id,
+                itemId: this.$key,
                 target: targetKey,
                 type: GAME_ACTION_REQUEST_TYPES.USE_ITEM,
               };
@@ -85,7 +85,7 @@ export abstract class UsableItem extends Item implements IUsableInGame {
    * Responds with array of attachments to display item info in Slack app message.
    */
   public getSlackInfo(callbackId: string): SlackMessageAttachment[] {
-    return [ {
+    return [{
       attachment_type: "default",
       author_name: `${this.emoji}${this.label}`,
       callback_id: callbackId,
@@ -97,6 +97,6 @@ export abstract class UsableItem extends Item implements IUsableInGame {
           value: this.description,
         },
       ],
-    } ];
+    }];
   }
 }

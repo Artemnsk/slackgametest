@@ -8,8 +8,9 @@ export class SpellFireball extends UsableSpell {
   public label: string = "Fireball";
   public description: string = "Send fireball to enemy.";
   public damage: number;
+  protected $key: SPELLS = SPELLS.FIREBALL;
 
-  constructor(values: SpellFireballFirebaseValue, itemKey: string) {
+  constructor(values: SpellFireballFirebaseValue, itemKey: SPELLS) {
     super(values, itemKey);
     this.damage = values.damage;
   }

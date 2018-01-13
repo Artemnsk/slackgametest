@@ -67,7 +67,7 @@ export abstract class UsableSpell extends Spell implements IUsableInGame {
               const gameActionRequestFirebaseValue: GameActionRequestCastSpellFirebaseValue = {
                 created: Date.now(),
                 initiator: gamer.getKey(),
-                spellId: this.id,
+                spellId: this.$key,
                 target: targetKey,
                 type: GAME_ACTION_REQUEST_TYPES.CAST_SPELL,
               };

@@ -10,7 +10,7 @@ export abstract class Item {
   public abstract emoji: string;
   public abstract label: string;
   public abstract description: string;
-  private $key: string;
+  protected $key: string;
 
   constructor(values: ItemFirebaseValue, itemKey: string) {
     this.$key = itemKey;

@@ -7,7 +7,7 @@ import { SpellIceLanceFirebaseValueRaw } from "./spells/icelance/dbfirebase";
 import { SpellFireball } from "./spells/fireball/fireball";
 import { SpellIceLance } from "./spells/icelance/icelance";
 
-export function buildSpell(value: SpellFirebaseValueRaw, itemKey: string): Spell | null {
+export function buildSpell(value: SpellFirebaseValueRaw, itemKey: SPELLS): Spell | null {
   switch (value.id) {
     case SPELLS.FIREBALL:
       const valueFireball = value as SpellFireballFirebaseValueRaw;

@@ -8,8 +8,9 @@ export class SpellIceLance extends UsableSpell {
   public label: string = "Ice Lance";
   public description: string = "Send ice lance to enemy.";
   public damage: number;
+  protected $key: SPELLS = SPELLS.ICE_LANCE;
 
-  constructor(values: SpellIceLanceFirebaseValue, itemKey: string) {
+  constructor(values: SpellIceLanceFirebaseValue, itemKey: SPELLS) {
     super(values, itemKey);
     this.damage = values.damage;
   }
