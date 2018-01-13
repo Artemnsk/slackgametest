@@ -36,15 +36,15 @@ export abstract class Spell {
     return this.gamer.getTeamKey();
   }
 
-  public getChannelKey() {
+  public getChannelKey(): string {
     return this.gamer.getChannelKey();
   }
 
-  public getGameKey() {
+  public getGameKey(): string {
     return this.gamer.getGameKey();
   }
 
-  public getGamerKey() {
+  public getGamerKey(): string {
     return this.gamer.getKey();
   }
 
