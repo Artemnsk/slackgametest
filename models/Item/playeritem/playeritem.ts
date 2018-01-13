@@ -14,9 +14,10 @@ export abstract class PlayerItem extends Item {
     return this.player.getTeamKey();
   }
 
-  public getChannelKey() {
+  public getChannelKey(): string {
     return this.player.getChannelKey();
   }
 
+  // TODO: player item fb value.
   public abstract getFirebaseValues(): ItemFirebaseValue;
 }

@@ -76,7 +76,7 @@ export class Player {
     return this.channel.getTeamKey();
   }
 
-  public getChannelKey() {
+  public getChannelKey(): string {
     return this.channel.getKey();
   }
 

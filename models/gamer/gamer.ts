@@ -53,11 +53,11 @@ export class Gamer {
     return this.game.getTeamKey();
   }
 
-  public getChannelKey() {
+  public getChannelKey(): string {
     return this.game.getChannelKey();
   }
 
-  public getGameKey() {
+  public getGameKey(): string {
     return this.game.getKey();
   }
 
