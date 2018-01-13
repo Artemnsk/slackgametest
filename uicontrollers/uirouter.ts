@@ -35,8 +35,7 @@ export class UIRouter {
   public useItemUIRoute: UIRoute;
   public gamersListUIRoute: UIRoute;
 
-  constructor(team: Team, channel: Channel, player: Player|null, game: Game|null, gamer: Gamer|null) {
-    this.team = team;
+  constructor(channel: Channel, player: Player|null, game: Game|null, gamer: Gamer|null) {
     this.channel = channel;
     this.player = player;
     this.game = game;

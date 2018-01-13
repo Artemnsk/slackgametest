@@ -97,7 +97,7 @@ export function channelCreateRoute(args: {team: Team}, router: InstallationRoute
                     phase: CHANNEL_PHASES.BREAK,
                     timeStep: parseInt(answers.timeStep, 10),
                   };
-                  Channel.setChannel(channelFirebaseValues, args.team.$key, response.group.id)
+                  Channel.setChannel(args.team, channelFirebaseValues, response.group.id)
                     .then(() => {
                       clearInterval(loadingScreenInterval);
                       clearConsole();

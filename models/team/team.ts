@@ -5,12 +5,11 @@ export class Team {
   /**
    * Load team from DB by teamId.
    */
-  public static getTeam(teamId: string): Promise<Team|null> {
-    return getDBTeam(teamId)
+  public static getTeam(teamKey: string): Promise<Team|null> {
+    return getDBTeam(teamKey)
       .then((teamFirebaseValue): Promise<Team|null> => {
         if (teamFirebaseValue) {
-          const teamConstructorValues = Object.assign(teamFirebaseValue, { $key: teamId });
-          const team = new Team(teamConstructorValues);
+          const team = new Team(teamFirebaseValue, teamKey);
           return Promise.resolve(team);
         } else {
           return Promise.resolve(teamFirebaseValue);
@@ -28,8 +27,7 @@ export class Team {
         for (const teamKey in teamsFirebaseObject) {
           if (teamsFirebaseObject.hasOwnProperty(teamKey)) {
             const teamFirebaseValue = teamsFirebaseObject[teamKey];
-            const teamConstructorValues = Object.assign(teamFirebaseValue, { $key: teamKey });
-            const team = new Team(teamConstructorValues);
+            const team = new Team(teamFirebaseValue, teamKey);
             teamsArray.push(team);
           }
         }
@@ -51,16 +49,9 @@ export class Team {
   public userId?: string;
   public botId?: string;
   public botToken?: string;
-  public $key: string;
+  private $key: string;
 
-  /**
-   *
-   * @param {TeamFirebaseValue & {$key: (undefined|string)}} values
-   * @constructor
-   * @extends TeamFirebaseValue
-   * @property {string} $key - Database key of this team.
-   */
-  constructor(values: TeamFirebaseValue & {$key: string}) {
+  constructor(values: TeamFirebaseValue, $key: string) {
     this.active = values.active;
     this.name = values.name;
     if (values.token) {
@@ -78,7 +69,11 @@ export class Team {
     if (values.botToken) {
       this.botToken = values.botToken;
     }
-    this.$key = values.$key;
+    this.$key = $key;
+  }
+
+  public getKey(): string {
+    return this.$key;
   }
 
   /**

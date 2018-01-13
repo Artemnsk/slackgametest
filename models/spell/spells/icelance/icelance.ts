@@ -1,17 +1,18 @@
-import {UsableSpell} from "../../usablespell";
-import {SPELLS} from "../../spell";
-import {SpellIceLanceFirebaseValue} from "./dbfirebase";
+import { SPELLS } from "../../spell";
+import { UsableSpell } from "../../usablespell";
+import { SpellIceLanceFirebaseValue } from "./dbfirebase";
+import { Gamer } from "../../../gamer/gamer";
 
 export class SpellIceLance extends UsableSpell {
   public id: SPELLS = SPELLS.ICE_LANCE;
-  public $key: string;
   public emoji: string = ":comet:";
   public label: string = "Ice Lance";
   public description: string = "Send ice lance to enemy.";
   public damage: number;
+  protected $key: SPELLS = SPELLS.ICE_LANCE;
 
-  constructor(values: SpellIceLanceFirebaseValue, itemKey: string) {
-    super(values, itemKey);
+  constructor(gamer: Gamer, values: SpellIceLanceFirebaseValue, itemKey: SPELLS) {
+    super(gamer, values, itemKey);
     this.damage = values.damage;
   }
 

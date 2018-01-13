@@ -10,7 +10,7 @@ export const router = express.Router();
 
 router.post("/actions", slackActions.setGameData, (req: express.Request & {slackData: SlackGameMajorData & {parsedPayload: ParsedSlackActionPayload}}, res: express.Response) => {
   res.status(200).send("");
-  const uiRouter = new UIRouter(req.slackData.team, req.slackData.channel, req.slackData.player, req.slackData.game, req.slackData.gamer);
+  const uiRouter = new UIRouter(req.slackData.channel, req.slackData.player, req.slackData.game, req.slackData.gamer);
   const uiMessagePromise = uiRouter.getUIMessage(req.slackData.parsedPayload.callback_id, req.slackData.parsedPayload);
   uiMessagePromise.then((uiMessage) => {
     const sendParameters = {

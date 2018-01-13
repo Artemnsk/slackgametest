@@ -51,7 +51,7 @@ export function teamRoute(args: {teamKey: string}, router: InstallationRouter): 
 
 function teamViewPart(args: {teamKey: string}, router: InstallationRouter, team: Team, teamAdminLabel: string): void {
   stdout.write("TEAM INFO\n");
-  stdout.write(`$key: ${team.$key}\n`);
+  stdout.write(`$key: ${team.getKey()}\n`);
   stdout.write(`name: ${team.name}\n`);
   stdout.write(`token: ${team.token}\n`);
   stdout.write(`userId: ${team.userId}\n`);

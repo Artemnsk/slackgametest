@@ -1,16 +1,16 @@
 import { ParsedSlackActionPayload, SlackMessageAction, SlackMessageAttachment } from "../../helpers/slackmessage";
 import { Game } from "../game/game";
+import { GAME_ACTION_REQUEST_TYPES, GameActionRequest } from "../gameactionrequest/gameactionrequest";
+import { GameActionRequestCastSpellFirebaseValue } from "../gameactionrequest/gameactionrequests/gameactionrequestcastspell/dbfirebase";
 import { Gamer } from "../gamer/gamer";
-import {GAME_ACTION_REQUEST_TYPES, GameActionRequest} from "../gameactionrequest/gameactionrequest";
-import {GameActionRequestUseItemFirebaseValue} from "../gameactionrequest/gameactionrequests/gameactionrequestuseitem/dbfirebase";
-import {GameActionRequestCastSpellFirebaseValue} from "../gameactionrequest/gameactionrequests/gameactionrequestcastspell/dbfirebase";
-import {Spell} from "./spell";
+import { IUsableInGame } from "../iusable/iusable";
+import { Spell } from "./spell";
 
-export abstract class UsableSpell extends Spell {
+export abstract class UsableSpell extends Spell implements IUsableInGame {
   /**
    * Validate: does gamer able to use item? Returns true if yes and string with error otherwise.
    */
-  public validateGamerUsage(gamer: Gamer): true|string {
+  public validateGamerUsage(gamer: Gamer): true | string {
     if (gamer.dead === true) {
       return "You are dead.";
     } else {
@@ -29,14 +29,14 @@ export abstract class UsableSpell extends Spell {
     }
   }
 
-  public getUsageForm(callbackId: string, game: Game, gamer: Gamer): SlackMessageAction|null {
+  public getUsageForm(callbackId: string, game: Game, gamer: Gamer): SlackMessageAction | null {
     if (this.validateGamerUsage(gamer) === true) {
       const options = [];
       for (const gameGamer of game.gamers) {
         if (gameGamer.dead === false) {
           options.push({
             text: gameGamer.name,
-            value: gameGamer.$key,
+            value: gameGamer.getKey(),
           });
         }
       }
@@ -66,12 +66,12 @@ export abstract class UsableSpell extends Spell {
             if (targetKey) {
               const gameActionRequestFirebaseValue: GameActionRequestCastSpellFirebaseValue = {
                 created: Date.now(),
-                initiator: gamer.$key,
-                spellId: this.id,
+                initiator: gamer.getKey(),
+                spellId: this.$key,
                 target: targetKey,
                 type: GAME_ACTION_REQUEST_TYPES.CAST_SPELL,
               };
-              return GameActionRequest.addRawAction(gameActionRequestFirebaseValue, game.$teamKey, game.$channelKey, game.$key)
+              return GameActionRequest.addGameActionRequest(game, gameActionRequestFirebaseValue)
                 .then((): Promise<boolean> => Promise.resolve(true));
             }
           }
@@ -79,5 +79,24 @@ export abstract class UsableSpell extends Spell {
       }
     }
     return Promise.resolve(false);
+  }
+
+  /**
+   * Responds with array of attachments to display item info in Slack app message.
+   */
+  public getSlackInfo(callbackId: string): SlackMessageAttachment[] {
+    return [{
+      attachment_type: "default",
+      author_name: `${this.emoji}${this.label}`,
+      callback_id: callbackId,
+      color: "#3AA3E3",
+      fields: [
+        {
+          short: false,
+          title: "Description",
+          value: this.description,
+        },
+      ],
+    }];
   }
 }

@@ -1,16 +1,16 @@
-import { ParsedSlackActionPayload, SlackMessageAction, SlackMessageAttachment } from "../../helpers/slackmessage";
-import { Game } from "../game/game";
-import { Gamer } from "../gamer/gamer";
-import { ItemFirebaseValue } from "./dbfirebase";
-import {GAME_ACTION_REQUEST_TYPES, GameActionRequest} from "../gameactionrequest/gameactionrequest";
-import {GameActionRequestUseItemFirebaseValue} from "../gameactionrequest/gameactionrequests/gameactionrequestuseitem/dbfirebase";
-import {Item} from "./item";
+import { ParsedSlackActionPayload, SlackMessageAction, SlackMessageAttachment } from "../../../helpers/slackmessage";
+import { Game } from "../../game/game";
+import { GAME_ACTION_REQUEST_TYPES, GameActionRequest } from "../../gameactionrequest/gameactionrequest";
+import { GameActionRequestUseItemFirebaseValue } from "../../gameactionrequest/gameactionrequests/gameactionrequestuseitem/dbfirebase";
+import { Gamer } from "../../gamer/gamer";
+import { IUsableInGame } from "../../iusable/iusable";
+import { GamerItem } from "./gameritem";
 
-export abstract class UsableItem extends Item {
+export abstract class UsableGamerItem extends GamerItem implements IUsableInGame {
   /**
    * Validate: does gamer able to use item? Returns true if yes and string with error otherwise.
    */
-  public validateGamerUsage(gamer: Gamer): true|string {
+  public validateGamerUsage(gamer: Gamer): true | string {
     if (gamer.dead === true) {
       return "You are dead.";
     } else {
@@ -29,14 +29,14 @@ export abstract class UsableItem extends Item {
     }
   }
 
-  public getUsageForm(callbackId: string, game: Game, gamer: Gamer): SlackMessageAction|null {
+  public getUsageForm(callbackId: string, game: Game, gamer: Gamer): SlackMessageAction | null {
     if (this.validateGamerUsage(gamer) === true) {
       const options = [];
       for (const gameGamer of game.gamers) {
         if (gameGamer.dead === false) {
           options.push({
             text: gameGamer.name,
-            value: gameGamer.$key,
+            value: gameGamer.getKey(),
           });
         }
       }
@@ -66,12 +66,12 @@ export abstract class UsableItem extends Item {
             if (targetKey) {
               const gameActionRequestFirebaseValue: GameActionRequestUseItemFirebaseValue = {
                 created: Date.now(),
-                initiator: gamer.$key,
-                itemId: this.id,
+                initiator: gamer.getKey(),
+                itemId: this.$key,
                 target: targetKey,
                 type: GAME_ACTION_REQUEST_TYPES.USE_ITEM,
               };
-              return GameActionRequest.addRawAction(gameActionRequestFirebaseValue, game.$teamKey, game.$channelKey, game.$key)
+              return GameActionRequest.addGameActionRequest(game, gameActionRequestFirebaseValue)
                 .then((): Promise<boolean> => Promise.resolve(true));
             }
           }
@@ -79,5 +79,24 @@ export abstract class UsableItem extends Item {
       }
     }
     return Promise.resolve(false);
+  }
+
+  /**
+   * Responds with array of attachments to display item info in Slack app message.
+   */
+  public getSlackInfo(callbackId: string): SlackMessageAttachment[] {
+    return [{
+      attachment_type: "default",
+      author_name: `${this.emoji}${this.label}`,
+      callback_id: callbackId,
+      color: "#3AA3E3",
+      fields: [
+        {
+          short: false,
+          title: "Description",
+          value: this.description,
+        },
+      ],
+    }];
   }
 }

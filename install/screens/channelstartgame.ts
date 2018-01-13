@@ -12,7 +12,7 @@ export function channelStartGameRoute(args: {team: Team, channel: Channel}, rout
   inquirer.prompt([
     {
       choices: [CHANNEL_START_GAME_OK, CHANNEL_START_GAME_BACK],
-      message: `Start game in Channel ${args.channel.name}[${args.channel.$key}]?`,
+      message: `Start game in Channel ${args.channel.name}[${args.channel.getKey()}]?`,
       name: "option",
       type: "list",
     },
@@ -25,7 +25,7 @@ export function channelStartGameRoute(args: {team: Team, channel: Channel}, rout
           .then(() => {
             clearInterval(loadingScreenInterval);
             clearConsole();
-            router.channelRoute({ team: args.team, channelKey: args.channel.$key }, router);
+            router.channelRoute({ team: args.team, channelKey: args.channel.getKey() }, router);
           }, (err) => {
             clearInterval(loadingScreenInterval);
             _errorCallback(err.message, args, router);
@@ -33,7 +33,7 @@ export function channelStartGameRoute(args: {team: Team, channel: Channel}, rout
         break;
       case CHANNEL_START_GAME_BACK:
         clearConsole();
-        router.channelRoute({ team: args.team, channelKey: args.channel.$key }, router);
+        router.channelRoute({ team: args.team, channelKey: args.channel.getKey() }, router);
         break;
       default:
         process.exit(1);
@@ -55,7 +55,7 @@ function _errorCallback(message: string, args: {team: Team, channel: Channel}, r
     switch (answers.option) {
       case ERROR_BACK:
         clearConsole();
-        router.channelRoute({ team: args.team, channelKey: args.channel.$key }, router);
+        router.channelRoute({ team: args.team, channelKey: args.channel.getKey() }, router);
         break;
       default:
         process.exit(1);

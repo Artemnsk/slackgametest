@@ -15,7 +15,7 @@ export function teamsRoute(router: InstallationRouter): void {
       clearConsole();
       const teamOptions: string[] = [];
       teams.map((team) => {
-        teamOptions.push(`${team.name} [${team.$key}] ${(team.active ? "ACTIVE" : "NON-ACTIVE")}`);
+        teamOptions.push(`${team.name} [${team.getKey()}] ${(team.active ? "ACTIVE" : "NON-ACTIVE")}`);
       });
       teamOptions.push(LIST_EXIT);
       inquirer.prompt([

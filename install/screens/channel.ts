@@ -14,13 +14,13 @@ const ERROR_BACK = "Back";
 
 export function channelRoute(args: {team: Team, channelKey: string}, router: InstallationRouter): void {
   const loadingScreenInterval = loadingScreen();
-  Channel.getChannel(args.team.$key, args.channelKey)
+  Channel.getChannel(args.team, args.channelKey)
     .then((channel) => {
       clearInterval(loadingScreenInterval);
       if (channel !== null) {
         clearConsole();
         stdout.write("CHANNEL INFO\n");
-        stdout.write(`$key: ${channel.$key}\n`);
+        stdout.write(`$key: ${channel.getKey()}\n`);
         stdout.write(`name: ${channel.name}\n`);
         stdout.write(`phase: "${channel.phase}"\n`);
         stdout.write(`timeStep: ${channel.timeStep}\n`);

@@ -114,7 +114,18 @@ schema:
               items:
                 type: object
                 ~$itemId:
-                  type: boolean
+                  type: object
+                  required: ['id']
+                  properties:
+                    id:
+                      type: string
+                    emoji:
+                      type: string
+                    label:
+                      type: string
+                    description:
+                      type: string
+
     # Games created per each channel
     games:
       type: object
@@ -156,12 +167,33 @@ schema:
                       constraint: next >= 0
                     spells:
                       type: object
-                      ~$spell:
-                        type: boolean
+                      ~$spellId:
+                        type: object
+                        required: ['id']
+                        properties:
+                          id:
+                            type: string
+                            constraint: next === $spellId
+                          emoji:
+                            type: string
+                          label:
+                            type: string
+                          description:
+                            type: string
                     items:
                       type: object
                       ~$itemId:
-                        type: boolean
+                        type: object
+                        required: ['id']
+                        properties:
+                          id:
+                            type: string
+                          emoji:
+                            type: string
+                          label:
+                            type: string
+                          description:
+                            type: string
     # Raw Actions for games.
     actionRequests:
       type: object

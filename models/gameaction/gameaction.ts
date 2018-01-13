@@ -1,3 +1,4 @@
+import { Game } from "../game/game";
 import { GAME_ACTION_REQUEST_TYPES, GameActionRequest } from "../gameactionrequest/gameactionrequest";
 
 export const enum GAME_ACTION_TYPES {
@@ -8,8 +9,10 @@ export const enum GAME_ACTION_TYPES {
 export abstract class GameAction {
   public type: GAME_ACTION_TYPES;
   public created: number;
+  private game: Game;
 
-  constructor(gameActionRequest: GameActionRequest) {
+  constructor(game: Game, gameActionRequest: GameActionRequest) {
+    this.game = game;
     switch (gameActionRequest.type) {
       case GAME_ACTION_REQUEST_TYPES.CAST_SPELL:
         this.type = GAME_ACTION_TYPES.CAST_SPELL;
@@ -19,5 +22,17 @@ export abstract class GameAction {
         break;
     }
     this.created = gameActionRequest.created;
+  }
+
+  public getTeamKey(): string {
+    return this.game.getTeamKey();
+  }
+
+  public getChannelKey(): string {
+    return this.game.getChannelKey();
+  }
+
+  public getGameKey(): string {
+    return this.game.getKey();
   }
 }
