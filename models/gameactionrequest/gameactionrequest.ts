@@ -1,3 +1,4 @@
+import { Game } from "../game/game";
 import { addDBGameActionRequest, GameActionRequestFirebaseValue, removeDBGameActionRequest } from "./dbfirebase";
 
 export const enum GAME_ACTION_REQUEST_TYPES {
@@ -6,23 +7,27 @@ export const enum GAME_ACTION_REQUEST_TYPES {
 }
 
 export abstract class GameActionRequest {
-  public static removeAction(teamKey: string, channelKey: string, gameKey: string, gameActionRequestKey: string): Promise<void> {
+  public static removeGameActionRequest(teamKey: string, channelKey: string, gameKey: string, gameActionRequestKey: string): Promise<void> {
     return removeDBGameActionRequest(teamKey, channelKey, gameKey, gameActionRequestKey);
   }
 
   /**
    * Adds new action into DB.
    */
-  public static addRawAction(gameActionRequestFirebaseValue: GameActionRequestFirebaseValue, teamKey: string, channelKey: string, gameKey: string): Promise<void> {
-    return addDBGameActionRequest(gameActionRequestFirebaseValue, teamKey, channelKey, gameKey);
+  public static addGameActionRequest(game: Game, gameActionRequestFirebaseValue: GameActionRequestFirebaseValue): Promise<void> {
+    return addDBGameActionRequest(gameActionRequestFirebaseValue, game.channel.team.$key, game.channel.$key, game.$key);
   }
 
   public type: GAME_ACTION_REQUEST_TYPES;
   public created: number;
   public initiator: string | null;
   public target: string | null;
+  public game: Game;
+  public $key: string;
 
-  constructor(values: GameActionRequestFirebaseValue) {
+  constructor(game: Game, values: GameActionRequestFirebaseValue, $key: string) {
+    this.game = game;
+    this.$key = $key;
     this.type = values.type;
     this.created = values.created;
     this.initiator = values.initiator;

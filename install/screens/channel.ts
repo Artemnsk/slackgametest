@@ -14,7 +14,7 @@ const ERROR_BACK = "Back";
 
 export function channelRoute(args: {team: Team, channelKey: string}, router: InstallationRouter): void {
   const loadingScreenInterval = loadingScreen();
-  Channel.getChannel(args.team.$key, args.channelKey)
+  Channel.getChannel(args.team, args.channelKey)
     .then((channel) => {
       clearInterval(loadingScreenInterval);
       if (channel !== null) {
@@ -49,10 +49,10 @@ export function channelRoute(args: {team: Team, channelKey: string}, router: Ins
           clearConsole();
           switch (answers.option) {
             case CHANNEL_OVER_GAME:
-              router.channelOverGameRoute({ team: args.team, channel }, router);
+              router.channelOverGameRoute({ channel }, router);
               break;
             case CHANNEL_START_GAME:
-              router.channelStartGameRoute({ team: args.team, channel }, router);
+              router.channelStartGameRoute({ channel }, router);
               break;
             case CHANNEL_BACK:
               router.channelsRoute({ team: args.team }, router);

@@ -11,13 +11,14 @@ import { teamsRoute } from "./screens/teams";
 
 export class InstallationRouter {
   public teamsRoute: (router: InstallationRouter) => void;
-  public teamRoute: (args: {teamKey: string}, router: InstallationRouter) => void;
-  public teamEditRoute: (args: {team: Team}, router: InstallationRouter) => void;
-  public channelsRoute: (args: {team: Team}, router: InstallationRouter) => void;
-  public channelCreateRoute: (args: {team: Team}, router: InstallationRouter) => void;
-  public channelRoute: (args: {team: Team, channelKey: string}, router: InstallationRouter) => void;
-  public channelStartGameRoute: (args: {team: Team, channel: Channel}, router: InstallationRouter) => void;
-  public channelOverGameRoute: (args: {team: Team, channel: Channel}, router: InstallationRouter) => void;
+  public teamRoute: (args: { teamKey: string }, router: InstallationRouter) => void;
+  public teamEditRoute: (args: { team: Team }, router: InstallationRouter) => void;
+  public channelsRoute: (args: { team: Team }, router: InstallationRouter) => void;
+  public channelCreateRoute: (args: { team: Team }, router: InstallationRouter) => void;
+  public channelRoute: (args: { team: Team, channelKey: string }, router: InstallationRouter) => void;
+  public channelStartGameRoute: (args: { channel: Channel }, router: InstallationRouter) => void;
+  public channelOverGameRoute: (args: { channel: Channel }, router: InstallationRouter) => void;
+
   constructor() {
     this.teamsRoute = teamsRoute;
     this.teamRoute = teamRoute;

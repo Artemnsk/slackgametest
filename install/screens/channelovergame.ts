@@ -8,7 +8,7 @@ const CHANNEL_OVER_GAME_OK = "Over Game";
 const CHANNEL_OVER_GAME_BACK = "Back";
 const ERROR_BACK = "Back";
 
-export function channelOverGameRoute(args: {team: Team, channel: Channel}, router: InstallationRouter): void {
+export function channelOverGameRoute(args: {channel: Channel}, router: InstallationRouter): void {
   inquirer.prompt([
     {
       choices: [ CHANNEL_OVER_GAME_OK, CHANNEL_OVER_GAME_BACK ],
@@ -25,7 +25,7 @@ export function channelOverGameRoute(args: {team: Team, channel: Channel}, route
           .then(() => {
             clearInterval(loadingScreenInterval);
             clearConsole();
-            router.channelRoute({ team: args.team, channelKey: args.channel.$key }, router);
+            router.channelRoute({ team: args.channel.team, channelKey: args.channel.$key }, router);
           }, (err) => {
             clearInterval(loadingScreenInterval);
             _errorCallback(err.message, args, router);
@@ -33,7 +33,7 @@ export function channelOverGameRoute(args: {team: Team, channel: Channel}, route
         break;
       case CHANNEL_OVER_GAME_BACK:
         clearConsole();
-        router.channelRoute({ team: args.team, channelKey: args.channel.$key }, router);
+        router.channelRoute({ team: args.channel.team, channelKey: args.channel.$key }, router);
         break;
       default:
         process.exit(1);
@@ -42,7 +42,7 @@ export function channelOverGameRoute(args: {team: Team, channel: Channel}, route
   });
 }
 
-function _errorCallback(message: string, args: {team: Team, channel: Channel}, router: InstallationRouter) {
+function _errorCallback(message: string, args: {channel: Channel}, router: InstallationRouter) {
   clearConsole();
   inquirer.prompt([
     {
@@ -55,7 +55,7 @@ function _errorCallback(message: string, args: {team: Team, channel: Channel}, r
     switch (answers.option) {
       case ERROR_BACK:
         clearConsole();
-        router.channelRoute({ team: args.team, channelKey: args.channel.$key }, router);
+        router.channelRoute({ team: args.channel.team, channelKey: args.channel.$key }, router);
         break;
       default:
         process.exit(1);

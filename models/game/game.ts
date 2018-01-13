@@ -1,4 +1,5 @@
 import * as admin from "firebase-admin";
+import { Channel } from "../channel/channel";
 import { GamerFirebaseValue } from "../gamer/dbfirebase";
 import { Gamer } from "../gamer/gamer";
 import { SpellFirebaseValue } from "../spell/dbfirebase";
@@ -33,27 +34,28 @@ export class Game {
   /**
    * Load game from DB by teamKey, channelKey and gameKey.
    */
-  public static getGame(teamKey: string, channelKey: string, gameKey: string): Promise<Game|null> {
-    return getDBGame(teamKey, channelKey, gameKey)
+  public static getGame(channel: Channel, gameKey: string): Promise<Game|null> {
+    return getDBGame(channel.team.$key, channel.$key, gameKey)
       .then((gameFirebaseValue): Promise<Game|null> => {
-        const gameConstructorValues = Object.assign(gameFirebaseValue, { $key: gameKey, $channelKey: channelKey, $teamKey: teamKey });
-        const game = new Game(gameConstructorValues);
-        return Promise.resolve(game);
+        if (gameFirebaseValue !== null) {
+          const game = new Game(channel, gameFirebaseValue, gameKey);
+          return Promise.resolve(game);
+        }
+        return Promise.resolve(null);
       });
   }
 
   /**
    * Load game from DB by teamKey, channelKey and gameKey.
    */
-  public static getGames(teamKey: string, channelKey: string, phase?: string): Promise<Game[]> {
-    return getDBGames(teamKey, channelKey, phase)
+  public static getGames(channel: Channel, phase?: string): Promise<Game[]> {
+    return getDBGames(channel.team.$key, channel.$key, phase)
       .then((gamesFirebaseObject): Promise<Game[]> => {
         const gamesArray = [];
         for (const gameKey in gamesFirebaseObject) {
           if (gamesFirebaseObject.hasOwnProperty(gameKey)) {
             const gameFirebaseValue = gamesFirebaseObject[gameKey];
-            const gameConstructorValues = Object.assign(gameFirebaseValue, { $key: gameKey, $channelKey: channelKey, $teamKey: teamKey });
-            const game = new Game(gameConstructorValues);
+            const game = new Game(channel, gameFirebaseValue, gameKey);
             gamesArray.push(game);
           }
         }
@@ -64,36 +66,34 @@ export class Game {
   /**
    * Returns new game Firebase reference.
    */
-  public static getNewGameRef(teamKey: string, channelKey: string): admin.database.ThenableReference {
-    return getNewGameDBRef(teamKey, channelKey);
+  public static getNewGameRef(channel: Channel): admin.database.ThenableReference {
+    return getNewGameDBRef(channel.team.$key, channel.$key);
   }
 
-  public static setGame(gameValues: GameFirebaseValue, teamKey: string, channelKey: string, gameKey: string): Promise<void> {
-    return setDBGame(gameValues, teamKey, channelKey, gameKey);
+  public static setGame(channel: Channel, gameValues: GameFirebaseValue, gameKey: string): Promise<void> {
+    return setDBGame(gameValues, channel.team.$key, channel.$key, gameKey);
   }
 
-  public static removeGame(teamKey: string, channelKey: string, gameKey: string): Promise<void> {
-    return removeDBGame(teamKey, channelKey, gameKey);
+  public static removeGame(channel: Channel, gameKey: string): Promise<void> {
+    return removeDBGame(channel.team.$key, channel.$key, gameKey);
   }
 
   public timeStep: number;
   public phase: GAME_PHASES;
   public $key: string;
-  public $channelKey: string;
-  public $teamKey: string;
+  public channel: Channel;
   public gamers: Gamer[];
 
-  constructor(values: GameFirebaseValue & {$key: string, $channelKey: string, $teamKey: string}) {
+  constructor(channel: Channel, values: GameFirebaseValue, $key: string) {
+    this.channel = channel;
     this.timeStep = values.timeStep;
     this.phase = values.phase;
-    this.$key = values.$key;
-    this.$channelKey = values.$channelKey;
-    this.$teamKey = values.$teamKey;
+    this.$key = $key;
     // Construct gamers.
     const gamers: Gamer[] = [];
     for (const gamerKey in values.gamers) {
       if (values.gamers.hasOwnProperty(gamerKey)) {
-        const gamer = new Gamer(Object.assign(values.gamers[gamerKey], { $gameKey: values.$key, $channelKey: values.$channelKey, $teamKey: values.$teamKey }), gamerKey);
+        const gamer = new Gamer(this, values.gamers[gamerKey], gamerKey);
         if (gamer !== null) {
           gamers.push(gamer);
         }

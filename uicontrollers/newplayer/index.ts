@@ -36,7 +36,7 @@ const processActions: ProcessActionsFunction = (uiRouter, parsedPayload, args: {
                     items: {},
                     name: response.user.profile.real_name,
                   };
-                  Player.setPlayer(playerFirebaseValue, uiRouter.team.$key, uiRouter.channel.$key, parsedPayload.user.id)
+                  Player.setPlayer(uiRouter.channel, playerFirebaseValue, parsedPayload.user.id)
                     .then(() => {
                       const text = "Player being created.";
                       const uiMessage = uiRouter.informationMessageUIRoute.getUIMessage(uiRouter, { text });

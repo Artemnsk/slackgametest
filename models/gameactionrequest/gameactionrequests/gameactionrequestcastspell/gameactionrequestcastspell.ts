@@ -1,3 +1,4 @@
+import { Game } from "../../../game/game";
 import { GAME_ACTION_REQUEST_TYPES, GameActionRequest } from "../../gameactionrequest";
 import { GameActionRequestCastSpellFirebaseValue } from "./dbfirebase";
 
@@ -5,8 +6,8 @@ export class GameActionRequestCastSpell extends GameActionRequest {
   public type: GAME_ACTION_REQUEST_TYPES.CAST_SPELL;
   public spellId: string;
 
-  constructor(values: GameActionRequestCastSpellFirebaseValue) {
-    super(values);
+  constructor(game: Game, values: GameActionRequestCastSpellFirebaseValue, $key: string) {
+    super(game, values, $key);
     this.spellId = values.spellId;
   }
 

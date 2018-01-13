@@ -10,9 +10,9 @@ export function buildGameAction(gameActionRequest: GameActionRequest): GameActio
   switch (gameActionRequest.type) {
     case GAME_ACTION_REQUEST_TYPES.CAST_SPELL:
       const assertionCS = gameActionRequest as GameActionRequestCastSpell;
-      return new GameActionCastSpell(assertionCS);
+      return new GameActionCastSpell(gameActionRequest.game, assertionCS);
     case GAME_ACTION_REQUEST_TYPES.USE_ITEM:
       const assertionUI = gameActionRequest as GameActionRequestUseItem;
-      return new GameActionUseItem(assertionUI);
+      return new GameActionUseItem(gameActionRequest.game, assertionUI);
   }
 }

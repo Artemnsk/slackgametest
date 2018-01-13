@@ -7,19 +7,22 @@ export type GameActionRequestFirebaseValueRaw = GameActionRequestCastSpellFireba
 
 export type GameActionRequestFirebaseValue = GameActionRequestCastSpellFirebaseValue | GameActionRequestUseItemFirebaseValue;
 
-export function getRecentAction(): Promise<GameActionRequestFirebaseValueRaw|null> {
+export function getRecentAction(): Promise<{ value: GameActionRequestFirebaseValueRaw, $key: string } | null> {
   return firebaseApp.database().ref("/actionRequests").orderByChild("created").limitToFirst(1).once("value")
-    .then((snapshot: admin.database.DataSnapshot): Promise<GameActionRequestFirebaseValueRaw|null> => {
+    .then((snapshot: admin.database.DataSnapshot): Promise<{ value: GameActionRequestFirebaseValueRaw, $key: string } | null> => {
       if (!snapshot.val()) {
         // No action found.
         return Promise.resolve(null);
       } else {
-        const gameActionFirebaseValueRawObject: {[key: string]: GameActionRequestFirebaseValueRaw} = snapshot.val();
+        const gameActionFirebaseValueRawObject: { [key: string]: GameActionRequestFirebaseValueRaw } = snapshot.val();
         let key;
         for (key in gameActionFirebaseValueRawObject) {
           if (gameActionFirebaseValueRawObject.hasOwnProperty(key)) {
-            const gameActionFirebaseValueRaw = gameActionFirebaseValueRawObject[key];
-            return Promise.resolve(gameActionFirebaseValueRaw);
+            const gameActionFirebaseValueRaw = gameActionFirebaseValueRawObject[ key ];
+            return Promise.resolve({
+              $key: key,
+              value: gameActionFirebaseValueRaw,
+            });
           }
         }
         // Actually must not be reachable.

@@ -1,17 +1,16 @@
 import { ParsedSlackActionPayload, SlackMessageAction, SlackMessageAttachment } from "../../helpers/slackmessage";
 import { Game } from "../game/game";
+import { GAME_ACTION_REQUEST_TYPES, GameActionRequest } from "../gameactionrequest/gameactionrequest";
+import { GameActionRequestCastSpellFirebaseValue } from "../gameactionrequest/gameactionrequests/gameactionrequestcastspell/dbfirebase";
 import { Gamer } from "../gamer/gamer";
-import {GAME_ACTION_REQUEST_TYPES, GameActionRequest} from "../gameactionrequest/gameactionrequest";
-import {GameActionRequestUseItemFirebaseValue} from "../gameactionrequest/gameactionrequests/gameactionrequestuseitem/dbfirebase";
-import {GameActionRequestCastSpellFirebaseValue} from "../gameactionrequest/gameactionrequests/gameactionrequestcastspell/dbfirebase";
-import {Spell} from "./spell";
-import {IUsableInGame} from "../iusable/iusable";
+import { IUsableInGame } from "../iusable/iusable";
+import { Spell } from "./spell";
 
 export abstract class UsableSpell extends Spell implements IUsableInGame {
   /**
    * Validate: does gamer able to use item? Returns true if yes and string with error otherwise.
    */
-  public validateGamerUsage(gamer: Gamer): true|string {
+  public validateGamerUsage(gamer: Gamer): true | string {
     if (gamer.dead === true) {
       return "You are dead.";
     } else {
@@ -30,7 +29,7 @@ export abstract class UsableSpell extends Spell implements IUsableInGame {
     }
   }
 
-  public getUsageForm(callbackId: string, game: Game, gamer: Gamer): SlackMessageAction|null {
+  public getUsageForm(callbackId: string, game: Game, gamer: Gamer): SlackMessageAction | null {
     if (this.validateGamerUsage(gamer) === true) {
       const options = [];
       for (const gameGamer of game.gamers) {
@@ -72,7 +71,7 @@ export abstract class UsableSpell extends Spell implements IUsableInGame {
                 target: targetKey,
                 type: GAME_ACTION_REQUEST_TYPES.CAST_SPELL,
               };
-              return GameActionRequest.addRawAction(gameActionRequestFirebaseValue, game.$teamKey, game.$channelKey, game.$key)
+              return GameActionRequest.addGameActionRequest(game, gameActionRequestFirebaseValue)
                 .then((): Promise<boolean> => Promise.resolve(true));
             }
           }

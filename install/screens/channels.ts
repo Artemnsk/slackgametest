@@ -11,7 +11,7 @@ const ERROR_BACK = "Back";
 
 export function channelsRoute(args: {team: Team}, router: InstallationRouter): void {
   const loadingScreenInterval = loadingScreen();
-  Channel.getChannels(args.team.$key, true)
+  Channel.getChannels(args.team, true)
     .then((channels) => {
       clearInterval(loadingScreenInterval);
       clearConsole();
