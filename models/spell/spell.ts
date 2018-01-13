@@ -1,8 +1,4 @@
-import { ParsedSlackActionPayload, SlackMessageAction, SlackMessageAttachment } from "../../helpers/slackmessage";
-import { Game } from "../game/game";
-import { Gamer } from "../gamer/gamer";
-import {ItemFirebaseValue} from "../Item/dbfirebase";
-import {SpellFirebaseValue} from "./dbfirebase";
+import { SpellFirebaseValue } from "./dbfirebase";
 
 export const enum SPELLS {
   FIREBALL = "FIREBALL",
@@ -30,25 +26,6 @@ export abstract class Spell {
     if (values.description !== undefined) {
       this.description = values.description;
     }
-  }
-
-  /**
-   * Responds with array of attachments to display item info in Slack app message.
-   */
-  public getSlackInfo(callbackId: string): SlackMessageAttachment[] {
-    return [{
-      attachment_type: "default",
-      author_name: `${this.emoji}${this.label}`,
-      callback_id: callbackId,
-      color: "#3AA3E3",
-      fields: [
-        {
-          short: false,
-          title: "Description",
-          value: this.description,
-        },
-      ],
-    }];
   }
 
   public abstract getFirebaseValues(): SpellFirebaseValue;

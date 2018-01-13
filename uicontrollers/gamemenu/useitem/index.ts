@@ -1,7 +1,7 @@
 import * as Route from "route-parser";
+import { UsableItem } from "../../../models/Item/usableitem";
 import { GetUIMessageFunction, ProcessActionsFunction, UIRoute, ValidateRouteFunction } from "../../uiroute";
 import { useItemMessageFactory } from "./useitemmessagefactory";
-import {UsableItem} from "../../../models/Item/usableitem";
 
 const processActions: ProcessActionsFunction = (uiRouter, parsedPayload, args: {itemKey: string}) => {
   if (uiRouter.game === null || uiRouter.gamer === null) {

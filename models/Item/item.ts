@@ -27,24 +27,5 @@ export abstract class Item {
     }
   }
 
-  /**
-   * Responds with array of attachments to display item info in Slack app message.
-   */
-  public getSlackInfo(callbackId: string): SlackMessageAttachment[] {
-    return [{
-      attachment_type: "default",
-      author_name: `${this.emoji}${this.label}`,
-      callback_id: callbackId,
-      color: "#3AA3E3",
-      fields: [
-        {
-          short: false,
-          title: "Description",
-          value: this.description,
-        },
-      ],
-    }];
-  }
-
   public abstract getFirebaseValues(): ItemFirebaseValue;
 }

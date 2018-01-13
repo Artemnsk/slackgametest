@@ -2,10 +2,9 @@ import {SlackMessageActionButton, SlackMessageAttachment} from "../../../helpers
 import { Channel } from "../../../models/channel/channel";
 import { Game } from "../../../models/game/game";
 import { Gamer } from "../../../models/gamer/gamer";
-import { Item } from "../../../models/Item/item";
+import { UsableItem } from "../../../models/Item/usableitem";
 import { UIMessage } from "../../../models/uimessage/uimessage";
 import { gameTitleFactory } from "../../_partials/gametitlefactory";
-import {UsableItem} from "../../../models/Item/usableitem";
 
 /**
  * Provides with spell UI element.

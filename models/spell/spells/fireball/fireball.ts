@@ -1,6 +1,6 @@
-import {SPELLS} from "../../spell";
-import {SpellFireballFirebaseValue} from "./dbfirebase";
-import {UsableSpell} from "../../usablespell";
+import { SPELLS } from "../../spell";
+import { UsableSpell } from "../../usablespell";
+import { SpellFireballFirebaseValue } from "./dbfirebase";
 
 export class SpellFireball extends UsableSpell {
   public id: SPELLS = SPELLS.FIREBALL;
