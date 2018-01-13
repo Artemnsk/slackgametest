@@ -1,5 +1,5 @@
 import * as Route from "route-parser";
-import { UsableItem } from "../../../models/Item/usableitem";
+import { UsableGamerItem } from "../../../models/Item/gameritem/usablegameritem";
 import { GetUIMessageFunction, ProcessActionsFunction, UIRoute, ValidateRouteFunction } from "../../uiroute";
 import { useItemMessageFactory } from "./useitemmessagefactory";
 
@@ -15,7 +15,7 @@ const processActions: ProcessActionsFunction = (uiRouter, parsedPayload, args: {
   }
   // Delegate that to spell now.
   const item = uiRouter.gamer.getItem(args.itemKey);
-  if (item !== null && item instanceof UsableItem) {
+  if (item !== null && item instanceof UsableGamerItem) {
     const itemBeingProcessedPromise = item.processUsageForm(uiRouter.game, uiRouter.gamer, parsedPayload);
     return itemBeingProcessedPromise
       .then((processed) => {
@@ -41,7 +41,7 @@ const getUIMessage: GetUIMessageFunction = (uiRouter, args: {itemKey: string}) =
   }
   const path = uiRouter.useItemUIRoute.route.reverse(args);
   const item = uiRouter.gamer.getItem(args.itemKey);
-  if (path !== false && item !== null && item instanceof UsableItem) {
+  if (path !== false && item !== null && item instanceof UsableGamerItem) {
     return Promise.resolve(useItemMessageFactory(path, uiRouter.channel, uiRouter.game, uiRouter.gamer, item));
   } else {
     const text = "Route not found.";

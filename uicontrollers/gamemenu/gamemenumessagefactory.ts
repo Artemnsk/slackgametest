@@ -6,7 +6,7 @@ import { gameTitleFactory } from "../_partials/gametitlefactory";
 /**
  * Provides with game menu UI element.
  */
-export function gameMenuMessageFactory(callbackId: string, gamer: Gamer|null): UIMessage {
+export function gameMenuMessageFactory(callbackId: string, gamer: Gamer | null): UIMessage {
   const gameMenuUIMessage = new UIMessage();
   const uiAttachments: SlackMessageAttachment[] = [];
   const gamerSpellActions = _getSpellActions(callbackId, gamer);
@@ -44,7 +44,7 @@ export function gameMenuMessageFactory(callbackId: string, gamer: Gamer|null): U
   return gameMenuUIMessage;
 }
 
-function _getSpellActions(callbackId: string, gamer: Gamer|null): SlackMessageActionButton[] {
+function _getSpellActions(callbackId: string, gamer: Gamer | null): SlackMessageActionButton[] {
   if (gamer !== null) {
     return gamer.spells.map((spell) => {
       const button: SlackMessageActionButton = {
@@ -60,7 +60,7 @@ function _getSpellActions(callbackId: string, gamer: Gamer|null): SlackMessageAc
   }
 }
 
-function _getItemActions(callbackId: string, gamer: Gamer|null): SlackMessageActionButton[] {
+function _getItemActions(callbackId: string, gamer: Gamer | null): SlackMessageActionButton[] {
   if (gamer !== null) {
     return gamer.items.map((item) => {
       const button: SlackMessageActionButton = {

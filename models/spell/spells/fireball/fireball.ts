@@ -1,6 +1,7 @@
 import { SPELLS } from "../../spell";
 import { UsableSpell } from "../../usablespell";
 import { SpellFireballFirebaseValue } from "./dbfirebase";
+import { Gamer } from "../../../gamer/gamer";
 
 export class SpellFireball extends UsableSpell {
   public id: SPELLS = SPELLS.FIREBALL;
@@ -10,8 +11,8 @@ export class SpellFireball extends UsableSpell {
   public damage: number;
   protected $key: SPELLS = SPELLS.FIREBALL;
 
-  constructor(values: SpellFireballFirebaseValue, itemKey: SPELLS) {
-    super(values, itemKey);
+  constructor(gamer: Gamer, values: SpellFireballFirebaseValue, itemKey: SPELLS) {
+    super(gamer, values, itemKey);
     this.damage = values.damage;
   }
 

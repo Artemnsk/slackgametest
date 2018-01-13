@@ -1,16 +1,17 @@
 import { ITEMS } from "../../item";
-import { UsableItem } from "../../usableitem";
+import { UsableGamerItem } from "../../gameritem/usablegameritem";
 import { ItemDaggerFirebaseValue } from "./dbfirebase";
+import { Gamer } from "../../../gamer/gamer";
 
-export class ItemDagger extends UsableItem {
+export class GamerItemDagger extends UsableGamerItem {
   public id: ITEMS = ITEMS.DAGGER;
   public emoji: string = ":dagger_knife:";
   public label: string = "Steel Dagger";
   public description: string = "This is simple steel dagger. Nothing special.";
   public damage: number;
 
-  constructor(values: ItemDaggerFirebaseValue, itemKey: string) {
-    super(values, itemKey);
+  constructor(gamer: Gamer, values: ItemDaggerFirebaseValue, itemKey: string) {
+    super(gamer, values, itemKey);
     this.damage = values.damage;
   }
 

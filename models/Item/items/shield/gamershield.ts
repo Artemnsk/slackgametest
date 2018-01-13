@@ -1,16 +1,17 @@
 import { ITEMS } from "../../item";
-import { UsableItem } from "../../usableitem";
+import { UsableGamerItem } from "../../gameritem/usablegameritem";
 import { ItemShieldFirebaseValue } from "./dbfirebase";
+import { Gamer } from "../../../gamer/gamer";
 
-export class ItemShield extends UsableItem {
+export class GamerItemShield extends UsableGamerItem {
   public id: ITEMS = ITEMS.SHIELD;
   public emoji: string = ":shield:";
   public label: string = "Steel shield";
   public description: string = "This is simple steel shield. Nothing special.";
   public armor: number;
 
-  constructor(values: ItemShieldFirebaseValue, itemKey: string) {
-    super(values, itemKey);
+  constructor(gamer: Gamer, values: ItemShieldFirebaseValue, itemKey: string) {
+    super(gamer, values, itemKey);
     this.armor = values.armor;
   }
 

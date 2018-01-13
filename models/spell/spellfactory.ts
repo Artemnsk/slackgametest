@@ -6,15 +6,16 @@ import { SpellFireballFirebaseValueRaw } from "./spells/fireball/dbfirebase";
 import { SpellIceLanceFirebaseValueRaw } from "./spells/icelance/dbfirebase";
 import { SpellFireball } from "./spells/fireball/fireball";
 import { SpellIceLance } from "./spells/icelance/icelance";
+import { Gamer } from "../gamer/gamer";
 
-export function buildSpell(value: SpellFirebaseValueRaw, itemKey: SPELLS): Spell | null {
+export function buildSpell(gamer: Gamer, value: SpellFirebaseValueRaw, itemKey: SPELLS): Spell | null {
   switch (value.id) {
     case SPELLS.FIREBALL:
       const valueFireball = value as SpellFireballFirebaseValueRaw;
-      return new SpellFireball(processValuesFireball(valueFireball), itemKey);
+      return new SpellFireball(gamer, processValuesFireball(valueFireball), itemKey);
     case SPELLS.ICE_LANCE:
       const valueIceLance = value as SpellIceLanceFirebaseValueRaw;
-      return new SpellIceLance(processValuesIceLance(valueIceLance), itemKey);
+      return new SpellIceLance(gamer, processValuesIceLance(valueIceLance), itemKey);
     default:
       return null;
   }

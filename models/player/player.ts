@@ -2,7 +2,7 @@ import { Channel } from "../channel/channel";
 import { GamerFirebaseValue } from "../gamer/dbfirebase";
 import { ItemFirebaseValue } from "../Item/dbfirebase";
 import { Item } from "../Item/item";
-import { buildItem } from "../Item/itemfactory";
+import { buildItem } from "../Item/playeritem/playeritemfactory";
 import { getDBPlayer, getDBPlayers, PlayerFirebaseValue, setDBPlayer } from "./dbfirebase";
 
 export class Player {
@@ -63,7 +63,7 @@ export class Player {
     const items: Item[] = [];
     for (const itemKey in values.items) {
       if (values.items.hasOwnProperty(itemKey)) {
-        const item = buildItem(values.items[ itemKey ], itemKey);
+        const item = buildItem(this, values.items[ itemKey ], itemKey);
         if (item !== null) {
           items.push(item);
         }

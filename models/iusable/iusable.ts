@@ -11,3 +11,7 @@ export interface IUsableInGame {
 
   getSlackInfo(callbackId: string): SlackMessageAttachment[];
 }
+
+export interface IUsableInBreak {
+  todoIUsableInBreak: string;
+}

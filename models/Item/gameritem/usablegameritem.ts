@@ -1,12 +1,12 @@
-import { ParsedSlackActionPayload, SlackMessageAction, SlackMessageAttachment } from "../../helpers/slackmessage";
-import { Game } from "../game/game";
-import { GAME_ACTION_REQUEST_TYPES, GameActionRequest } from "../gameactionrequest/gameactionrequest";
-import { GameActionRequestUseItemFirebaseValue } from "../gameactionrequest/gameactionrequests/gameactionrequestuseitem/dbfirebase";
-import { Gamer } from "../gamer/gamer";
-import { IUsableInGame } from "../iusable/iusable";
-import { Item } from "./item";
+import { ParsedSlackActionPayload, SlackMessageAction, SlackMessageAttachment } from "../../../helpers/slackmessage";
+import { Game } from "../../game/game";
+import { GAME_ACTION_REQUEST_TYPES, GameActionRequest } from "../../gameactionrequest/gameactionrequest";
+import { GameActionRequestUseItemFirebaseValue } from "../../gameactionrequest/gameactionrequests/gameactionrequestuseitem/dbfirebase";
+import { Gamer } from "../../gamer/gamer";
+import { IUsableInGame } from "../../iusable/iusable";
+import { GamerItem } from "./gameritem";
 
-export abstract class UsableItem extends Item implements IUsableInGame {
+export abstract class UsableGamerItem extends GamerItem implements IUsableInGame {
   /**
    * Validate: does gamer able to use item? Returns true if yes and string with error otherwise.
    */

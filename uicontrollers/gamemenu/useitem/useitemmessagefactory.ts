@@ -1,17 +1,17 @@
-import {SlackMessageActionButton, SlackMessageAttachment} from "../../../helpers/slackmessage";
+import { SlackMessageActionButton, SlackMessageAttachment } from "../../../helpers/slackmessage";
 import { Channel } from "../../../models/channel/channel";
 import { Game } from "../../../models/game/game";
 import { Gamer } from "../../../models/gamer/gamer";
-import { UsableItem } from "../../../models/Item/usableitem";
+import { UsableGamerItem } from "../../../models/Item/gameritem/usablegameritem";
 import { UIMessage } from "../../../models/uimessage/uimessage";
 import { gameTitleFactory } from "../../_partials/gametitlefactory";
 
 /**
  * Provides with spell UI element.
  */
-export function useItemMessageFactory(callbackId: string, channel: Channel, game: Game, gamer: Gamer, item: UsableItem): UIMessage {
+export function useItemMessageFactory(callbackId: string, channel: Channel, game: Game, gamer: Gamer, item: UsableGamerItem): UIMessage {
   const useItemUIMessage = new UIMessage();
-  const uiAttachments: SlackMessageAttachment[] = [ gameTitleFactory(callbackId, gamer), ...item.getSlackInfo(callbackId) ];
+  const uiAttachments: SlackMessageAttachment[] = [gameTitleFactory(callbackId, gamer), ...item.getSlackInfo(callbackId)];
   // TODO: delegate that to validator?
   if (gamer.dead === true) {
     const footerUIAttachment: SlackMessageAttachment = {
@@ -42,7 +42,7 @@ export function useItemMessageFactory(callbackId: string, channel: Channel, game
       type: "button",
       value: "back",
     };
-    footerUIAttachment.actions = [ backButton ];
+    footerUIAttachment.actions = [backButton];
     const useItemAction = item.getUsageForm(callbackId, game, gamer);
     if (useItemAction) {
       footerUIAttachment.actions.push(useItemAction);

@@ -1,7 +1,7 @@
 import { Game } from "../game/game";
 import { ItemFirebaseValue } from "../Item/dbfirebase";
+import { buildItem } from "../Item/gameritem/gameritemfactory";
 import { Item } from "../Item/item";
-import { buildItem } from "../Item/itemfactory";
 import { SpellFirebaseValue } from "../spell/dbfirebase";
 import { Spell, SPELLS } from "../spell/spell";
 import { buildSpell } from "../spell/spellfactory";
@@ -28,7 +28,7 @@ export class Gamer {
     for (const spellKey in values.spells) {
       if (values.spells.hasOwnProperty(spellKey)) {
         const enumSpellKey = spellKey as SPELLS;
-        const spell = buildSpell(values.spells[ spellKey ], enumSpellKey);
+        const spell = buildSpell(this, values.spells[ spellKey ], enumSpellKey);
         if (spell !== null) {
           spells.push(spell);
         }
@@ -39,7 +39,7 @@ export class Gamer {
     const items: Item[] = [];
     for (const itemKey in values.items) {
       if (values.items.hasOwnProperty(itemKey)) {
-        const item = buildItem(values.items[ itemKey ], itemKey);
+        const item = buildItem(this, values.items[ itemKey ], itemKey);
         if (item !== null) {
           items.push(item);
         }

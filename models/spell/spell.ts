@@ -1,4 +1,5 @@
 import { SpellFirebaseValue } from "./dbfirebase";
+import { Gamer } from "../gamer/gamer";
 
 export const enum SPELLS {
   FIREBALL = "FIREBALL",
@@ -15,8 +16,10 @@ export abstract class Spell {
   public abstract description: string;
   // Same as id.
   protected abstract $key: SPELLS;
+  private gamer: Gamer;
 
-  constructor(values: SpellFirebaseValue, itemKey: SPELLS) {
+  constructor(gamer: Gamer, values: SpellFirebaseValue, itemKey: SPELLS) {
+    this.gamer = gamer;
     this.$key = itemKey;
     if (values.emoji !== undefined) {
       this.emoji = values.emoji;
@@ -27,6 +30,22 @@ export abstract class Spell {
     if (values.description !== undefined) {
       this.description = values.description;
     }
+  }
+
+  public getTeamKey(): string {
+    return this.gamer.getTeamKey();
+  }
+
+  public getChannelKey() {
+    return this.gamer.getChannelKey();
+  }
+
+  public getGameKey() {
+    return this.gamer.getGameKey();
+  }
+
+  public getGamerKey() {
+    return this.gamer.getKey();
   }
 
   public getKey(): string {
