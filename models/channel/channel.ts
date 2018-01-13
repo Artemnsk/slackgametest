@@ -82,15 +82,14 @@ export class Channel {
             return Player.getPlayers(this.$teamKey, this.$key, true)
               .then((players): Promise<Game> => {
                 // Create gamers object.
-                const gamers = players.reduce((gamersObj: {[key: string]: GamerFirebaseValue}, currentPlayer) => {
+                const gamers: {[key: string]: GamerFirebaseValue} = players.reduce((gamersObj: {[key: string]: GamerFirebaseValue}, currentPlayer) => {
                   gamersObj[currentPlayer.$key] = currentPlayer.getGamerFirebaseValue();
                   return gamersObj;
                 }, {});
                 const ref = Game.getNewGameRef(this.$teamKey, this.$key);
-                // TODO: check that key being created!!!
                 const newGameKey = ref.key;
                 if (newGameKey !== null) {
-                  // Assign 2 random spells to gamers.
+                  // Assign 2 random spells to gamers. Beware continuous loop if you quantity > spells exist.
                   Game.assignSpells(gamers, 2);
                   const gameFirebaseValue: GameFirebaseValue = {
                     gamers,

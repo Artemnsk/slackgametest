@@ -1,13 +1,12 @@
 import { GamerFirebaseValue } from "../gamer/dbfirebase";
+import { ItemFirebaseValue } from "../Item/dbfirebase";
+import { Item } from "../Item/item";
+import { buildItem } from "../Item/itemfactory";
 import { getDBPlayer, getDBPlayers, PlayerFirebaseValue, setDBPlayer } from "./dbfirebase";
 
 export class Player {
   /**
    * Load player from DB by teamKey and channelKey and playerKey.
-   * @param {string} teamKey
-   * @param {string} channelKey
-   * @param {string} playerKey
-   * @return {Promise.<?Player,Error>}
    */
   public static getPlayer(teamKey: string, channelKey: string, playerKey: string): Promise<Player|null> {
     return getDBPlayer(teamKey, channelKey, playerKey)
@@ -54,13 +53,23 @@ export class Player {
   public $channelKey: string;
   public $teamKey: string;
   public gold: number;
-  public items: {[key: string]: boolean};
+  public items: Item[];
 
   constructor(values: PlayerFirebaseValue & {$key: string, $channelKey: string, $teamKey: string}) {
     this.active = values.active;
     this.name = values.name;
     this.gold = values.gold;
-    this.items = values.items;
+    // Construct items.
+    const items: Item[] = [];
+    for (const itemKey in values.items) {
+      if (values.items.hasOwnProperty(itemKey)) {
+        const item = buildItem(values.items[itemKey], itemKey);
+        if (item !== null) {
+          items.push(item);
+        }
+      }
+    }
+    this.items = items;
     this.$key = values.$key;
     this.$channelKey = values.$channelKey;
     this.$teamKey = values.$teamKey;
@@ -70,11 +79,15 @@ export class Player {
    * Initialize gamer by player. TODO: that probably must be declared inside Game?
    */
   public getGamerFirebaseValue(): GamerFirebaseValue {
+    const items: { [key: string]: ItemFirebaseValue } = {};
+    for (const item of this.items) {
+      items[item.$key] = item.getFirebaseValues();
+    }
     return {
       dead: false,
       // TODO: set somewhere? Maybe channel/game setting?
       health: 100,
-      items: this.items,
+      items,
       // TODO: set somewhere? Maybe channel/game setting?
       mana: 40,
       name: this.name,
@@ -82,15 +95,15 @@ export class Player {
     };
   }
 
-  /**
-   *
-   * @return {PlayerFirebaseValue}
-   */
   public getFirebaseValue(): PlayerFirebaseValue {
+    const items: { [key: string]: ItemFirebaseValue } = {};
+    for (const item of this.items) {
+      items[item.$key] = item.getFirebaseValues();
+    }
     return Object.assign({}, {
       active: this.active,
       gold: this.gold,
-      items: this.items,
+      items,
       name: this.name,
     });
   }

@@ -1,18 +1,19 @@
 import * as admin from "firebase-admin";
 import { firebaseApp } from "../../helpers/firebaseapp";
+import { ItemFirebaseValueRaw } from "../Item/dbfirebase";
 
 export type PlayerFirebaseValueRaw = {
   active: boolean,
   name: string,
   gold: number,
-  items?: {[key: string]: boolean},
+  items?: {[key: string]: ItemFirebaseValueRaw},
 };
 
 export type PlayerFirebaseValue = {
   active: boolean,
   name: string,
   gold: number,
-  items: {[key: string]: boolean},
+  items: {[key: string]: ItemFirebaseValueRaw},
 };
 
 function processFirebaseRawValues(value: PlayerFirebaseValueRaw): PlayerFirebaseValue {

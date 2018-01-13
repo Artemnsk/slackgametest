@@ -1,6 +1,8 @@
 import * as admin from "firebase-admin";
 import { GamerFirebaseValue } from "../gamer/dbfirebase";
 import { Gamer } from "../gamer/gamer";
+import { SpellFirebaseValue } from "../spell/dbfirebase";
+import { getRandomSpellFirebaseValue as getRandomSpell } from "../spell/spellfactory";
 import { GameFirebaseValue, getDBGame, getDBGames, getNewGameDBRef, removeDBGame, setDBGame } from "./dbfirebase";
 
 export const enum GAME_PHASES {
@@ -10,17 +12,17 @@ export const enum GAME_PHASES {
 }
 
 export class Game {
-  public static assignSpells(gamers: {[key: string]: Gamer}, quantity: number): {[key: string]: Gamer} {
+  public static assignSpells(gamers: {[key: string]: GamerFirebaseValue}, quantity: number): {[key: string]: GamerFirebaseValue} {
     for (const gamerKey in gamers) {
       if (gamers.hasOwnProperty(gamerKey)) {
-        const currentGamerSpells: {[key: string]: boolean} = {};
-        for (let i = 0; i < Math.min(quantity, spells.length); i++) {
-          let j = null;
+        const currentGamerSpells: {[key: string]: SpellFirebaseValue} = {};
+        for (let i = 0; i < quantity; i++) {
+          let spellFbValue: SpellFirebaseValue|null = null;
           // If it is first iteration or this spell already being added.
-          while (j === null || currentGamerSpells[spells[j].id] === true) {
-            j = Math.floor(Math.random() * spells.length);
+          while (spellFbValue === null || currentGamerSpells[spellFbValue.id] === spellFbValue) {
+            spellFbValue = getRandomSpell();
           }
-          currentGamerSpells[spells[j].id] = true;
+          currentGamerSpells[spellFbValue.id] = spellFbValue;
         }
         gamers[gamerKey].spells = currentGamerSpells;
       }
@@ -30,7 +32,6 @@ export class Game {
 
   /**
    * Load game from DB by teamKey, channelKey and gameKey.
-   * @return {Promise.<?Game,Error>}
    */
   public static getGame(teamKey: string, channelKey: string, gameKey: string): Promise<Game|null> {
     return getDBGame(teamKey, channelKey, gameKey)
@@ -43,7 +44,6 @@ export class Game {
 
   /**
    * Load game from DB by teamKey, channelKey and gameKey.
-   * @return {Promise.<Array<Game>,Error>}
    */
   public static getGames(teamKey: string, channelKey: string, phase?: string): Promise<Game[]> {
     return getDBGames(teamKey, channelKey, phase)

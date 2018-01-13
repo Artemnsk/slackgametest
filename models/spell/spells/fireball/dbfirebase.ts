@@ -1,4 +1,4 @@
-import {SPELLS} from "../../spell";
+import { SPELLS } from "../../spell";
 
 export type SpellFireballFirebaseValueRaw = {
   id: SPELLS.FIREBALL,

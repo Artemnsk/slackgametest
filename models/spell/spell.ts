@@ -9,6 +9,9 @@ export const enum SPELLS {
   ICE_LANCE = "ICE_LANCE",
 }
 
+// We cannot calculate enum length in runtime so we have to store this additional constant.
+export const SPELLS_QUANTITY = 2;
+
 export abstract class Spell {
   public abstract id: SPELLS;
   public $key: string;
