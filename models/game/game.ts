@@ -1,6 +1,7 @@
 import * as admin from "firebase-admin";
 import { Channel } from "../channel/channel";
 import { GameAction } from "../gameaction/gameaction";
+import { GameActionRequest } from "../gameactionrequest/gameactionrequest";
 import { getRecentAction } from "../gameactionrequest/gameactionrequestfactory";
 import { GamerFirebaseValue } from "../gamer/dbfirebase";
 import { Gamer } from "../gamer/gamer";
@@ -150,8 +151,9 @@ export class Game {
         } else {
           // At first we simply get GameAction object from request.
           const gameAction: GameAction = gameActionRequest.toGameAction();
-          // Now we are going to fill it with all related values. The Game decides which entities have influence on that.
-          // TODO: 0. Ability to make action?
+          // Now we are going to fill it with all related values. The Game decides which entities have influence on that. Also Game can involve it's own items.
+          const calculables = this.getCalculables(gameActionRequest);
+          // TODO: 0. Ability to make action? Not a simple validation.
           // TODO: 1. Collect damage phase.
           // TODO: 2. Miss.
           // TODO: 3. If not miss - evade.
@@ -164,5 +166,15 @@ export class Game {
         return Promise.resolve(GAME_STEP_RESULTS.ERROR);
       });
     return Promise.resolve(GAME_STEP_RESULTS.DEFAULT);
+  }
+
+  private getCalculables(gameActionRequest: GameActionRequest): object[] {
+    if (gameActionRequest.initiator !== null) {
+      const initiator: Gamer | null = this.getGamer(gameActionRequest.initiator);
+      if (initiator !== null) {
+        // initiator.items
+      }
+    }
+    return [];
   }
 }
