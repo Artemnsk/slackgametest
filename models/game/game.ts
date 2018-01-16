@@ -1,5 +1,7 @@
 import * as admin from "firebase-admin";
 import { Channel } from "../channel/channel";
+import { GameAction } from "../gameaction/gameaction";
+import { getRecentAction } from "../gameactionrequest/gameactionrequestfactory";
 import { GamerFirebaseValue } from "../gamer/dbfirebase";
 import { Gamer } from "../gamer/gamer";
 import { SpellFirebaseValue } from "../spell/dbfirebase";
@@ -10,6 +12,12 @@ export const enum GAME_PHASES {
   OVER = "OVER",
   PAUSE = "PAUSE",
   RUNNING = "RUNNING",
+}
+
+export const enum GAME_STEP_RESULTS {
+  ERROR = "ERROR",
+  DEFAULT = "DEFAULT",
+  END = "END",
 }
 
 export class Game {
@@ -129,5 +137,32 @@ export class Game {
       phase: this.phase,
       timeStep: this.timeStep,
     });
+  }
+
+  /**
+   * Handles game step for game.
+   */
+  public gameStep(): Promise<GAME_STEP_RESULTS> {
+    getRecentAction(this)
+      .then((gameActionRequest) => {
+        if (gameActionRequest === null) {
+          // TODO: Make default game loop?
+        } else {
+          // At first we simply get GameAction object from request.
+          const gameAction: GameAction = gameActionRequest.toGameAction();
+          // Now we are going to fill it with all related values. The Game decides which entities have influence on that.
+          // TODO: 0. Ability to make action?
+          // TODO: 1. Collect damage phase.
+          // TODO: 2. Miss.
+          // TODO: 3. If not miss - evade.
+          // TODO: 4. defence phase.
+          // TODO: collect logs with weight. Most important shown to all. Less important - to concrete user?
+          // TODO: 5. afterUse callback gameAction of used item?
+          // TODO: 6. for all used items start "onUse" callbacks - gameActions?
+        }
+      }, () => {
+        return Promise.resolve(GAME_STEP_RESULTS.ERROR);
+      });
+    return Promise.resolve(GAME_STEP_RESULTS.DEFAULT);
   }
 }
