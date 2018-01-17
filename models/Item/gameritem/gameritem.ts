@@ -1,3 +1,4 @@
+import { Game } from "../../game/game";
 import { GameAction } from "../../gameaction/gameaction";
 import { Gamer } from "../../gamer/gamer";
 import { IGameStepAlterable } from "../../icalculable/icalculable";
@@ -31,7 +32,27 @@ export abstract class GamerItem extends Item implements IGameStepAlterable {
   // TODO: gamer item fb value.
   public abstract getFirebaseValues(): ItemFirebaseValue;
 
-  public alterAbleToAct(): GameAction | null {
-    return null;
+  public alterAbleToAct(gameAction: GameAction, game: Game): void {
+    //
+  }
+
+  public alterPower(gameAction: GameAction, game: Game): void {
+    //
+  }
+
+  public alterMiss(gameAction: GameAction, game: Game): void {
+    //
+  }
+
+  public alterEvade(gameAction: GameAction, game: Game): void {
+    //
+  }
+
+  public alterBeforeUse(gameAction: GameAction, game: Game): void {
+    //
+  }
+
+  public alterAfterUse(gameAction: GameAction, game: Game): void {
+    //
   }
 }

@@ -8,18 +8,18 @@ export class SpellFireball extends UsableSpell {
   public emoji: string = ":fire:";
   public label: string = "Fireball";
   public description: string = "Send fireball to enemy.";
-  public damage: number;
+  public power: number;
   protected $key: SPELLS = SPELLS.FIREBALL;
 
   constructor(gamer: Gamer, values: SpellFireballFirebaseValue, itemKey: SPELLS) {
     super(gamer, values, itemKey);
-    this.damage = values.damage;
+    this.power = values.power;
   }
 
   public getFirebaseValues(): SpellFireballFirebaseValue {
     return {
       // todo:
-      damage: this.damage,
+      power: this.power,
       description: this.description,
       emoji: this.emoji,
       id: SPELLS.FIREBALL,

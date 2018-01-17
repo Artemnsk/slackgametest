@@ -9,12 +9,12 @@ export const enum GAME_ACTION_TYPES {
 
 export abstract class GameAction {
   public type: GAME_ACTION_TYPES;
-  public initiator: Gamer | null;
-  public target: Gamer | null;
+  public initiator: Gamer;
+  public target: Gamer;
   public created: number;
   private game: Game;
 
-  constructor(game: Game, gameActionRequest: GameActionRequest, initiator: Gamer | string | null, target: Gamer | string | null) {
+  constructor(game: Game, gameActionRequest: GameActionRequest, initiator: Gamer | string, target: Gamer | string) {
     this.game = game;
     switch (gameActionRequest.type) {
       case GAME_ACTION_REQUEST_TYPES.CAST_SPELL:
@@ -24,15 +24,15 @@ export abstract class GameAction {
         this.type = GAME_ACTION_TYPES.USE_ITEM;
         break;
     }
-    if (initiator === null || initiator instanceof Gamer) {
+    if (initiator instanceof Gamer) {
       this.initiator = initiator;
     } else {
-      this.initiator = game.getGamer(initiator);
+      this.initiator = game.getGamer(initiator) as Gamer;
     }
-    if (target === null || target instanceof Gamer) {
+    if (target instanceof Gamer) {
       this.target = target;
     } else {
-      this.target = game.getGamer(target);
+      this.target = game.getGamer(target) as Gamer;
     }
     this.created = gameActionRequest.created;
   }

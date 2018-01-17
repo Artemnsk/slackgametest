@@ -26,12 +26,12 @@ export function getRandomSpellFirebaseValue(): SpellFirebaseValue | null {
   switch (i) {
     case 0:
       return {
-        damage: 8,
+        power: 8,
         id: SPELLS.FIREBALL,
       };
     case 1:
       return {
-        damage: 5,
+        power: 5,
         id: SPELLS.ICE_LANCE,
       };
     default:

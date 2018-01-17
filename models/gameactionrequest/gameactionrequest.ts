@@ -21,8 +21,8 @@ export abstract class GameActionRequest {
 
   public type: GAME_ACTION_REQUEST_TYPES;
   public created: number;
-  public initiator: string | null;
-  public target: string | null;
+  public initiator: string;
+  public target: string;
   protected game: Game;
   private $key: string;
 
@@ -51,7 +51,7 @@ export abstract class GameActionRequest {
     return this.$key;
   }
 
-  public abstract toGameAction(): GameAction;
+  public abstract toGameAction(): GameAction | null;
 
   public abstract getFirebaseValue(): GameActionRequestFirebaseValue;
 }

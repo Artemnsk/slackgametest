@@ -1,6 +1,5 @@
 import { ITEMS } from "../../item";
 import { ItemShieldFirebaseValue } from "./dbfirebase";
-import { Gamer } from "../../../gamer/gamer";
 import { UsablePlayerItem } from "../../playeritem/usableplayeritem";
 import { Player } from "../../../player/player";
 

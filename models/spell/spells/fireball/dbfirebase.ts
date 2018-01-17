@@ -5,7 +5,7 @@ export type SpellFireballFirebaseValueRaw = {
   emoji?: string,
   label?: string,
   description?: string,
-  damage: number,
+  power: number,
 };
 
 export type SpellFireballFirebaseValue = {
@@ -13,7 +13,7 @@ export type SpellFireballFirebaseValue = {
   emoji?: string,
   label?: string,
   description?: string,
-  damage: number,
+  power: number,
 };
 
 export function processFirebaseRawValues(value: SpellFireballFirebaseValueRaw): SpellFireballFirebaseValue {

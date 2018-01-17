@@ -1,7 +1,11 @@
 import { ParsedSlackActionPayload, SlackMessageAction, SlackMessageAttachment } from "../../../helpers/slackmessage";
 import { Game } from "../../game/game";
+import { GameActionCastSpell } from "../../gameaction/gameactions/gameactioncastspell/gameactioncastspell";
+import { GameActionUseItem } from "../../gameaction/gameactions/gameactionuseitem/gameactionuseitem";
 import { GAME_ACTION_REQUEST_TYPES, GameActionRequest } from "../../gameactionrequest/gameactionrequest";
+import { GameActionRequestCastSpell } from "../../gameactionrequest/gameactionrequests/gameactionrequestcastspell/gameactionrequestcastspell";
 import { GameActionRequestUseItemFirebaseValue } from "../../gameactionrequest/gameactionrequests/gameactionrequestuseitem/dbfirebase";
+import { GameActionRequestUseItem } from "../../gameactionrequest/gameactionrequests/gameactionrequestuseitem/gameactionrequestuseitem";
 import { Gamer } from "../../gamer/gamer";
 import { IUsableInGame } from "../../iusable/iusable";
 import { GamerItem } from "./gameritem";
@@ -98,5 +102,12 @@ export abstract class UsableGamerItem extends GamerItem implements IUsableInGame
         },
       ],
     }];
+  }
+
+  /**
+   * That could be overriden by child to add new fields.
+   */
+  public getInitialGameAction(game: Game, gameActionRequest: GameActionRequestUseItem, initiator: Gamer, target: Gamer): GameActionUseItem {
+    return new GameActionUseItem(game, gameActionRequest, initiator, target);
   }
 }
