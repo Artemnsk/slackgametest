@@ -1,10 +1,12 @@
 import * as admin from "firebase-admin";
 import { Channel } from "../channel/channel";
-import { GameAction } from "../gameaction/gameaction";
-import { GameActionRequest } from "../gameactionrequest/gameactionrequest";
+import { GAME_ACTION_TYPES, GameAction } from "../gameaction/gameaction";
+import { GameActionCastSpell } from "../gameaction/gameactions/gameactioncastspell/gameactioncastspell";
+import { GameActionUseItem } from "../gameaction/gameactions/gameactionuseitem/gameactionuseitem";
 import { getRecentAction } from "../gameactionrequest/gameactionrequestfactory";
 import { GamerFirebaseValue } from "../gamer/dbfirebase";
 import { Gamer } from "../gamer/gamer";
+import { IGameStepAlterable } from "../icalculable/icalculable";
 import { SpellFirebaseValue } from "../spell/dbfirebase";
 import { getRandomSpellFirebaseValue as getRandomSpell } from "../spell/spellfactory";
 import { GameFirebaseValue, getDBGame, getDBGames, getNewGameDBRef, removeDBGame, setDBGame } from "./dbfirebase";
@@ -145,22 +147,22 @@ export class Game {
    */
   public gameStep(): Promise<GAME_STEP_RESULTS> {
     getRecentAction(this)
-      .then((gameActionRequest) => {
-        if (gameActionRequest === null) {
-          // TODO: Make default game loop?
-        } else {
+      .then((gameActionRequest): Promise<GAME_STEP_RESULTS> => {
+        if (gameActionRequest !== null) {
           // At first we simply get GameAction object from request.
           const gameAction: GameAction = gameActionRequest.toGameAction();
-          // Now we are going to fill it with all related values. The Game decides which entities have influence on that. Also Game can involve it's own items.
-          const calculables = this.getCalculables(gameActionRequest);
-          // TODO: 0. Ability to make action? Not a simple validation.
-          // TODO: 1. Collect damage phase.
-          // TODO: 2. Miss.
-          // TODO: 3. If not miss - evade.
-          // TODO: 4. defence phase.
-          // TODO: collect logs with weight. Most important shown to all. Less important - to concrete user?
-          // TODO: 5. afterUse callback gameAction of used item?
-          // TODO: 6. for all used items start "onUse" callbacks - gameActions?
+          switch (gameAction.type) {
+            case GAME_ACTION_TYPES.USE_ITEM:
+              const useItemGameAction = gameAction as GameActionUseItem;
+              return this.gameStepUseItem(useItemGameAction);
+            case GAME_ACTION_TYPES.CAST_SPELL:
+              const castSpellGameAction = gameAction as GameActionCastSpell;
+              return this.gameStepCastSpell(castSpellGameAction);
+          }
+          return Promise.resolve(GAME_STEP_RESULTS.ERROR);
+        } else {
+          // TODO: Make default game loop?
+          return Promise.resolve(GAME_STEP_RESULTS.ERROR);
         }
       }, () => {
         return Promise.resolve(GAME_STEP_RESULTS.ERROR);
@@ -168,13 +170,45 @@ export class Game {
     return Promise.resolve(GAME_STEP_RESULTS.DEFAULT);
   }
 
-  private getCalculables(gameActionRequest: GameActionRequest): object[] {
-    if (gameActionRequest.initiator !== null) {
-      const initiator: Gamer | null = this.getGamer(gameActionRequest.initiator);
-      if (initiator !== null) {
-        // initiator.items
-      }
+  protected gameStepUseItem(gameAction: GameActionUseItem): Promise<GAME_STEP_RESULTS> {
+    // Now we are going to fill it with all related values. The Game decides which entities have influence on that. Also Game can involve it's own items.
+    const calculables: IGameStepAlterable[] = [];
+    // Get all items.
+    if (gameAction.initiator !== null) {
+      calculables.concat(gameAction.initiator.items);
     }
-    return [];
+    if (gameAction.target !== null) {
+      calculables.concat(gameAction.target.items);
+    }
+    // TODO: 0. Ability to make action? Not a simple validation.
+    // TODO: 1. Collect damage phase.
+    // TODO: 2. Miss.
+    // TODO: 3. If not miss - evade.
+    // TODO: 4. defence phase.
+    // TODO: collect logs with weight. Most important shown to all. Less important - to concrete user?
+    // TODO: 5. afterUse callback gameAction of used item?
+    // TODO: 6. for all used items start "onUse" callbacks - gameActions?
+    return Promise.resolve(GAME_STEP_RESULTS.DEFAULT);
+  }
+
+  protected gameStepCastSpell(gameAction: GameActionCastSpell): Promise<GAME_STEP_RESULTS> {
+    // Now we are going to fill it with all related values. The Game decides which entities have influence on that. Also Game can involve it's own items.
+    const calculables: IGameStepAlterable[] = [];
+    // Get all items.
+    if (gameAction.initiator !== null) {
+      calculables.concat(gameAction.initiator.items);
+    }
+    if (gameAction.target !== null) {
+      calculables.concat(gameAction.target.items);
+    }
+    // TODO: 0. Ability to make action? Not a simple validation.
+    // TODO: 1. Collect damage phase.
+    // TODO: 2. Miss.
+    // TODO: 3. If not miss - evade.
+    // TODO: 4. defence phase.
+    // TODO: collect logs with weight. Most important shown to all. Less important - to concrete user?
+    // TODO: 5. afterUse callback gameAction of used item?
+    // TODO: 6. for all used items start "onUse" callbacks - gameActions?
+    return Promise.resolve(GAME_STEP_RESULTS.DEFAULT);
   }
 }

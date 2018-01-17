@@ -1,8 +1,10 @@
+import { GameAction } from "../../gameaction/gameaction";
 import { Gamer } from "../../gamer/gamer";
+import { IGameStepAlterable } from "../../icalculable/icalculable";
 import { ItemFirebaseValue } from "../dbfirebase";
 import { Item } from "../item";
 
-export abstract class GamerItem extends Item {
+export abstract class GamerItem extends Item implements IGameStepAlterable {
   private gamer: Gamer;
 
   constructor(gamer: Gamer, values: ItemFirebaseValue, itemKey: string) {
@@ -28,4 +30,8 @@ export abstract class GamerItem extends Item {
 
   // TODO: gamer item fb value.
   public abstract getFirebaseValues(): ItemFirebaseValue;
+
+  public alterAbleToAct(): GameAction | null {
+    return null;
+  }
 }

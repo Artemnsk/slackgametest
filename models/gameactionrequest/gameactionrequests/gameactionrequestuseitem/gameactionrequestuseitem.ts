@@ -13,7 +13,7 @@ export class GameActionRequestUseItem extends GameActionRequest {
   }
 
   public toGameAction(): GameActionUseItem {
-    return new GameActionUseItem(this.game, this);
+    return new GameActionUseItem(this.game, this, this.initiator, this.target);
   }
 
   public getFirebaseValue(): GameActionRequestUseItemFirebaseValue {

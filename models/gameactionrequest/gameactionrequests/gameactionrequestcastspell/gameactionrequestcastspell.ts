@@ -13,7 +13,7 @@ export class GameActionRequestCastSpell extends GameActionRequest {
   }
 
   public toGameAction(): GameActionCastSpell {
-    return new GameActionCastSpell(this.game, this);
+    return new GameActionCastSpell(this.game, this, this.initiator, this.target);
   }
 
   public getFirebaseValue(): GameActionRequestCastSpellFirebaseValue {
