@@ -10,8 +10,8 @@ export class GameActionUseItem extends GameAction {
   public type: GAME_ACTION_TYPES.USE_ITEM;
   protected item: UsableGamerItem;
 
-  constructor(game: Game, gameActionRequest: GameActionRequestUseItem, initiator: Gamer | string, target: Gamer | string) {
+  constructor(game: Game, gameActionRequest: GameActionRequestUseItem, initiator: Gamer, target: Gamer, item: UsableGamerItem) {
     super(game, gameActionRequest, initiator, target);
-    this.item = this.initiator.getItem(gameActionRequest.itemId) as UsableGamerItem;
+    this.item = item;
   }
 }

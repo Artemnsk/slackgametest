@@ -108,6 +108,6 @@ export abstract class UsableGamerItem extends GamerItem implements IUsableInGame
    * That could be overriden by child to add new fields.
    */
   public getInitialGameAction(game: Game, gameActionRequest: GameActionRequestUseItem, initiator: Gamer, target: Gamer): GameActionUseItem {
-    return new GameActionUseItem(game, gameActionRequest, initiator, target);
+    return new GameActionUseItem(game, gameActionRequest, initiator, target, this);
   }
 }

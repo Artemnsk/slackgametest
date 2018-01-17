@@ -10,8 +10,8 @@ export class GameActionCastSpell extends GameAction {
   public type: GAME_ACTION_TYPES.CAST_SPELL;
   protected spell: UsableSpell;
 
-  constructor(game: Game, gameActionRequest: GameActionRequestCastSpell, initiator: Gamer | string, target: Gamer | string) {
+  constructor(game: Game, gameActionRequest: GameActionRequestCastSpell, initiator: Gamer, target: Gamer, spell: UsableSpell) {
     super(game, gameActionRequest, initiator, target);
-    this.spell = this.initiator.getSpell(gameActionRequest.spellId) as UsableSpell;
+    this.spell = spell;
   }
 }

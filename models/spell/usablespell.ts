@@ -105,7 +105,7 @@ export abstract class UsableSpell extends Spell implements IUsableInGame, IGameS
   }
 
   public getInitialGameAction(game: Game, gameActionRequest: GameActionRequestCastSpell, initiator: Gamer, target: Gamer): GameActionCastSpell {
-    return new GameActionCastSpell(game, gameActionRequest, initiator, target);
+    return new GameActionCastSpell(game, gameActionRequest, initiator, target, this);
   }
 
   public alterAbleToAct(gameAction: GameAction, game: Game): void {

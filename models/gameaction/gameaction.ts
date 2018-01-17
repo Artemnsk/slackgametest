@@ -14,7 +14,7 @@ export abstract class GameAction {
   public created: number;
   private game: Game;
 
-  constructor(game: Game, gameActionRequest: GameActionRequest, initiator: Gamer | string, target: Gamer | string) {
+  constructor(game: Game, gameActionRequest: GameActionRequest, initiator: Gamer, target: Gamer) {
     this.game = game;
     switch (gameActionRequest.type) {
       case GAME_ACTION_REQUEST_TYPES.CAST_SPELL:
@@ -24,16 +24,8 @@ export abstract class GameAction {
         this.type = GAME_ACTION_TYPES.USE_ITEM;
         break;
     }
-    if (initiator instanceof Gamer) {
-      this.initiator = initiator;
-    } else {
-      this.initiator = game.getGamer(initiator) as Gamer;
-    }
-    if (target instanceof Gamer) {
-      this.target = target;
-    } else {
-      this.target = game.getGamer(target) as Gamer;
-    }
+    this.initiator = initiator;
+    this.target = target;
     this.created = gameActionRequest.created;
   }
 
