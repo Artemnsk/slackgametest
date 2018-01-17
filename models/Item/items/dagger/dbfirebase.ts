@@ -5,7 +5,7 @@ export type ItemDaggerFirebaseValueRaw = {
   emoji?: string,
   label?: string,
   description?: string,
-  damage: number,
+  power: number,
 };
 
 export type ItemDaggerFirebaseValue = {
@@ -13,7 +13,7 @@ export type ItemDaggerFirebaseValue = {
   emoji?: string,
   label?: string,
   description?: string,
-  damage: number,
+  power: number,
 };
 
 export function processFirebaseRawValues(value: ItemDaggerFirebaseValueRaw): ItemDaggerFirebaseValue {

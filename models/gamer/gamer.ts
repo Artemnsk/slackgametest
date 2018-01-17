@@ -1,5 +1,6 @@
 import { Game } from "../game/game";
 import { ItemFirebaseValue } from "../Item/dbfirebase";
+import { GamerItem } from "../Item/gameritem/gameritem";
 import { buildItem } from "../Item/gameritem/gameritemfactory";
 import { Item } from "../Item/item";
 import { SpellFirebaseValue } from "../spell/dbfirebase";
@@ -13,7 +14,7 @@ export class Gamer {
   public health: number;
   public mana: number;
   public spells: Spell[];
-  public items: Item[];
+  public items: GamerItem[];
   private $key: string;
   private game: Game;
 
@@ -36,7 +37,7 @@ export class Gamer {
     }
     this.spells = spells;
     // Construct items.
-    const items: Item[] = [];
+    const items: GamerItem[] = [];
     for (const itemKey in values.items) {
       if (values.items.hasOwnProperty(itemKey)) {
         const item = buildItem(this, values.items[ itemKey ], itemKey);

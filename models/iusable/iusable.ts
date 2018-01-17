@@ -1,5 +1,7 @@
 import { ParsedSlackActionPayload, SlackMessageAction, SlackMessageAttachment } from "../../helpers/slackmessage";
 import { Game } from "../game/game";
+import { GameAction } from "../gameaction/gameaction";
+import { GameActionRequest } from "../gameactionrequest/gameactionrequest";
 import { Gamer } from "../gamer/gamer";
 
 export interface IUsableInGame {
@@ -10,6 +12,8 @@ export interface IUsableInGame {
   processUsageForm(game: Game, gamer: Gamer, parsedPayload: ParsedSlackActionPayload): Promise<boolean>;
 
   getSlackInfo(callbackId: string): SlackMessageAttachment[];
+
+  getInitialGameAction(game: Game, gameActionRequest: GameActionRequest, initiator: Gamer, target: Gamer): GameAction;
 }
 
 export interface IUsableInBreak {

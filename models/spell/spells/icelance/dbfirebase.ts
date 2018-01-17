@@ -5,7 +5,7 @@ export type SpellIceLanceFirebaseValueRaw = {
   emoji?: string,
   label?: string,
   description?: string,
-  damage: number,
+  power: number,
 };
 
 export type SpellIceLanceFirebaseValue = {
@@ -13,7 +13,7 @@ export type SpellIceLanceFirebaseValue = {
   emoji?: string,
   label?: string,
   description?: string,
-  damage: number,
+  power: number,
 };
 
 export function processFirebaseRawValues(value: SpellIceLanceFirebaseValueRaw): SpellIceLanceFirebaseValue {

@@ -213,7 +213,7 @@ schema:
               properties:
                 type:
                   type: string
-                  enum: ['CAST_SPELL', 'USE_ITEM']
+                  enum: ['CAST_SPELL', 'USE_ITEM', 'initiator', 'target']
                 created:
                   type: number
                 target:

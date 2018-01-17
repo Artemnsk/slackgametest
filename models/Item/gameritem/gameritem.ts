@@ -1,8 +1,11 @@
+import { Game } from "../../game/game";
+import { GameAction } from "../../gameaction/gameaction";
 import { Gamer } from "../../gamer/gamer";
+import { IGameStepAlterable } from "../../icalculable/icalculable";
 import { ItemFirebaseValue } from "../dbfirebase";
 import { Item } from "../item";
 
-export abstract class GamerItem extends Item {
+export abstract class GamerItem extends Item implements IGameStepAlterable {
   private gamer: Gamer;
 
   constructor(gamer: Gamer, values: ItemFirebaseValue, itemKey: string) {
@@ -28,4 +31,28 @@ export abstract class GamerItem extends Item {
 
   // TODO: gamer item fb value.
   public abstract getFirebaseValues(): ItemFirebaseValue;
+
+  public alterAbleToAct(gameAction: GameAction, game: Game): void {
+    //
+  }
+
+  public alterPower(gameAction: GameAction, game: Game): void {
+    //
+  }
+
+  public alterMiss(gameAction: GameAction, game: Game): void {
+    //
+  }
+
+  public alterEvade(gameAction: GameAction, game: Game): void {
+    //
+  }
+
+  public alterBeforeUse(gameAction: GameAction, game: Game): void {
+    //
+  }
+
+  public alterAfterUse(gameAction: GameAction, game: Game): void {
+    //
+  }
 }
