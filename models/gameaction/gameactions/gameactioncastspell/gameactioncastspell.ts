@@ -1,16 +1,17 @@
 import { Game, GAME_STEP_RESULTS } from "../../../game/game";
 import { GameActionRequestCastSpell } from "../../../gameactionrequest/gameactionrequests/gameactionrequestcastspell/gameactionrequestcastspell";
 import { Gamer } from "../../../gamer/gamer";
+import { MixedValueBoolean } from "../../../mixed/mixedvalue/mixedvalues/mixedvalueboolean";
 import { UsableSpell } from "../../../spell/usablespell";
-import { GAME_ACTION_TYPES, GameAction } from "../../gameaction";
+import { ALTERATION_TYPES, GAME_ACTION_TYPES, GameAction } from "../../gameaction";
 import { MixedValueNumber } from "../../../mixed/mixedvalue/mixedvalues/mixedvaluenumber";
 import { MixedValuePercent } from "../../../mixed/mixedvalue/mixedvalues/mixedvaluepercent";
-import { IGameStepAlterable } from "../../../interfaces/igamestepalterable/igamestepalterable";
+import { IGameActionCastSpellPhaseAlterable, IGameActionCastSpellValueAlterable } from "./interfaces";
 
 // TODO: define in some interface file?
 type AlterableGAData = {
-  owner: IGameStepAlterable,
-  data: any,
+  owner: IGameActionCastSpellValueAlterable,
+  data: object,
 };
 
 export const enum GAME_ACTION_CAST_SPELL_MIXED_TYPES {
@@ -28,9 +29,10 @@ export class GameActionCastSpell extends GameAction {
   // TODO: seems game must process this gameAction separately from UseItem.. OR share some interface which involves lots of restrictions...
   // TODO: partials go here.
   // TODO: partial for bool: e.g. able to cast spell.
+  protected mixedCanAct: MixedValueBoolean;
   protected mixedSpellPower: MixedValueNumber;
   protected mixedSpellMiss: MixedValuePercent;
-  protected mixedSpellEvade: MixedValuePercent;
+  protected mixedSpellEvasion: MixedValuePercent;
   protected mixedSpellResistance: MixedValueNumber;
   // TODO:
   protected alterableGADataStorage: AlterableGAData[];
@@ -41,57 +43,79 @@ export class GameActionCastSpell extends GameAction {
     this.spell = spell;
     // TODO: alter initial values. E.g. initial value equals some spell attr + Gamer stat + (e.g.) Gamer passive skill.
     // Initialize all these mixed values.
-    this.mixedSpellPower = new MixedValueNumber(0);
-    this.mixedSpellMiss = new MixedValuePercent(0);
-    this.mixedSpellEvade = new MixedValuePercent(0);
-    this.mixedSpellResistance = new MixedValueNumber(0);
+    this.mixedCanAct = new MixedValueBoolean(true);
+    // We are sure all Gamer mixed values being finalized here.
+    const spellPowerInitialValue = this.initiator.stats.spellPower.getFinalValue() as number;
+    this.mixedSpellPower = new MixedValueNumber(spellPowerInitialValue);
+    const spellMissInitialValue = this.initiator.stats.spellMiss.getFinalValue() as number;
+    this.mixedSpellMiss = new MixedValuePercent(spellMissInitialValue);
+    const spellEvasionInitialValue = this.target.stats.spellEvasion.getFinalValue() as number;
+    this.mixedSpellEvasion = new MixedValuePercent(spellEvasionInitialValue);
+    const spellResistanceInitialValue = this.target.stats.spellResistance.getFinalValue() as number;
+    this.mixedSpellResistance = new MixedValueNumber(spellResistanceInitialValue);
     this.alterableGADataStorage = [];
   }
   // TODO: to interface?
   /**
-   * that is a storage for each alterable item which can be used for sharing info between different phases.
+   * That is a storage for each alterable item which can be used for sharing info between different phases.
    */
-  public getAlterableGAData(alterable: IGameStepAlterable): AlterableGAData | null {
-    const data = this.alterableGADataStorage.find((item) => item.owner === alterable);
-    return data !== undefined ? data : null;
+  public getAlterableGAData(alterable: IGameActionCastSpellValueAlterable & IGameActionCastSpellPhaseAlterable): AlterableGAData | null {
+    let data = this.alterableGADataStorage.find((item) => item.owner === alterable);
+    if (data === undefined) {
+      data = {
+        data: {},
+        owner: alterable,
+      };
+      this.alterableGADataStorage.push(data);
+    }
+    return data;
   }
 
   // TODO:
   public processGameStep(): Promise<GAME_STEP_RESULTS> {
+    type AlterableWithType = {
+      alterable: IGameActionCastSpellValueAlterable & IGameActionCastSpellPhaseAlterable,
+      type: string,
+    };
     // Now we are going to fill it with all related values. The Game decides which entities have influence on that. Also Game can involve it's own items.
-    let alterables: IGameStepAlterable[] = [];
-    // Get all items.
-    if (this.initiator !== null) {
-      alterables = alterables.concat(this.initiator.items);
-    }
-    if (this.target !== null) {
-      alterables = alterables.concat(this.target.items);
-    }
+    const initiatorAlterableItems: AlterableWithType[] = this.initiator.items.map((item) => {
+      return {
+        alterable: item,
+        type: ALTERATION_TYPES.INITIATOR,
+      };
+    });
+    const targetAlterableItems: AlterableWithType[] = this.target.items.map((item) => {
+      return {
+        alterable: item,
+        type: ALTERATION_TYPES.TARGET,
+      };
+    });
+    const alterables: AlterableWithType[] = [...initiatorAlterableItems, ...targetAlterableItems];
     // TODO: pass game anyway? Maybe less data?
     // Ability to make action? Not a simple validation.
     for (const alterable of alterables) {
-      alterable.alterAbleToAct(this);
+      alterable.alterable.alterCanActValue(this);
     }
     // Collect power.
     for (const alterable of alterables) {
-      alterable.alterPower(this);
+      alterable.alterable.alterSpellPowerValue(this);
     }
     // Miss.
     for (const alterable of alterables) {
-      alterable.alterMiss(this);
+      alterable.alterable.alterSpellMissValue(this);
     }
     // Evade.
     for (const alterable of alterables) {
-      alterable.alterEvade(this);
+      alterable.alterable.alterSpellEvadeValue(this);
     }
     // Pre-Hit (TODO: defense).
     for (const alterable of alterables) {
-      alterable.alterBeforeUse(this);
+      // alterable.alterable.alterBeforeUse(this);
     }
     // TODO: make action.
     // After use.
     for (const alterable of alterables) {
-      alterable.alterAfterUse(this);
+      alterable.alterable.alterAfterUsePhase(this);
     }
     // TODO:
     return Promise.resolve(GAME_STEP_RESULTS.ERROR);

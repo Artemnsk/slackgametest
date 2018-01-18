@@ -9,11 +9,11 @@ import { GAME_ACTION_REQUEST_TYPES, GameActionRequest } from "../gameactionreque
 import { GameActionRequestCastSpellFirebaseValue } from "../gameactionrequest/gameactionrequests/gameactionrequestcastspell/dbfirebase";
 import { GameActionRequestCastSpell } from "../gameactionrequest/gameactionrequests/gameactionrequestcastspell/gameactionrequestcastspell";
 import { Gamer } from "../gamer/gamer";
-import { IGameStepAlterable } from "../interfaces/igamestepalterable/igamestepalterable";
-import { IUsableInGame } from "../interfaces/iusable/iusable";
+import { IGameActionCastSpellValueAlterable } from "../gameaction/gameactions/gameactioncastspell/interfaces";
+import { IUsableInGame } from "../iusable/iusable";
 import { Spell } from "./spell";
 
-export abstract class UsableSpell extends Spell implements IUsableInGame, IGameStepAlterable {
+export abstract class UsableSpell extends Spell implements IUsableInGame {
   /**
    * Validate: does gamer able to use item? Returns true if yes and string with error otherwise.
    */
@@ -107,35 +107,7 @@ export abstract class UsableSpell extends Spell implements IUsableInGame, IGameS
     }];
   }
 
-  public alterInitialValue(valueName: GAME_ACTION_CAST_SPELL_MIXED_TYPES, value: any): any {
-    // TODO: contains logic of assigning initial value for that value. E.g. get something from stat.
-  }
-
   public getInitialGameAction(game: Game, gameActionRequest: GameActionRequestCastSpell, initiator: Gamer, target: Gamer): GameActionCastSpell {
     return new GameActionCastSpell(game, gameActionRequest, initiator, target, this);
-  }
-
-  public alterAbleToAct(gameAction: GameAction): void {
-    //
-  }
-
-  public alterPower(gameAction: GameAction): void {
-    //
-  }
-
-  public alterMiss(gameAction: GameAction): void {
-    //
-  }
-
-  public alterEvade(gameAction: GameAction): void {
-    //
-  }
-
-  public alterBeforeUse(gameAction: GameAction): void {
-    //
-  }
-
-  public alterAfterUse(gameAction: GameAction): void {
-    //
   }
 }

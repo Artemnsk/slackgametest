@@ -6,7 +6,7 @@ import { GameActionUseItem } from "../gameaction/gameactions/gameactionuseitem/g
 import { getRecentAction } from "../gameactionrequest/gameactionrequestfactory";
 import { GamerFirebaseValue } from "../gamer/dbfirebase";
 import { Gamer } from "../gamer/gamer";
-import { IGameStepAlterable } from "../interfaces/igamestepalterable/igamestepalterable";
+import { IGameActionCastSpellValueAlterable } from "../gameaction/gameactions/gameactioncastspell/interfaces";
 import { SpellFirebaseValue } from "../spell/dbfirebase";
 import { getRandomSpellFirebaseValue as getRandomSpell } from "../spell/spellfactory";
 import { GameFirebaseValue, getDBGame, getDBGames, getNewGameDBRef, removeDBGame, setDBGame } from "./dbfirebase";

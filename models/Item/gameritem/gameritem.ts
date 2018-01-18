@@ -1,11 +1,10 @@
-import { Game } from "../../game/game";
 import { GameAction } from "../../gameaction/gameaction";
 import { Gamer } from "../../gamer/gamer";
-import { IGameStepAlterable } from "../../interfaces/igamestepalterable/igamestepalterable";
+import { IGameActionCastSpellPhaseAlterable, IGameActionCastSpellValueAlterable } from "../../gameaction/gameactions/gameactioncastspell/interfaces";
 import { ItemFirebaseValue } from "../dbfirebase";
 import { Item } from "../item";
 
-export abstract class GamerItem extends Item implements IGameStepAlterable {
+export abstract class GamerItem extends Item implements IGameActionCastSpellValueAlterable, IGameActionCastSpellPhaseAlterable {
   private gamer: Gamer;
 
   constructor(gamer: Gamer, values: ItemFirebaseValue, itemKey: string) {
@@ -32,27 +31,31 @@ export abstract class GamerItem extends Item implements IGameStepAlterable {
   // TODO: gamer item fb value.
   public abstract getFirebaseValues(): ItemFirebaseValue;
 
-  public alterAbleToAct(gameAction: GameAction): void {
+  /**
+   *  IGameActionCastSpellValueAlterable.
+   */
+
+  public alterCanActValue(gameAction: GameAction): void {
     //
   }
 
-  public alterPower(gameAction: GameAction): void {
+  public alterSpellPowerValue(gameAction: GameAction): void {
     //
   }
 
-  public alterMiss(gameAction: GameAction): void {
+  public alterSpellMissValue(gameAction: GameAction): void {
     //
   }
 
-  public alterEvade(gameAction: GameAction): void {
+  public alterSpellEvadeValue(gameAction: GameAction): void {
     //
   }
 
-  public alterBeforeUse(gameAction: GameAction): void {
-    //
-  }
+  /**
+   *  IGameActionCastSpellPhaseAlterable.
+   */
 
-  public alterAfterUse(gameAction: GameAction): void {
+  public alterAfterUsePhase(gameAction: GameAction): void {
     //
   }
 }

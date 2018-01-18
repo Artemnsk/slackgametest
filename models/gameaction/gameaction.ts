@@ -7,6 +7,11 @@ export const enum GAME_ACTION_TYPES {
   USE_ITEM = "USE_ITEM",
 }
 
+export const enum ALTERATION_TYPES {
+  TARGET = "TARGET",
+  INITIATOR = "INITIATOR",
+}
+
 export abstract class GameAction {
   public type: GAME_ACTION_TYPES;
   public initiator: Gamer;

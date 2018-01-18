@@ -2,7 +2,7 @@ import { SlackMessageActionButton, SlackMessageAttachment } from "../../../helpe
 import { Channel } from "../../../models/channel/channel";
 import { Game } from "../../../models/game/game";
 import { Gamer } from "../../../models/gamer/gamer";
-import { IUsableInGame } from "../../../models/interfaces/iusable/iusable";
+import { IUsableInGame } from "../../../models/iusable/iusable";
 import { UIMessage } from "../../../models/uimessage/uimessage";
 import { gameTitleFactory } from "../../_partials/gametitlefactory";
 

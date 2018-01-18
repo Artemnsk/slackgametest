@@ -16,9 +16,11 @@ const enum GAMER_DEFAULT_STATS {
   HIT_POWER = 1,
   HIT_EVASION = 5,
   HIT_MISS = 5,
+  HIT_DEFENSE = 0,
   SPELL_POWER = 1,
   SPELL_EVASION = 5,
   SPELL_MISS = 5,
+  SPELL_RESISTANCE = 0,
 }
 
 // They are used in calculation of secondary stats so they are much important.
@@ -34,9 +36,11 @@ type GamerSecondaryStats = {
   hitPower: MixedValueNumber,
   hitEvasion: MixedValuePercent,
   hitMiss: MixedValuePercent,
+  hitDefense: MixedValueNumber,
   spellPower: MixedValueNumber,
   spellEvasion: MixedValuePercent,
   spellMiss: MixedValuePercent,
+  spellResistance: MixedValueNumber,
 };
 
 type GamerStats = GamerPrimaryStats & GamerSecondaryStats;
@@ -48,7 +52,7 @@ export class Gamer {
   public mana: number;
   public spells: Spell[];
   public items: GamerItem[];
-  protected stats: GamerStats;
+  public stats: GamerStats;
   private $key: string;
   private game: Game;
 
@@ -173,6 +177,7 @@ export class Gamer {
     const intelligenceFinalValue = primaryStats.intelligence.isFinal() ? primaryStats.intelligence.getFinalValue() as number : 0;
     const strengthFinalValue = primaryStats.strength.isFinal() ? primaryStats.strength.getFinalValue() as number : 0;
     // Define secondary stats now.
+    const hitDefense = new MixedValueNumber(GAMER_DEFAULT_STATS.HIT_DEFENSE);
     const hitEvasion = new MixedValuePercent(GAMER_DEFAULT_STATS.HIT_EVASION + agilityFinalValue);
     const hitMiss = new MixedValuePercent(Math.max(GAMER_DEFAULT_STATS.HIT_MISS - agilityFinalValue, 0));
     const hitPower = new MixedValueNumber(GAMER_DEFAULT_STATS.HIT_POWER + strengthFinalValue);
@@ -181,6 +186,7 @@ export class Gamer {
     const spellEvasion = new MixedValuePercent(GAMER_DEFAULT_STATS.SPELL_EVASION + agilityFinalValue);
     const spellMiss = new MixedValuePercent(Math.max(GAMER_DEFAULT_STATS.SPELL_MISS - agilityFinalValue, 0));
     const spellPower = new MixedValueNumber(GAMER_DEFAULT_STATS.SPELL_POWER + intelligenceFinalValue);
+    const spellResistance = new MixedValueNumber(GAMER_DEFAULT_STATS.SPELL_RESISTANCE);
     // TODO: interface IGamerSecondaryAlterable.
     // TODO: loop through all items which implements interface IGamerSecondaryAlterable. Items(equipped?), Buffs, Debuffs.
     // TODO: LOOP IS HERE...
@@ -193,6 +199,7 @@ export class Gamer {
     spellMiss.finalize();
     spellPower.finalize();
     return {
+      hitDefense,
       hitEvasion,
       hitMiss,
       hitPower,
@@ -201,6 +208,7 @@ export class Gamer {
       spellEvasion,
       spellMiss,
       spellPower,
+      spellResistance,
     };
   }
 }

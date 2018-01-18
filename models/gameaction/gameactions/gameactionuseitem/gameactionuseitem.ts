@@ -3,7 +3,6 @@ import { GameActionRequestUseItem } from "../../../gameactionrequest/gameactionr
 import { Gamer } from "../../../gamer/gamer";
 import { UsableGamerItem } from "../../../Item/gameritem/usablegameritem";
 import { GAME_ACTION_TYPES, GameAction } from "../../gameaction";
-import { IGameStepAlterable } from "../../../interfaces/igamestepalterable/igamestepalterable";
 
 export class GameActionUseItem extends GameAction {
   public initiator: Gamer;
@@ -18,41 +17,41 @@ export class GameActionUseItem extends GameAction {
 
   // TODO:
   public processGameStep(): Promise<GAME_STEP_RESULTS> {
-    // Now we are going to fill it with all related values. The Game decides which entities have influence on that. Also Game can involve it's own items.
-    let alterables: IGameStepAlterable[] = [];
-    // Get all items.
-    if (this.initiator !== null) {
-      alterables = alterables.concat(this.initiator.items);
-    }
-    if (this.target !== null) {
-      alterables = alterables.concat(this.target.items);
-    }
-    // TODO: pass game anyway? Maybe less data?
-    // Ability to make action? Not a simple validation.
-    for (const alterable of alterables) {
-      alterable.alterAbleToAct(this);
-    }
-    // Collect power.
-    for (const alterable of alterables) {
-      alterable.alterPower(this);
-    }
-    // Miss.
-    for (const alterable of alterables) {
-      alterable.alterMiss(this);
-    }
-    // Evade.
-    for (const alterable of alterables) {
-      alterable.alterEvade(this);
-    }
-    // Pre-Hit (TODO: defense).
-    for (const alterable of alterables) {
-      alterable.alterBeforeUse(this);
-    }
-    // TODO: make action.
-    // After use.
-    for (const alterable of alterables) {
-      alterable.alterAfterUse(this);
-    }
+    // // Now we are going to fill it with all related values. The Game decides which entities have influence on that. Also Game can involve it's own items.
+    // let alterables: IGameActionCastSpellValueAlterable[] = [];
+    // // Get all items.
+    // if (this.initiator !== null) {
+    //   alterables = alterables.concat(this.initiator.items);
+    // }
+    // if (this.target !== null) {
+    //   alterables = alterables.concat(this.target.items);
+    // }
+    // // TODO: pass game anyway? Maybe less data?
+    // // Ability to make action? Not a simple validation.
+    // for (const alterable of alterables) {
+    //   alterable.alterAbleToAct(this);
+    // }
+    // // Collect power.
+    // for (const alterable of alterables) {
+    //   alterable.alterPower(this);
+    // }
+    // // Miss.
+    // for (const alterable of alterables) {
+    //   alterable.alterMiss(this);
+    // }
+    // // Evade.
+    // for (const alterable of alterables) {
+    //   alterable.alterEvade(this);
+    // }
+    // // Pre-Hit (TODO: defense).
+    // for (const alterable of alterables) {
+    //   alterable.alterBeforeUse(this);
+    // }
+    // // TODO: make action.
+    // // After use.
+    // for (const alterable of alterables) {
+    //   alterable.alterAfterUse(this);
+    // }
     // TODO:
     return Promise.resolve(GAME_STEP_RESULTS.ERROR);
   }
