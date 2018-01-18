@@ -32,27 +32,27 @@ export abstract class GamerItem extends Item implements IGameStepAlterable {
   // TODO: gamer item fb value.
   public abstract getFirebaseValues(): ItemFirebaseValue;
 
-  public alterAbleToAct(gameAction: GameAction, game: Game): void {
+  public alterAbleToAct(gameAction: GameAction): void {
     //
   }
 
-  public alterPower(gameAction: GameAction, game: Game): void {
+  public alterPower(gameAction: GameAction): void {
     //
   }
 
-  public alterMiss(gameAction: GameAction, game: Game): void {
+  public alterMiss(gameAction: GameAction): void {
     //
   }
 
-  public alterEvade(gameAction: GameAction, game: Game): void {
+  public alterEvade(gameAction: GameAction): void {
     //
   }
 
-  public alterBeforeUse(gameAction: GameAction, game: Game): void {
+  public alterBeforeUse(gameAction: GameAction): void {
     //
   }
 
-  public alterAfterUse(gameAction: GameAction, game: Game): void {
+  public alterAfterUse(gameAction: GameAction): void {
     //
   }
 }
