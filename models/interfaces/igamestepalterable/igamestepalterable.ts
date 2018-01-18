@@ -1,5 +1,5 @@
-import { Game } from "../game/game";
-import { GameAction } from "../gameaction/gameaction";
+import { Game } from "../../game/game";
+import { GameAction } from "../../gameaction/gameaction";
 
 export interface IGameStepAlterable {
   alterAbleToAct: (gameAction: GameAction, game: Game) => void;

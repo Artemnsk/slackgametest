@@ -3,9 +3,9 @@ import { GameActionRequestCastSpell } from "../../../gameactionrequest/gameactio
 import { Gamer } from "../../../gamer/gamer";
 import { UsableSpell } from "../../../spell/usablespell";
 import { GAME_ACTION_TYPES, GameAction } from "../../gameaction";
-import { MixedValueNumber } from "../../mixedvalue/mixedvalues/mixedvaluenumber";
-import { MixedValuePercent } from "../../mixedvalue/mixedvalues/mixedvaluepercent";
-import { IGameStepAlterable } from "../../../igamestepalterable/igamestepalterable";
+import { MixedValueNumber } from "../../../mixed/mixedvalue/mixedvalues/mixedvaluenumber";
+import { MixedValuePercent } from "../../../mixed/mixedvalue/mixedvalues/mixedvaluepercent";
+import { IGameStepAlterable } from "../../../interfaces/igamestepalterable/igamestepalterable";
 
 // TODO: define in some interface file?
 type AlterableGAData = {

@@ -25,8 +25,9 @@ export abstract class MixedValue<T, IPartial> {
     return this.finalValue;
   }
 
-  public finalize(): void {
+  public finalize(): T {
     this.finalValue = this.calculate();
+    return this.finalValue;
   }
 
   public addPartial(partial: MixedValuePartial & IPartial): void {

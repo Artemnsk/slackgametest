@@ -9,8 +9,8 @@ import { GAME_ACTION_REQUEST_TYPES, GameActionRequest } from "../gameactionreque
 import { GameActionRequestCastSpellFirebaseValue } from "../gameactionrequest/gameactionrequests/gameactionrequestcastspell/dbfirebase";
 import { GameActionRequestCastSpell } from "../gameactionrequest/gameactionrequests/gameactionrequestcastspell/gameactionrequestcastspell";
 import { Gamer } from "../gamer/gamer";
-import { IGameStepAlterable } from "../igamestepalterable/igamestepalterable";
-import { IUsableInGame } from "../iusable/iusable";
+import { IGameStepAlterable } from "../interfaces/igamestepalterable/igamestepalterable";
+import { IUsableInGame } from "../interfaces/iusable/iusable";
 import { Spell } from "./spell";
 
 export abstract class UsableSpell extends Spell implements IUsableInGame, IGameStepAlterable {

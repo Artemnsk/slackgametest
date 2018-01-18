@@ -1,7 +1,7 @@
 import { Game } from "../../game/game";
 import { GameAction } from "../../gameaction/gameaction";
 import { Gamer } from "../../gamer/gamer";
-import { IGameStepAlterable } from "../../igamestepalterable/igamestepalterable";
+import { IGameStepAlterable } from "../../interfaces/igamestepalterable/igamestepalterable";
 import { ItemFirebaseValue } from "../dbfirebase";
 import { Item } from "../item";
 

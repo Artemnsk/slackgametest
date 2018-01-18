@@ -7,7 +7,7 @@ import { GameActionRequestCastSpell } from "../../gameactionrequest/gameactionre
 import { GameActionRequestUseItemFirebaseValue } from "../../gameactionrequest/gameactionrequests/gameactionrequestuseitem/dbfirebase";
 import { GameActionRequestUseItem } from "../../gameactionrequest/gameactionrequests/gameactionrequestuseitem/gameactionrequestuseitem";
 import { Gamer } from "../../gamer/gamer";
-import { IUsableInGame } from "../../iusable/iusable";
+import { IUsableInGame } from "../../interfaces/iusable/iusable";
 import { GamerItem } from "./gameritem";
 
 export abstract class UsableGamerItem extends GamerItem implements IUsableInGame {

@@ -1,8 +1,8 @@
-import { ParsedSlackActionPayload, SlackMessageAction, SlackMessageAttachment } from "../../helpers/slackmessage";
-import { Game } from "../game/game";
-import { GameAction } from "../gameaction/gameaction";
-import { GameActionRequest } from "../gameactionrequest/gameactionrequest";
-import { Gamer } from "../gamer/gamer";
+import { ParsedSlackActionPayload, SlackMessageAction, SlackMessageAttachment } from "../../../helpers/slackmessage";
+import { Game } from "../../game/game";
+import { GameAction } from "../../gameaction/gameaction";
+import { GameActionRequest } from "../../gameactionrequest/gameactionrequest";
+import { Gamer } from "../../gamer/gamer";
 
 export interface IUsableInGame {
   validateGamerUsage(gamer: Gamer): true | string;

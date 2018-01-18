@@ -5,6 +5,18 @@ import { Item } from "../Item/item";
 import { buildItem } from "../Item/playeritem/playeritemfactory";
 import { getDBPlayer, getDBPlayers, PlayerFirebaseValue, setDBPlayer } from "./dbfirebase";
 
+export const enum PLAYER_DEFAULT_STATS {
+  STRENGTH = 3,
+  AGILITY = 3,
+  INTELLIGENCE = 3,
+}
+
+type PlayerStats = {
+  strength: number,
+  agility: number,
+  intelligence: number,
+};
+
 export class Player {
   /**
    * Load player from DB by teamKey and channelKey and playerKey.
@@ -50,6 +62,7 @@ export class Player {
   public name: string;
   public gold: number;
   public items: Item[];
+  public stats: PlayerStats;
   private channel: Channel;
   private $key: string;
 
@@ -59,6 +72,7 @@ export class Player {
     this.active = values.active;
     this.name = values.name;
     this.gold = values.gold;
+    this.stats = values.stats;
     // Construct items.
     const items: Item[] = [];
     for (const itemKey in values.items) {
@@ -101,6 +115,7 @@ export class Player {
       mana: 40,
       name: this.name,
       spells: {},
+      stats: this.stats,
     };
   }
 
@@ -114,6 +129,7 @@ export class Player {
       gold: this.gold,
       items,
       name: this.name,
+      stats: this.stats,
     });
   }
 }

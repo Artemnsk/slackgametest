@@ -7,6 +7,39 @@ import { SpellFirebaseValue } from "../spell/dbfirebase";
 import { Spell, SPELLS } from "../spell/spell";
 import { buildSpell } from "../spell/spellfactory";
 import { GamerFirebaseValue } from "./dbfirebase";
+import { MixedValueNumber } from "../mixed/mixedvalue/mixedvalues/mixedvaluenumber";
+import { MixedValuePercent } from "../mixed/mixedvalue/mixedvalues/mixedvaluepercent";
+
+const enum GAMER_DEFAULT_STATS {
+  MAX_HEALTH = 100,
+  MAX_MANA = 40,
+  HIT_POWER = 1,
+  HIT_EVASION = 5,
+  HIT_MISS = 5,
+  SPELL_POWER = 1,
+  SPELL_EVASION = 5,
+  SPELL_MISS = 5,
+}
+
+// They are used in calculation of secondary stats so they are much important.
+type GamerPrimaryStats = {
+  strength: MixedValueNumber,
+  agility: MixedValueNumber,
+  intelligence: MixedValueNumber,
+};
+
+type GamerSecondaryStats = {
+  maxHealth: MixedValueNumber,
+  maxMana: MixedValueNumber,
+  hitPower: MixedValueNumber,
+  hitEvasion: MixedValuePercent,
+  hitMiss: MixedValuePercent,
+  spellPower: MixedValueNumber,
+  spellEvasion: MixedValuePercent,
+  spellMiss: MixedValuePercent,
+};
+
+type GamerStats = GamerPrimaryStats & GamerSecondaryStats;
 
 export class Gamer {
   public name: string;
@@ -15,10 +48,12 @@ export class Gamer {
   public mana: number;
   public spells: Spell[];
   public items: GamerItem[];
+  protected stats: GamerStats;
   private $key: string;
   private game: Game;
 
   constructor(game: Game, values: GamerFirebaseValue, $key: string) {
+    this.$key = $key;
     this.game = game;
     this.name = values.name;
     this.dead = values.dead;
@@ -47,7 +82,12 @@ export class Gamer {
       }
     }
     this.items = items;
-    this.$key = $key;
+    // Define "PRIMARY" gamer stats.
+    const primaryStats = this.initializePrimaryStats(values);
+    // Define "SECONDARY" gamer stats based on primary.
+    const secondaryStats = this.initializeSecondaryStats(primaryStats);
+    // Initialize object stats.
+    this.stats = Object.assign(primaryStats, secondaryStats);
   }
 
   public getTeamKey(): string {
@@ -100,6 +140,67 @@ export class Gamer {
       mana: this.mana,
       name: this.name,
       spells,
+      stats: {
+        agility: this.stats.agility.getInitialValue(),
+        intelligence: this.stats.intelligence.getInitialValue(),
+        strength: this.stats.strength.getInitialValue(),
+      },
     });
+  }
+
+  private initializePrimaryStats(values: GamerFirebaseValue): GamerPrimaryStats {
+    // Define "PRIMARY" stats first.
+    const agility = new MixedValueNumber(values.stats.agility);
+    const intelligence = new MixedValueNumber(values.stats.intelligence);
+    const strength = new MixedValueNumber(values.stats.strength);
+    // Alter Primary Stats with all possible ways now.
+    // TODO: interface IGamerPrimaryStatsAlterable.
+    // TODO: loop through all items which implements interface IGamerPrimaryStatsAlterable. Items(equipped?), Buffs, Debuffs.
+    // TODO: LOOP IS HERE...
+    // Finalize these values now.
+    const agilityFinalValue = agility.finalize();
+    const intelligenceFinalValue = intelligence.finalize();
+    const strengthFinalValue = strength.finalize();
+    return {
+      agility,
+      intelligence,
+      strength,
+    };
+  }
+
+  private initializeSecondaryStats(primaryStats: GamerPrimaryStats): GamerSecondaryStats {
+    const agilityFinalValue = primaryStats.agility.isFinal() ? primaryStats.agility.getFinalValue() as number : 0;
+    const intelligenceFinalValue = primaryStats.intelligence.isFinal() ? primaryStats.intelligence.getFinalValue() as number : 0;
+    const strengthFinalValue = primaryStats.strength.isFinal() ? primaryStats.strength.getFinalValue() as number : 0;
+    // Define secondary stats now.
+    const hitEvasion = new MixedValuePercent(GAMER_DEFAULT_STATS.HIT_EVASION + agilityFinalValue);
+    const hitMiss = new MixedValuePercent(Math.max(GAMER_DEFAULT_STATS.HIT_MISS - agilityFinalValue, 0));
+    const hitPower = new MixedValueNumber(GAMER_DEFAULT_STATS.HIT_POWER + strengthFinalValue);
+    const maxHealth = new MixedValueNumber(GAMER_DEFAULT_STATS.MAX_HEALTH + strengthFinalValue);
+    const maxMana = new MixedValueNumber(GAMER_DEFAULT_STATS.MAX_MANA + intelligenceFinalValue);
+    const spellEvasion = new MixedValuePercent(GAMER_DEFAULT_STATS.SPELL_EVASION + agilityFinalValue);
+    const spellMiss = new MixedValuePercent(Math.max(GAMER_DEFAULT_STATS.SPELL_MISS - agilityFinalValue, 0));
+    const spellPower = new MixedValueNumber(GAMER_DEFAULT_STATS.SPELL_POWER + intelligenceFinalValue);
+    // TODO: interface IGamerSecondaryAlterable.
+    // TODO: loop through all items which implements interface IGamerSecondaryAlterable. Items(equipped?), Buffs, Debuffs.
+    // TODO: LOOP IS HERE...
+    hitEvasion.finalize();
+    hitMiss.finalize();
+    hitPower.finalize();
+    maxHealth.finalize();
+    maxMana.finalize();
+    spellEvasion.finalize();
+    spellMiss.finalize();
+    spellPower.finalize();
+    return {
+      hitEvasion,
+      hitMiss,
+      hitPower,
+      maxHealth,
+      maxMana,
+      spellEvasion,
+      spellMiss,
+      spellPower,
+    };
   }
 }
