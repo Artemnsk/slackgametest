@@ -5,6 +5,12 @@ export abstract class MixedValue<T, IPartial> {
   protected initialValue: T;
   private finalValue: T|null;
 
+  constructor(initialValue: T) {
+    this.partials = [];
+    this.initialValue = initialValue;
+    this.finalValue = null;
+  }
+
   public abstract calculate(): T;
 
   public isFinal(): boolean {

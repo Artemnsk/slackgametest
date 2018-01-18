@@ -1,12 +1,15 @@
 import { ParsedSlackActionPayload, SlackMessageAction, SlackMessageAttachment } from "../../helpers/slackmessage";
 import { Game } from "../game/game";
 import { GameAction } from "../gameaction/gameaction";
-import { GameActionCastSpell } from "../gameaction/gameactions/gameactioncastspell/gameactioncastspell";
+import {
+  GAME_ACTION_CAST_SPELL_MIXED_TYPES,
+  GameActionCastSpell
+} from "../gameaction/gameactions/gameactioncastspell/gameactioncastspell";
 import { GAME_ACTION_REQUEST_TYPES, GameActionRequest } from "../gameactionrequest/gameactionrequest";
 import { GameActionRequestCastSpellFirebaseValue } from "../gameactionrequest/gameactionrequests/gameactionrequestcastspell/dbfirebase";
 import { GameActionRequestCastSpell } from "../gameactionrequest/gameactionrequests/gameactionrequestcastspell/gameactionrequestcastspell";
 import { Gamer } from "../gamer/gamer";
-import { IGameStepAlterable } from "../icalculable/icalculable";
+import { IGameStepAlterable } from "../igamestepalterable/igamestepalterable";
 import { IUsableInGame } from "../iusable/iusable";
 import { Spell } from "./spell";
 
@@ -102,6 +105,10 @@ export abstract class UsableSpell extends Spell implements IUsableInGame, IGameS
         },
       ],
     }];
+  }
+
+  public alterInitialValue(valueName: GAME_ACTION_CAST_SPELL_MIXED_TYPES, value: any): any {
+    // TODO: contains logic of assigning initial value for that value. E.g. get something from stat.
   }
 
   public getInitialGameAction(game: Game, gameActionRequest: GameActionRequestCastSpell, initiator: Gamer, target: Gamer): GameActionCastSpell {
