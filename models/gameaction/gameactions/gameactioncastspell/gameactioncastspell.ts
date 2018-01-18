@@ -14,6 +14,11 @@ type AlterableGAData = {
   data: object,
 };
 
+type AlterableWithType = {
+  alterable: IGameActionCastSpellValueAlterable & IGameActionCastSpellPhaseAlterable,
+  type: string,
+};
+
 export const enum GAME_ACTION_CAST_SPELL_MIXED_TYPES {
   SPELL_POWER = "SPELL_POWER",
   SPELL_MISS = "SPELL_MISS",
@@ -26,27 +31,21 @@ export class GameActionCastSpell extends GameAction {
   public target: Gamer;
   public type: GAME_ACTION_TYPES.CAST_SPELL;
   protected spell: UsableSpell;
-  // TODO: seems game must process this gameAction separately from UseItem.. OR share some interface which involves lots of restrictions...
-  // TODO: partials go here.
-  // TODO: partial for bool: e.g. able to cast spell.
   protected mixedCanAct: MixedValueBoolean;
   protected mixedSpellPower: MixedValueNumber;
   protected mixedSpellMiss: MixedValuePercent;
   protected mixedSpellEvasion: MixedValuePercent;
   protected mixedSpellResistance: MixedValueNumber;
-  // TODO:
   protected alterableGADataStorage: AlterableGAData[];
-  // TODO: protected furtherActions: GameAction[] - used to store other actions which we need to make later. We can fill it during alteration process.
 
   constructor(game: Game, gameActionRequest: GameActionRequestCastSpell, initiator: Gamer, target: Gamer, spell: UsableSpell) {
     super(game, gameActionRequest, initiator, target);
     this.spell = spell;
-    // TODO: alter initial values. E.g. initial value equals some spell attr + Gamer stat + (e.g.) Gamer passive skill.
     // Initialize all these mixed values.
     this.mixedCanAct = new MixedValueBoolean(true);
-    // We are sure all Gamer mixed values being finalized here.
+    // We are sure all Gamer mixed values being finalized here. That actually must happen on Gamer initialization in it's constructor().
     const spellPowerInitialValue = this.initiator.stats.spellPower.getFinalValue() as number;
-    this.mixedSpellPower = new MixedValueNumber(spellPowerInitialValue);
+    this.mixedSpellPower = new MixedValueNumber(spellPowerInitialValue + spell.power);
     const spellMissInitialValue = this.initiator.stats.spellMiss.getFinalValue() as number;
     this.mixedSpellMiss = new MixedValuePercent(spellMissInitialValue);
     const spellEvasionInitialValue = this.target.stats.spellEvasion.getFinalValue() as number;
@@ -73,11 +72,19 @@ export class GameActionCastSpell extends GameAction {
 
   // TODO:
   public processGameStep(): Promise<GAME_STEP_RESULTS> {
-    type AlterableWithType = {
-      alterable: IGameActionCastSpellValueAlterable & IGameActionCastSpellPhaseAlterable,
-      type: string,
-    };
-    // Now we are going to fill it with all related values. The Game decides which entities have influence on that. Also Game can involve it's own items.
+    const alterables = this.getAlterablesWithType();
+    this.finalizeMixedValues(alterables);
+    // Actually perform action using all these finalized values.
+    // TODO: that is just a sample. Complete all these phases stuff.
+    // TODO: protected furtherActions: GameAction[] - used to store other actions which we need to make later. We can fill it during alteration process.
+    for (const alterable of alterables) {
+      alterable.alterable.alterAfterUsePhase(this);
+    }
+    // TODO:
+    return Promise.resolve(GAME_STEP_RESULTS.ERROR);
+  }
+
+  private getAlterablesWithType(): AlterableWithType[] {
     const initiatorAlterableItems: AlterableWithType[] = this.initiator.items.map((item) => {
       return {
         alterable: item,
@@ -90,34 +97,49 @@ export class GameActionCastSpell extends GameAction {
         type: ALTERATION_TYPES.TARGET,
       };
     });
-    const alterables: AlterableWithType[] = [...initiatorAlterableItems, ...targetAlterableItems];
-    // TODO: pass game anyway? Maybe less data?
+    return [...initiatorAlterableItems, ...targetAlterableItems];
+  }
+
+  private finalizeMixedValues(alterables: AlterableWithType[]): void {
     // Ability to make action? Not a simple validation.
     for (const alterable of alterables) {
-      alterable.alterable.alterCanActValue(this);
+      if (this.mixedCanAct.isFinal() === false) {
+        alterable.alterable.alterCanActValue(this);
+      }
+    }
+    // Finalize if not finalized yet.
+    if (this.mixedCanAct.isFinal() === false) {
+      this.mixedCanAct.finalize();
     }
     // Collect power.
     for (const alterable of alterables) {
-      alterable.alterable.alterSpellPowerValue(this);
+      if (this.mixedSpellPower.isFinal() === false) {
+        alterable.alterable.alterSpellPowerValue(this);
+      }
+    }
+    // Finalize if not finalized yet.
+    if (this.mixedSpellPower.isFinal() === false) {
+      this.mixedSpellPower.finalize();
     }
     // Miss.
     for (const alterable of alterables) {
-      alterable.alterable.alterSpellMissValue(this);
+      if (this.mixedSpellMiss.isFinal() === false) {
+        alterable.alterable.alterSpellMissValue(this);
+      }
     }
-    // Evade.
+    // Finalize if not finalized yet.
+    if (this.mixedSpellMiss.isFinal() === false) {
+      this.mixedSpellMiss.finalize();
+    }
+    // Evasion.
     for (const alterable of alterables) {
-      alterable.alterable.alterSpellEvadeValue(this);
+      if (this.mixedSpellEvasion.isFinal() === false) {
+        alterable.alterable.alterSpellEvadeValue(this);
+      }
     }
-    // Pre-Hit (TODO: defense).
-    for (const alterable of alterables) {
-      // alterable.alterable.alterBeforeUse(this);
+    // Finalize if not finalized yet.
+    if (this.mixedSpellEvasion.isFinal() === false) {
+      this.mixedSpellEvasion.finalize();
     }
-    // TODO: make action.
-    // After use.
-    for (const alterable of alterables) {
-      alterable.alterable.alterAfterUsePhase(this);
-    }
-    // TODO:
-    return Promise.resolve(GAME_STEP_RESULTS.ERROR);
   }
 }

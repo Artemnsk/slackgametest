@@ -8,7 +8,6 @@ export class SpellIceLance extends UsableSpell {
   public emoji: string = ":comet:";
   public label: string = "Ice Lance";
   public description: string = "Send ice lance to enemy.";
-  public power: number;
   protected $key: SPELLS = SPELLS.ICE_LANCE;
 
   constructor(gamer: Gamer, values: SpellIceLanceFirebaseValue, itemKey: SPELLS) {
