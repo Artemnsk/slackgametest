@@ -1,12 +1,8 @@
 import * as admin from "firebase-admin";
 import { Channel } from "../channel/channel";
-import { GAME_ACTION_TYPES, GameAction } from "../gameaction/gameaction";
-import { GameActionCastSpell } from "../gameaction/gameactions/gameactioncastspell/gameactioncastspell";
-import { GameActionUseItem } from "../gameaction/gameactions/gameactionuseitem/gameactionuseitem";
 import { getRecentAction } from "../gameactionrequest/gameactionrequestfactory";
 import { GamerFirebaseValue } from "../gamer/dbfirebase";
 import { Gamer } from "../gamer/gamer";
-import { IGameStepAlterable } from "../icalculable/icalculable";
 import { SpellFirebaseValue } from "../spell/dbfirebase";
 import { getRandomSpellFirebaseValue as getRandomSpell } from "../spell/spellfactory";
 import { GameFirebaseValue, getDBGame, getDBGames, getNewGameDBRef, removeDBGame, setDBGame } from "./dbfirebase";
@@ -152,42 +148,7 @@ export class Game {
           // At first we simply get GameAction object from request.
           const gameAction = gameActionRequest.toGameAction();
           if (gameAction !== null) {
-            // Now we are going to fill it with all related values. The Game decides which entities have influence on that. Also Game can involve it's own items.
-            let calculables: IGameStepAlterable[] = [];
-            // Get all items.
-            if (gameAction.initiator !== null) {
-              calculables = calculables.concat(gameAction.initiator.items);
-            }
-            if (gameAction.target !== null) {
-              calculables = calculables.concat(gameAction.target.items);
-            }
-            // Ability to make action? Not a simple validation.
-            for (const calculable of calculables) {
-              calculable.alterAbleToAct(gameAction, this);
-            }
-            // Collect power.
-            for (const calculable of calculables) {
-              calculable.alterPower(gameAction, this);
-            }
-            // Miss.
-            for (const calculable of calculables) {
-              calculable.alterMiss(gameAction, this);
-            }
-            // Evade.
-            for (const calculable of calculables) {
-              calculable.alterEvade(gameAction, this);
-            }
-            // Pre-Hit (defense).
-            for (const calculable of calculables) {
-              calculable.alterBeforeUse(gameAction, this);
-            }
-            // TODO: make action.
-            // After use.
-            for (const calculable of calculables) {
-              calculable.alterAfterUse(gameAction, this);
-            }
-            // TODO:
-            return Promise.resolve(GAME_STEP_RESULTS.ERROR);
+            return gameAction.processGameStep();
           } else {
             return Promise.resolve(GAME_STEP_RESULTS.ERROR);
           }

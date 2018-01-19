@@ -2,7 +2,7 @@ import * as Route from "route-parser";
 import * as Slack from "slack-node";
 import { SlackUsersInfoRequest, SlackUsersInfoResponse } from "../../helpers/slackapicalls";
 import { PlayerFirebaseValue } from "../../models/player/dbfirebase";
-import { Player } from "../../models/player/player";
+import { Player, PLAYER_DEFAULT_STATS } from "../../models/player/player";
 import { GetUIMessageFunction, ProcessActionsFunction, UIRoute, ValidateRouteFunction } from "../uiroute";
 import { newPlayerMessageFactory } from "./newplayermessagefactory";
 
@@ -35,6 +35,11 @@ const processActions: ProcessActionsFunction = (uiRouter, parsedPayload, args: {
                     gold: 0,
                     items: {},
                     name: response.user.profile.real_name,
+                    stats: {
+                      agility: PLAYER_DEFAULT_STATS.AGILITY,
+                      intelligence: PLAYER_DEFAULT_STATS.INTELLIGENCE,
+                      strength: PLAYER_DEFAULT_STATS.STRENGTH,
+                    },
                   };
                   Player.setPlayer(uiRouter.channel, playerFirebaseValue, parsedPayload.user.id)
                     .then(() => {

@@ -1,11 +1,10 @@
-import { Game } from "../../game/game";
-import { GameAction } from "../../gameaction/gameaction";
 import { Gamer } from "../../gamer/gamer";
-import { IGameStepAlterable } from "../../icalculable/icalculable";
 import { ItemFirebaseValue } from "../dbfirebase";
 import { Item } from "../item";
+import { IAlterableGameActionMixedValues } from "../../iusable/ialterable";
+import { GameAction } from "../../gameaction/gameaction";
 
-export abstract class GamerItem extends Item implements IGameStepAlterable {
+export abstract class GamerItem extends Item implements IAlterableGameActionMixedValues {
   private gamer: Gamer;
 
   constructor(gamer: Gamer, values: ItemFirebaseValue, itemKey: string) {
@@ -32,27 +31,13 @@ export abstract class GamerItem extends Item implements IGameStepAlterable {
   // TODO: gamer item fb value.
   public abstract getFirebaseValues(): ItemFirebaseValue;
 
-  public alterAbleToAct(gameAction: GameAction, game: Game): void {
+  // TODO: abstract?
+  public alterGameActionMixedValue(valueName: string, gameAction: GameAction, alterationType: string): void {
     //
   }
 
-  public alterPower(gameAction: GameAction, game: Game): void {
-    //
-  }
-
-  public alterMiss(gameAction: GameAction, game: Game): void {
-    //
-  }
-
-  public alterEvade(gameAction: GameAction, game: Game): void {
-    //
-  }
-
-  public alterBeforeUse(gameAction: GameAction, game: Game): void {
-    //
-  }
-
-  public alterAfterUse(gameAction: GameAction, game: Game): void {
-    //
+  // TODO: abstract?
+  public alterBeingUsedInGameActionMixedValue(valueName: string, gameAction: GameAction, alterationType: string): GameAction[] {
+    return [];
   }
 }

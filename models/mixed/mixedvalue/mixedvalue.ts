@@ -1,9 +1,15 @@
 import { MixedValuePartial } from "../mixedvaluepartial/mixedvaluepartial";
 
 export abstract class MixedValue<T, IPartial> {
-  protected abstract partials: Array<MixedValuePartial & IPartial>;
+  public abstract partials: Array<MixedValuePartial<T> & IPartial>;
   protected initialValue: T;
   private finalValue: T|null;
+
+  constructor(initialValue: T) {
+    this.partials = [];
+    this.initialValue = initialValue;
+    this.finalValue = null;
+  }
 
   public abstract calculate(): T;
 
@@ -19,11 +25,12 @@ export abstract class MixedValue<T, IPartial> {
     return this.finalValue;
   }
 
-  public finalize(): void {
+  public finalize(): T {
     this.finalValue = this.calculate();
+    return this.finalValue;
   }
 
-  public addPartial(partial: MixedValuePartial & IPartial): void {
+  public addPartial(partial: MixedValuePartial<T> & IPartial): void {
     this.partials.push(partial);
   }
 }

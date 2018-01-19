@@ -6,6 +6,11 @@ export type GamerFirebaseValueRaw = {
   dead: boolean,
   health: number,
   mana: number,
+  stats: {
+    strength: number,
+    agility: number,
+    intelligence: number,
+  },
   spells?: { [key: string]: SpellFirebaseValueRaw },
   items?: { [key: string]: ItemFirebaseValueRaw },
 };
@@ -15,6 +20,11 @@ export type GamerFirebaseValue = {
   dead: boolean,
   health: number,
   mana: number,
+  stats: {
+    strength: number,
+    agility: number,
+    intelligence: number,
+  },
   spells: { [key: string]: SpellFirebaseValueRaw },
   items: { [key: string]: ItemFirebaseValueRaw },
 };

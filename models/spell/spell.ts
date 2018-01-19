@@ -14,6 +14,7 @@ export abstract class Spell {
   public abstract emoji: string;
   public abstract label: string;
   public abstract description: string;
+  public power: number;
   // Same as id.
   protected abstract $key: SPELLS;
   private gamer: Gamer;

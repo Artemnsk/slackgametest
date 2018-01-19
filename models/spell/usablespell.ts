@@ -1,16 +1,26 @@
 import { ParsedSlackActionPayload, SlackMessageAction, SlackMessageAttachment } from "../../helpers/slackmessage";
 import { Game } from "../game/game";
-import { GameAction } from "../gameaction/gameaction";
-import { GameActionCastSpell } from "../gameaction/gameactions/gameactioncastspell/gameactioncastspell";
+import { ALTERATION_TYPES, GameAction } from "../gameaction/gameaction";
+import {
+  GameActionCastSpell
+} from "../gameaction/gameactions/gameactioncastspell/gameactioncastspell";
 import { GAME_ACTION_REQUEST_TYPES, GameActionRequest } from "../gameactionrequest/gameactionrequest";
 import { GameActionRequestCastSpellFirebaseValue } from "../gameactionrequest/gameactionrequests/gameactionrequestcastspell/dbfirebase";
 import { GameActionRequestCastSpell } from "../gameactionrequest/gameactionrequests/gameactionrequestcastspell/gameactionrequestcastspell";
 import { Gamer } from "../gamer/gamer";
-import { IGameStepAlterable } from "../icalculable/icalculable";
 import { IUsableInGame } from "../iusable/iusable";
 import { Spell } from "./spell";
 
-export abstract class UsableSpell extends Spell implements IUsableInGame, IGameStepAlterable {
+export const enum PHASES_FOR_ALTERATION {
+  ACT = "ACT",
+  ACT_FAILED = "ACT_FAILED",
+  MISS = "MISS",
+  MISS_FAILED = "MISS_FAILED",
+  EVASION = "EVASION",
+  EVASION_FAILED = "EVASION_FAILED",
+}
+
+export abstract class UsableSpell extends Spell implements IUsableInGame {
   /**
    * Validate: does gamer able to use item? Returns true if yes and string with error otherwise.
    */
@@ -104,31 +114,7 @@ export abstract class UsableSpell extends Spell implements IUsableInGame, IGameS
     }];
   }
 
-  public getInitialGameAction(game: Game, gameActionRequest: GameActionRequestCastSpell, initiator: Gamer, target: Gamer): GameActionCastSpell {
-    return new GameActionCastSpell(game, gameActionRequest, initiator, target, this);
-  }
+  public abstract getInitialGameAction(game: Game, gameActionRequest: GameActionRequestCastSpell, initiator: Gamer, target: Gamer): GameActionCastSpell;
 
-  public alterAbleToAct(gameAction: GameAction, game: Game): void {
-    //
-  }
-
-  public alterPower(gameAction: GameAction, game: Game): void {
-    //
-  }
-
-  public alterMiss(gameAction: GameAction, game: Game): void {
-    //
-  }
-
-  public alterEvade(gameAction: GameAction, game: Game): void {
-    //
-  }
-
-  public alterBeforeUse(gameAction: GameAction, game: Game): void {
-    //
-  }
-
-  public alterAfterUse(gameAction: GameAction, game: Game): void {
-    //
-  }
+  public abstract alterGameActionPhase(phase: PHASES_FOR_ALTERATION, gameAction: GameAction): GameAction[];
 }

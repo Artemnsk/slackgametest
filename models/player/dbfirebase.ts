@@ -6,6 +6,11 @@ export type PlayerFirebaseValueRaw = {
   active: boolean,
   name: string,
   gold: number,
+  stats: {
+    strength: number,
+    agility: number,
+    intelligence: number,
+  },
   items?: {[key: string]: ItemFirebaseValueRaw},
 };
 
@@ -13,6 +18,11 @@ export type PlayerFirebaseValue = {
   active: boolean,
   name: string,
   gold: number,
+  stats: {
+    strength: number,
+    agility: number,
+    intelligence: number,
+  },
   items: {[key: string]: ItemFirebaseValueRaw},
 };
 

@@ -6,7 +6,7 @@ export interface IPartialToNumber {
 }
 
 export class MixedValueNumber extends MixedValue<number, IPartialToNumber> {
-  protected partials: MixedValuePartialNumber[];
+  public partials: MixedValuePartialNumber[];
 
   public calculate(): number {
     return this.partials.reduce((previousValue, currentPartial) => currentPartial.calculateForNumber(this, previousValue), this.initialValue);

@@ -6,7 +6,7 @@ export interface IPartialToPercent {
 }
 
 export class MixedValuePercent extends MixedValue<number, IPartialToPercent> {
-  protected partials: MixedValuePartialPercent[];
+  public partials: MixedValuePartialPercent[];
 
   public calculate(): number {
     return this.partials.reduce((previousValue, currentPartial) => currentPartial.calculateForPercent(this, previousValue), this.initialValue);

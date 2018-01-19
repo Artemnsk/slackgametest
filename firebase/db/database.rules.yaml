@@ -103,7 +103,7 @@ schema:
             additionalProperties: false
             # TODO:
             # constraint: true
-            required: ['active', 'name', 'gold']
+            required: ['active', 'name', 'gold', 'stats']
             properties:
               active:
                 type: boolean
@@ -111,6 +111,20 @@ schema:
                 type: string
               gold:
                 type: number
+              stats:
+                type: object
+                additionalProperties: false
+                required: ['strength', 'agility', 'intelligence']
+                properties:
+                  agility:
+                    type: string
+                    constraint: next >= 0
+                  intelligence:
+                    type: string
+                    constraint: next >= 0
+                  strength:
+                    type: string
+                    constraint: next >= 0
               items:
                 type: object
                 ~$itemId:
@@ -165,6 +179,20 @@ schema:
                     mana:
                       type: number
                       constraint: next >= 0
+                    stats:
+                      type: object
+                      additionalProperties: false
+                      required: ['strength', 'agility', 'intelligence']
+                      properties:
+                        agility:
+                          type: string
+                          constraint: next >= 0
+                        intelligence:
+                          type: string
+                          constraint: next >= 0
+                        strength:
+                          type: string
+                          constraint: next >= 0
                     spells:
                       type: object
                       ~$spellId:
