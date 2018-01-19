@@ -2,6 +2,8 @@ import { Game, GAME_STEP_RESULTS } from "../game/game";
 import { GAME_ACTION_REQUEST_TYPES, GameActionRequest } from "../gameactionrequest/gameactionrequest";
 import { Gamer } from "../gamer/gamer";
 import { IAlterableGameActionMixedValues } from "../iusable/ialterable";
+import { MixedValuePartial } from "../mixed/mixedvaluepartial/mixedvaluepartial";
+import { VALUES_FOR_ALTERATION } from "./gameactions/gameactioncastspell/gameactioncastspell";
 
 export const enum GAME_ACTION_TYPES {
   CAST_SPELL = "CAST_SPELL",
@@ -76,5 +78,32 @@ export abstract class GameAction {
       this.alterableGADataStorage.push(data);
     }
     return data;
+  }
+
+  protected callAlterationForUsedAlterables(alterablesWithType: AlterableWithType[], partials: Array<MixedValuePartial<any>>, alteredValue: string): GameAction[] {
+    const gameActions = [];
+    for (const partial of partials) {
+      const alterableWithType = alterablesWithType.find((item) => item.alterable === partial.getOwner());
+      if (alterableWithType !== undefined) {
+        gameActions.push(...alterableWithType.alterable.alterBeingUsedInGameActionMixedValue(alteredValue, this, alterableWithType.type, this.getAlterableGAData(alterableWithType.alterable)));
+      }
+    }
+    return gameActions;
+  }
+
+  protected getAlterablesWithType(): AlterableWithType[] {
+    const initiatorAlterableItems: AlterableWithType[] = this.initiator.items.map((item) => {
+      return {
+        alterable: item,
+        type: ALTERATION_TYPES.INITIATOR,
+      };
+    });
+    const targetAlterableItems: AlterableWithType[] = this.target.items.map((item) => {
+      return {
+        alterable: item,
+        type: ALTERATION_TYPES.TARGET,
+      };
+    });
+    return [...initiatorAlterableItems, ...targetAlterableItems];
   }
 }

@@ -4,9 +4,8 @@ import { Gamer } from "../../../gamer/gamer";
 import { MixedValueBoolean } from "../../../mixed/mixedvalue/mixedvalues/mixedvalueboolean";
 import { MixedValueNumber } from "../../../mixed/mixedvalue/mixedvalues/mixedvaluenumber";
 import { MixedValuePercent } from "../../../mixed/mixedvalue/mixedvalues/mixedvaluepercent";
-import { MixedValuePartial } from "../../../mixed/mixedvaluepartial/mixedvaluepartial";
-import { PHASES_FOR_ALTERATION, UsableSpell } from "../../../spell/usablespell";
-import { AlterableWithType, ALTERATION_TYPES, GAME_ACTION_TYPES, GameAction } from "../../gameaction";
+import { CAST_SPELL_PHASES_FOR_ALTERATION, UsableSpell } from "../../../spell/usablespell";
+import { AlterableWithType, GAME_ACTION_TYPES, GameAction } from "../../gameaction";
 
 export const enum VALUES_FOR_ALTERATION {
   CAN_ACT = "CAN_ACT",
@@ -58,19 +57,19 @@ export abstract class GameActionCastSpell extends GameAction {
     gameActions.push(...alterCanActGameActions);
     const initiatorCanAct: boolean = this.mixedCanAct.getFinalValue() as boolean;
     if (initiatorCanAct === true) {
-      gameActions.push(...this.spell.alterGameActionPhase(PHASES_FOR_ALTERATION.ACT, this));
+      gameActions.push(...this.spell.alterGameActionPhase(CAST_SPELL_PHASES_FOR_ALTERATION.ACT, this));
       // 2. Miss.
       const alterSpellMissGameActions = this.callAlterationForUsedAlterables(alterables, this.mixedSpellMiss.partials, VALUES_FOR_ALTERATION.SPELL_MISS);
       gameActions.push(...alterSpellMissGameActions);
       const initiatorMissed: boolean = Math.random() < (this.mixedSpellMiss.getFinalValue() as number / 100);
       if (initiatorMissed === false) {
-        gameActions.push(...this.spell.alterGameActionPhase(PHASES_FOR_ALTERATION.MISS_FAILED, this));
+        gameActions.push(...this.spell.alterGameActionPhase(CAST_SPELL_PHASES_FOR_ALTERATION.MISS_FAILED, this));
         // 3. Evasion.
         const alterSpellEvasionGameActions = this.callAlterationForUsedAlterables(alterables, this.mixedSpellEvasion.partials, VALUES_FOR_ALTERATION.SPELL_EVASION);
         gameActions.push(...alterSpellEvasionGameActions);
         const targetEvaded: boolean = Math.random() < (this.mixedSpellEvasion.getFinalValue() as number / 100);
         if (targetEvaded === false) {
-          gameActions.push(...this.spell.alterGameActionPhase(PHASES_FOR_ALTERATION.EVASION_FAILED, this));
+          gameActions.push(...this.spell.alterGameActionPhase(CAST_SPELL_PHASES_FOR_ALTERATION.EVASION_FAILED, this));
           // 4. Resistance.
           const alterSpellResistanceGameActions = this.callAlterationForUsedAlterables(alterables, this.mixedSpellResistance.partials, VALUES_FOR_ALTERATION.SPELL_RESISTANCE);
           gameActions.push(...alterSpellResistanceGameActions);
@@ -78,39 +77,12 @@ export abstract class GameActionCastSpell extends GameAction {
           this.execute();
         }
       } else {
-        gameActions.push(...this.spell.alterGameActionPhase(PHASES_FOR_ALTERATION.MISS, this));
+        gameActions.push(...this.spell.alterGameActionPhase(CAST_SPELL_PHASES_FOR_ALTERATION.MISS, this));
       }
     } else {
-      gameActions.push(...this.spell.alterGameActionPhase(PHASES_FOR_ALTERATION.ACT_FAILED, this));
+      gameActions.push(...this.spell.alterGameActionPhase(CAST_SPELL_PHASES_FOR_ALTERATION.ACT_FAILED, this));
     }
     return gameActions;
-  }
-
-  private callAlterationForUsedAlterables(alterablesWithType: AlterableWithType[], partials: Array<MixedValuePartial<any>>, alteredValue: VALUES_FOR_ALTERATION): GameAction[] {
-    const gameActions = [];
-    for (const partial of partials) {
-      const alterableWithType = alterablesWithType.find((item) => item.alterable === partial.getOwner());
-      if (alterableWithType !== undefined) {
-        gameActions.push(...alterableWithType.alterable.alterBeingUsedInGameActionMixedValue(alteredValue, this, alterableWithType.type, this.getAlterableGAData(alterableWithType.alterable)));
-      }
-    }
-    return gameActions;
-  }
-
-  private getAlterablesWithType(): AlterableWithType[] {
-    const initiatorAlterableItems: AlterableWithType[] = this.initiator.items.map((item) => {
-      return {
-        alterable: item,
-        type: ALTERATION_TYPES.INITIATOR,
-      };
-    });
-    const targetAlterableItems: AlterableWithType[] = this.target.items.map((item) => {
-      return {
-        alterable: item,
-        type: ALTERATION_TYPES.TARGET,
-      };
-    });
-    return [...initiatorAlterableItems, ...targetAlterableItems];
   }
 
   private finalizeMixedValues(alterablesWithType: AlterableWithType[]): void {

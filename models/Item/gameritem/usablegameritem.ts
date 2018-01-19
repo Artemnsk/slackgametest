@@ -9,6 +9,15 @@ import { IUsableInGame } from "../../iusable/iusable";
 import { GamerItem } from "./gameritem";
 import { GameAction } from "../../gameaction/gameaction";
 
+export const enum USE_ITEM_PHASES_FOR_ALTERATION {
+  ACT = "ACT",
+  ACT_FAILED = "ACT_FAILED",
+  MISS = "MISS",
+  MISS_FAILED = "MISS_FAILED",
+  EVASION = "EVASION",
+  EVASION_FAILED = "EVASION_FAILED",
+}
+
 export abstract class UsableGamerItem extends GamerItem implements IUsableInGame {
   public power: number;
 
@@ -88,5 +97,5 @@ export abstract class UsableGamerItem extends GamerItem implements IUsableInGame
 
   public abstract getInitialGameAction(game: Game, gameActionRequest: GameActionRequestUseItem, initiator: Gamer, target: Gamer): GameActionUseItem;
 
-  public abstract alterGameActionPhase(phase: string, gameAction: GameAction): GameAction[];
+  public abstract alterGameActionPhase(phase: USE_ITEM_PHASES_FOR_ALTERATION, gameAction: GameAction): GameAction[];
 }
