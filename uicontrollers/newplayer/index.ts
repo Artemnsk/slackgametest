@@ -19,7 +19,7 @@ const processActions: ProcessActionsFunction = (uiRouter, parsedPayload, args: {
             include_locale: false,
             user: parsedPayload.user.id,
           };
-          const slack = new Slack(uiRouter.team.token);
+          const slack = new Slack(uiRouter.channel.getTeamToken());
           return new Promise((resolve, reject) => {
             slack.api("users.info", apiCallArgs, (err, response: SlackUsersInfoResponse) => {
               if (err) {

@@ -72,6 +72,10 @@ export class Channel {
     }
   }
 
+  public getTeamToken(): string {
+    return this.team.token !== undefined ? this.team.token : "";
+  }
+
   public getTeamKey(): string {
     return this.team.getKey();
   }

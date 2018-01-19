@@ -3,7 +3,6 @@ import { Channel } from "../models/channel/channel";
 import { Game } from "../models/game/game";
 import { Gamer } from "../models/gamer/gamer";
 import { Player } from "../models/player/player";
-import { Team } from "../models/team/team";
 import { UIMessage } from "../models/uimessage/uimessage";
 import { uiRoute as newplayerUIRoute } from "./newplayer";
 import { UIRoute } from "./uiroute";
@@ -19,7 +18,6 @@ import { uiRoute as informationMessageUIRoute } from "./informationmessage";
 
 // TODO: actually we can make prototype which can be used with reassigning game data for better performance.
 export class UIRouter {
-  public team: Team;
   public channel: Channel;
   public player: Player|null;
   public game: Game|null;
