@@ -117,13 +117,13 @@ schema:
                 required: ['strength', 'agility', 'intelligence']
                 properties:
                   agility:
-                    type: string
+                    type: number
                     constraint: next >= 0
                   intelligence:
-                    type: string
+                    type: number
                     constraint: next >= 0
                   strength:
-                    type: string
+                    type: number
                     constraint: next >= 0
               items:
                 type: object
@@ -166,7 +166,7 @@ schema:
                 ~$gamerKey:
                   type: object
                   constraint: isValidGamer($teamKey, $channelKey, $gamerKey)
-                  required: ['name', 'health', 'mana', 'dead']
+                  required: ['name', 'health', 'mana', 'dead', 'stats']
                   additionalProperties: false
                   properties:
                     name:
@@ -185,13 +185,13 @@ schema:
                       required: ['strength', 'agility', 'intelligence']
                       properties:
                         agility:
-                          type: string
+                          type: number
                           constraint: next >= 0
                         intelligence:
-                          type: string
+                          type: number
                           constraint: next >= 0
                         strength:
-                          type: string
+                          type: number
                           constraint: next >= 0
                     spells:
                       type: object
