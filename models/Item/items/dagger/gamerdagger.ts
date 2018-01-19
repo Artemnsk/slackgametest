@@ -12,7 +12,6 @@ export class GamerItemDagger extends UsableGamerItem {
   public emoji: string = ":dagger_knife:";
   public label: string = "Steel Dagger";
   public description: string = "This is simple steel dagger. Nothing special.";
-  public power: number;
 
   constructor(gamer: Gamer, values: ItemDaggerFirebaseValue, itemKey: string) {
     super(gamer, values, itemKey);

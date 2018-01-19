@@ -10,6 +10,8 @@ import { GamerItem } from "./gameritem";
 import { GameAction } from "../../gameaction/gameaction";
 
 export abstract class UsableGamerItem extends GamerItem implements IUsableInGame {
+  public power: number;
+
   /**
    * Validate: does gamer able to use item? Returns true if yes and string with error otherwise.
    */
@@ -82,25 +84,6 @@ export abstract class UsableGamerItem extends GamerItem implements IUsableInGame
       }
     }
     return Promise.resolve(false);
-  }
-
-  /**
-   * Responds with array of attachments to display item info in Slack app message.
-   */
-  public getSlackInfo(callbackId: string): SlackMessageAttachment[] {
-    return [{
-      attachment_type: "default",
-      author_name: `${this.emoji}${this.label}`,
-      callback_id: callbackId,
-      color: "#3AA3E3",
-      fields: [
-        {
-          short: false,
-          title: "Description",
-          value: this.description,
-        },
-      ],
-    }];
   }
 
   public abstract getInitialGameAction(game: Game, gameActionRequest: GameActionRequestUseItem, initiator: Gamer, target: Gamer): GameActionUseItem;

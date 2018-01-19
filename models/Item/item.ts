@@ -1,3 +1,5 @@
+import { SlackMessageAttachment } from "../../helpers/slackmessage";
+import { IInspectable } from "../iusable/iusable";
 import { ItemFirebaseValue } from "./dbfirebase";
 
 export const enum ITEMS {
@@ -5,7 +7,7 @@ export const enum ITEMS {
   SHIELD = "SHIELD",
 }
 
-export abstract class Item {
+export abstract class Item implements IInspectable {
   public abstract id: ITEMS;
   public abstract emoji: string;
   public abstract label: string;
@@ -28,6 +30,8 @@ export abstract class Item {
   public getKey(): string {
     return this.$key;
   }
+
+  public abstract getSlackInfo(callbackId: string): SlackMessageAttachment[];
 
   public abstract getFirebaseValues(): ItemFirebaseValue;
 }

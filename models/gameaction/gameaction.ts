@@ -44,6 +44,7 @@ export abstract class GameAction {
     this.initiator = initiator;
     this.target = target;
     this.created = gameActionRequest.created;
+    this.alterableGADataStorage = [];
   }
 
   public getTeamKey(): string {

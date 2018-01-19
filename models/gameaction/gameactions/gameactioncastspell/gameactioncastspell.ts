@@ -41,7 +41,6 @@ export abstract class GameActionCastSpell extends GameAction {
     this.mixedSpellEvasion = new MixedValuePercent(spellEvasionInitialValue);
     const spellResistanceInitialValue = this.target.stats.spellResistance.getFinalValue() as number;
     this.mixedSpellResistance = new MixedValueNumber(spellResistanceInitialValue);
-    this.alterableGADataStorage = [];
   }
 
   public processGameStep(): Promise<GAME_STEP_RESULTS> {

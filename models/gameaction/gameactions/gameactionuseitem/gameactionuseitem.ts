@@ -3,16 +3,35 @@ import { GameActionRequestUseItem } from "../../../gameactionrequest/gameactionr
 import { Gamer } from "../../../gamer/gamer";
 import { UsableGamerItem } from "../../../Item/gameritem/usablegameritem";
 import { GAME_ACTION_TYPES, GameAction } from "../../gameaction";
+import { MixedValuePercent } from "../../../mixed/mixedvalue/mixedvalues/mixedvaluepercent";
+import { MixedValueNumber } from "../../../mixed/mixedvalue/mixedvalues/mixedvaluenumber";
+import { MixedValueBoolean } from "../../../mixed/mixedvalue/mixedvalues/mixedvalueboolean";
 
 export abstract class GameActionUseItem extends GameAction {
   public initiator: Gamer;
   public target: Gamer;
   public type: GAME_ACTION_TYPES.USE_ITEM;
   protected item: UsableGamerItem;
+  protected mixedCanAct: MixedValueBoolean;
+  protected mixedItemPower: MixedValueNumber;
+  protected mixedItemMiss: MixedValuePercent;
+  protected mixedItemEvasion: MixedValuePercent;
+  protected mixedItemDefense: MixedValueNumber;
 
   constructor(game: Game, gameActionRequest: GameActionRequestUseItem, initiator: Gamer, target: Gamer, item: UsableGamerItem) {
     super(game, gameActionRequest, initiator, target);
     this.item = item;
+    // Initialize all these mixed values.
+    this.mixedCanAct = new MixedValueBoolean(true);
+    // We are sure all Gamer mixed values being finalized here. That actually must happen on Gamer initialization in it's constructor().
+    const itemPowerInitialValue = this.initiator.stats.itemPower.getFinalValue() as number;
+    this.mixedItemPower = new MixedValueNumber(itemPowerInitialValue + item.power);
+    const itemMissInitialValue = this.initiator.stats.itemMiss.getFinalValue() as number;
+    this.mixedItemMiss = new MixedValuePercent(itemMissInitialValue);
+    const itemEvasionInitialValue = this.target.stats.itemEvasion.getFinalValue() as number;
+    this.mixedItemEvasion = new MixedValuePercent(itemEvasionInitialValue);
+    const itemDefenseInitialValue = this.target.stats.itemDefense.getFinalValue() as number;
+    this.mixedItemDefense = new MixedValueNumber(itemDefenseInitialValue);
   }
 
   // TODO:
