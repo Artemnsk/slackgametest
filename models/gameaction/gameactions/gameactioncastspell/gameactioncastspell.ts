@@ -2,36 +2,17 @@ import { Game, GAME_STEP_RESULTS } from "../../../game/game";
 import { GameActionRequestCastSpell } from "../../../gameactionrequest/gameactionrequests/gameactionrequestcastspell/gameactionrequestcastspell";
 import { Gamer } from "../../../gamer/gamer";
 import { MixedValueBoolean } from "../../../mixed/mixedvalue/mixedvalues/mixedvalueboolean";
-import { PHASES_FOR_ALTERATION, UsableSpell } from "../../../spell/usablespell";
-import { ALTERATION_TYPES, GAME_ACTION_TYPES, GameAction } from "../../gameaction";
 import { MixedValueNumber } from "../../../mixed/mixedvalue/mixedvalues/mixedvaluenumber";
 import { MixedValuePercent } from "../../../mixed/mixedvalue/mixedvalues/mixedvaluepercent";
-import { IAlterableGameActionMixedValues } from "../../../iusable/ialterable";
 import { MixedValuePartial } from "../../../mixed/mixedvaluepartial/mixedvaluepartial";
+import { PHASES_FOR_ALTERATION, UsableSpell } from "../../../spell/usablespell";
+import { AlterableWithType, ALTERATION_TYPES, GAME_ACTION_TYPES, GameAction } from "../../gameaction";
 
 export const enum VALUES_FOR_ALTERATION {
   CAN_ACT = "CAN_ACT",
   SPELL_POWER = "SPELL_POWER",
   SPELL_MISS = "SPELL_MISS",
   SPELL_EVASION = "SPELL_EVASION",
-  SPELL_RESISTANCE = "SPELL_RESISTANCE",
-}
-
-// TODO: define in some interface file?
-type AlterableGAData = {
-  owner: IAlterableGameActionMixedValues,
-  data: object,
-};
-
-type AlterableWithType = {
-  alterable: IAlterableGameActionMixedValues,
-  type: ALTERATION_TYPES,
-};
-
-export const enum GAME_ACTION_CAST_SPELL_MIXED_TYPES {
-  SPELL_POWER = "SPELL_POWER",
-  SPELL_MISS = "SPELL_MISS",
-  SPELL_EVADE = "SPELL_EVADE",
   SPELL_RESISTANCE = "SPELL_RESISTANCE",
 }
 
@@ -45,7 +26,6 @@ export abstract class GameActionCastSpell extends GameAction {
   protected mixedSpellMiss: MixedValuePercent;
   protected mixedSpellEvasion: MixedValuePercent;
   protected mixedSpellResistance: MixedValueNumber;
-  protected alterableGADataStorage: AlterableGAData[];
 
   constructor(game: Game, gameActionRequest: GameActionRequestCastSpell, initiator: Gamer, target: Gamer, spell: UsableSpell) {
     super(game, gameActionRequest, initiator, target);
@@ -64,27 +44,15 @@ export abstract class GameActionCastSpell extends GameAction {
     this.alterableGADataStorage = [];
   }
 
-  /**
-   * That is a storage for each alterable item which can be used for sharing info between different phases.
-   */
-  public getAlterableGAData(alterable: IAlterableGameActionMixedValues): AlterableGAData | null {
-    let data = this.alterableGADataStorage.find((item) => item.owner === alterable);
-    if (data === undefined) {
-      data = {
-        data: {},
-        owner: alterable,
-      };
-      this.alterableGADataStorage.push(data);
-    }
-    return data;
-  }
-
   public processGameStep(): Promise<GAME_STEP_RESULTS> {
     const alterables = this.getAlterablesWithType();
     this.finalizeMixedValues(alterables);
-    // Actually perform action using all these finalized values.
-    // TODO: that is just a sample. Complete all these phases stuff.
-    // TODO: protected furtherActions: GameAction[] - used to store other actions which we need to make later. We can fill it during alteration process.
+    const gameActions = this.castSpellExecution(alterables);
+    // TODO: execute collected gameActions. Maybe some additional class for non-alterable game actions which contains of exact values?
+    return Promise.resolve(GAME_STEP_RESULTS.ERROR);
+  }
+
+  private castSpellExecution(alterables: AlterableWithType[]): GameAction[] {
     const gameActions: GameAction[] = [];
     // 1. Can Act.
     const alterCanActGameActions = this.callAlterationForUsedAlterables(alterables, this.mixedCanAct.partials, VALUES_FOR_ALTERATION.CAN_ACT);
@@ -116,8 +84,7 @@ export abstract class GameActionCastSpell extends GameAction {
     } else {
       gameActions.push(...this.spell.alterGameActionPhase(PHASES_FOR_ALTERATION.ACT_FAILED, this));
     }
-    // TODO: execute collected gameActions. Maybe some additional class for non-alterable game actions which contains of exact values?
-    return Promise.resolve(GAME_STEP_RESULTS.ERROR);
+    return gameActions;
   }
 
   private callAlterationForUsedAlterables(alterablesWithType: AlterableWithType[], partials: Array<MixedValuePartial<any>>, alteredValue: VALUES_FOR_ALTERATION): GameAction[] {
@@ -125,7 +92,7 @@ export abstract class GameActionCastSpell extends GameAction {
     for (const partial of partials) {
       const alterableWithType = alterablesWithType.find((item) => item.alterable === partial.getOwner());
       if (alterableWithType !== undefined) {
-        gameActions.push(...alterableWithType.alterable.alterBeingUsedInGameActionMixedValue(alteredValue, this, alterableWithType.type));
+        gameActions.push(...alterableWithType.alterable.alterBeingUsedInGameActionMixedValue(alteredValue, this, alterableWithType.type, this.getAlterableGAData(alterableWithType.alterable)));
       }
     }
     return gameActions;
@@ -151,7 +118,7 @@ export abstract class GameActionCastSpell extends GameAction {
     // Ability to make action? Not a simple validation.
     for (const alterableWithType of alterablesWithType) {
       if (this.mixedCanAct.isFinal() === false) {
-        alterableWithType.alterable.alterBeingUsedInGameActionMixedValue(VALUES_FOR_ALTERATION.CAN_ACT, this, alterableWithType.type);
+        alterableWithType.alterable.alterBeingUsedInGameActionMixedValue(VALUES_FOR_ALTERATION.CAN_ACT, this, alterableWithType.type, this.getAlterableGAData(alterableWithType.alterable));
       }
     }
     // Finalize if not finalized yet.
@@ -161,7 +128,7 @@ export abstract class GameActionCastSpell extends GameAction {
     // Collect power.
     for (const alterableWithType of alterablesWithType) {
       if (this.mixedSpellPower.isFinal() === false) {
-        alterableWithType.alterable.alterBeingUsedInGameActionMixedValue(VALUES_FOR_ALTERATION.SPELL_POWER, this, alterableWithType.type);
+        alterableWithType.alterable.alterBeingUsedInGameActionMixedValue(VALUES_FOR_ALTERATION.SPELL_POWER, this, alterableWithType.type, this.getAlterableGAData(alterableWithType.alterable));
       }
     }
     // Finalize if not finalized yet.
@@ -171,7 +138,7 @@ export abstract class GameActionCastSpell extends GameAction {
     // Miss.
     for (const alterableWithType of alterablesWithType) {
       if (this.mixedSpellMiss.isFinal() === false) {
-        alterableWithType.alterable.alterBeingUsedInGameActionMixedValue(VALUES_FOR_ALTERATION.SPELL_MISS, this, alterableWithType.type);
+        alterableWithType.alterable.alterBeingUsedInGameActionMixedValue(VALUES_FOR_ALTERATION.SPELL_MISS, this, alterableWithType.type, this.getAlterableGAData(alterableWithType.alterable));
       }
     }
     // Finalize if not finalized yet.
@@ -181,7 +148,7 @@ export abstract class GameActionCastSpell extends GameAction {
     // Evasion.
     for (const alterableWithType of alterablesWithType) {
       if (this.mixedSpellEvasion.isFinal() === false) {
-        alterableWithType.alterable.alterBeingUsedInGameActionMixedValue(VALUES_FOR_ALTERATION.SPELL_EVASION, this, alterableWithType.type);
+        alterableWithType.alterable.alterBeingUsedInGameActionMixedValue(VALUES_FOR_ALTERATION.SPELL_EVASION, this, alterableWithType.type, this.getAlterableGAData(alterableWithType.alterable));
       }
     }
     // Finalize if not finalized yet.
@@ -191,7 +158,7 @@ export abstract class GameActionCastSpell extends GameAction {
     // Resistance.
     for (const alterableWithType of alterablesWithType) {
       if (this.mixedSpellResistance.isFinal() === false) {
-        alterableWithType.alterable.alterBeingUsedInGameActionMixedValue(VALUES_FOR_ALTERATION.SPELL_RESISTANCE, this, alterableWithType.type);
+        alterableWithType.alterable.alterBeingUsedInGameActionMixedValue(VALUES_FOR_ALTERATION.SPELL_RESISTANCE, this, alterableWithType.type, this.getAlterableGAData(alterableWithType.alterable));
       }
     }
     // Finalize if not finalized yet.
