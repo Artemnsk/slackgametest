@@ -2,9 +2,7 @@ import { IPartialToNumber, MixedValueNumber } from "../../mixedvalue/mixedvalues
 import { IPartialToPercent, MixedValuePercent } from "../../mixedvalue/mixedvalues/mixedvaluepercent";
 import { MixedValuePartial } from "../mixedvaluepartial";
 
-export class MixedValuePartialPercent extends MixedValuePartial implements IPartialToPercent, IPartialToNumber {
-  protected value: number;
-
+export class MixedValuePartialPercent extends MixedValuePartial<number> implements IPartialToPercent, IPartialToNumber {
   public calculateForPercent(mixedValue: MixedValuePercent, currentValue: number): number {
     return this.value + currentValue;
   }

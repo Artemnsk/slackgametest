@@ -1,10 +1,10 @@
-import { GameAction } from "../../gameaction/gameaction";
 import { Gamer } from "../../gamer/gamer";
-import { IGameActionCastSpellPhaseAlterable, IGameActionCastSpellValueAlterable } from "../../gameaction/gameactions/gameactioncastspell/interfaces";
 import { ItemFirebaseValue } from "../dbfirebase";
 import { Item } from "../item";
+import { IAlterableGameActionMixedValues } from "../../iusable/ialterable";
+import { GameAction } from "../../gameaction/gameaction";
 
-export abstract class GamerItem extends Item implements IGameActionCastSpellValueAlterable, IGameActionCastSpellPhaseAlterable {
+export abstract class GamerItem extends Item implements IAlterableGameActionMixedValues {
   private gamer: Gamer;
 
   constructor(gamer: Gamer, values: ItemFirebaseValue, itemKey: string) {
@@ -31,31 +31,13 @@ export abstract class GamerItem extends Item implements IGameActionCastSpellValu
   // TODO: gamer item fb value.
   public abstract getFirebaseValues(): ItemFirebaseValue;
 
-  /**
-   *  IGameActionCastSpellValueAlterable.
-   */
-
-  public alterCanActValue(gameAction: GameAction): void {
+  // TODO: abstract?
+  public alterGameActionMixedValue(valueName: string, gameAction: GameAction, alterationType: string): void {
     //
   }
 
-  public alterSpellPowerValue(gameAction: GameAction): void {
-    //
-  }
-
-  public alterSpellMissValue(gameAction: GameAction): void {
-    //
-  }
-
-  public alterSpellEvadeValue(gameAction: GameAction): void {
-    //
-  }
-
-  /**
-   *  IGameActionCastSpellPhaseAlterable.
-   */
-
-  public alterAfterUsePhase(gameAction: GameAction): void {
-    //
+  // TODO: abstract?
+  public alterBeingUsedInGameActionMixedValue(valueName: string, gameAction: GameAction, alterationType: string): GameAction[] {
+    return [];
   }
 }

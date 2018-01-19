@@ -14,6 +14,8 @@ export interface IUsableInGame {
   getSlackInfo(callbackId: string): SlackMessageAttachment[];
 
   getInitialGameAction(game: Game, gameActionRequest: GameActionRequest, initiator: Gamer, target: Gamer): GameAction;
+
+  alterGameActionPhase(phase: string, gameAction: GameAction): GameAction[];
 }
 
 export interface IUsableInBreak {

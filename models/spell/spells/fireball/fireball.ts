@@ -1,7 +1,11 @@
 import { SPELLS } from "../../spell";
-import { UsableSpell } from "../../usablespell";
+import { PHASES_FOR_ALTERATION, UsableSpell } from "../../usablespell";
 import { SpellFireballFirebaseValue } from "./dbfirebase";
 import { Gamer } from "../../../gamer/gamer";
+import { GameActionCastSpellFireball } from "./gameactioncastspellfireball";
+import { GameAction } from "../../../gameaction/gameaction";
+import { GameActionRequestCastSpell } from "../../../gameactionrequest/gameactionrequests/gameactionrequestcastspell/gameactionrequestcastspell";
+import { Game } from "../../../game/game";
 
 export class SpellFireball extends UsableSpell {
   public id: SPELLS = SPELLS.FIREBALL;
@@ -24,5 +28,14 @@ export class SpellFireball extends UsableSpell {
       id: SPELLS.FIREBALL,
       label: this.label,
     };
+  }
+
+  public getInitialGameAction(game: Game, gameActionRequest: GameActionRequestCastSpell /*TODO: FIREBALL?*/, initiator: Gamer, target: Gamer): GameActionCastSpellFireball {
+    return new GameActionCastSpellFireball(game, gameActionRequest, initiator, target, this);
+  }
+
+  // TODO: abstract.
+  public alterGameActionPhase(phase: PHASES_FOR_ALTERATION, gameAction: GameAction): GameAction[] {
+    return [];
   }
 }

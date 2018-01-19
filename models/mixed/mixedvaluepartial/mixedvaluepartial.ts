@@ -1,14 +1,13 @@
-export abstract class MixedValuePartial {
-  protected abstract value: any;
-  // TODO: some "calculatable"?
+export abstract class MixedValuePartial<T> {
+  protected value: T;
   private owner: object;
 
-  constructor(value: any, owner: object) {
+  constructor(value: T, owner: object) {
     this.owner = owner;
     this.value = value;
   }
 
   public getOwner(): object {
-    return {};
+    return this.owner;
   }
 }

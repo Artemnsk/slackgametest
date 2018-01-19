@@ -1,7 +1,7 @@
 import { MixedValuePartial } from "../mixedvaluepartial/mixedvaluepartial";
 
 export abstract class MixedValue<T, IPartial> {
-  protected abstract partials: Array<MixedValuePartial & IPartial>;
+  public abstract partials: Array<MixedValuePartial<T> & IPartial>;
   protected initialValue: T;
   private finalValue: T|null;
 
@@ -30,7 +30,7 @@ export abstract class MixedValue<T, IPartial> {
     return this.finalValue;
   }
 
-  public addPartial(partial: MixedValuePartial & IPartial): void {
+  public addPartial(partial: MixedValuePartial<T> & IPartial): void {
     this.partials.push(partial);
   }
 }

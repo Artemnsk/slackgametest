@@ -1,17 +1,24 @@
 import { ParsedSlackActionPayload, SlackMessageAction, SlackMessageAttachment } from "../../helpers/slackmessage";
 import { Game } from "../game/game";
-import { GameAction } from "../gameaction/gameaction";
+import { ALTERATION_TYPES, GameAction } from "../gameaction/gameaction";
 import {
-  GAME_ACTION_CAST_SPELL_MIXED_TYPES,
   GameActionCastSpell
 } from "../gameaction/gameactions/gameactioncastspell/gameactioncastspell";
 import { GAME_ACTION_REQUEST_TYPES, GameActionRequest } from "../gameactionrequest/gameactionrequest";
 import { GameActionRequestCastSpellFirebaseValue } from "../gameactionrequest/gameactionrequests/gameactionrequestcastspell/dbfirebase";
 import { GameActionRequestCastSpell } from "../gameactionrequest/gameactionrequests/gameactionrequestcastspell/gameactionrequestcastspell";
 import { Gamer } from "../gamer/gamer";
-import { IGameActionCastSpellValueAlterable } from "../gameaction/gameactions/gameactioncastspell/interfaces";
 import { IUsableInGame } from "../iusable/iusable";
 import { Spell } from "./spell";
+
+export const enum PHASES_FOR_ALTERATION {
+  ACT = "ACT",
+  ACT_FAILED = "ACT_FAILED",
+  MISS = "MISS",
+  MISS_FAILED = "MISS_FAILED",
+  EVASION = "EVASION",
+  EVASION_FAILED = "EVASION_FAILED",
+}
 
 export abstract class UsableSpell extends Spell implements IUsableInGame {
   /**
@@ -107,7 +114,7 @@ export abstract class UsableSpell extends Spell implements IUsableInGame {
     }];
   }
 
-  public getInitialGameAction(game: Game, gameActionRequest: GameActionRequestCastSpell, initiator: Gamer, target: Gamer): GameActionCastSpell {
-    return new GameActionCastSpell(game, gameActionRequest, initiator, target, this);
-  }
+  public abstract getInitialGameAction(game: Game, gameActionRequest: GameActionRequestCastSpell, initiator: Gamer, target: Gamer): GameActionCastSpell;
+
+  public abstract alterGameActionPhase(phase: PHASES_FOR_ALTERATION, gameAction: GameAction): GameAction[];
 }

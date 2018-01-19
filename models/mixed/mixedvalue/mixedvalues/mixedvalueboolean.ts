@@ -6,7 +6,7 @@ export interface IPartialToBoolean {
 }
 
 export class MixedValueBoolean extends MixedValue<boolean, IPartialToBoolean> {
-  protected partials: MixedValuePartialBoolean[];
+  public partials: MixedValuePartialBoolean[];
 
   public calculate(): boolean {
     return this.partials.reduce((previousValue, currentPartial) => currentPartial.calculateForBoolean(this, previousValue), this.initialValue);

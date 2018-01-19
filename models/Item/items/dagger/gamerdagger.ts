@@ -2,6 +2,10 @@ import { ITEMS } from "../../item";
 import { UsableGamerItem } from "../../gameritem/usablegameritem";
 import { ItemDaggerFirebaseValue } from "./dbfirebase";
 import { Gamer } from "../../../gamer/gamer";
+import { GameAction } from "../../../gameaction/gameaction";
+import { GameActionRequestUseItem } from "../../../gameactionrequest/gameactionrequests/gameactionrequestuseitem/gameactionrequestuseitem";
+import { Game } from "../../../game/game";
+import { GameActionUseItemDagger } from "./gameactionuseitemdagger";
 
 export class GamerItemDagger extends UsableGamerItem {
   public id: ITEMS = ITEMS.DAGGER;
@@ -24,5 +28,13 @@ export class GamerItemDagger extends UsableGamerItem {
       id: ITEMS.DAGGER,
       label: this.label,
     };
+  }
+
+  public getInitialGameAction(game: Game, gameActionRequest: GameActionRequestUseItem /*TODO:*/, initiator: Gamer, target: Gamer): GameActionUseItemDagger {
+    return new GameActionUseItemDagger(game, gameActionRequest, initiator, target, this);
+  }
+
+  public alterGameActionPhase(phase: string, gameAction: GameAction): GameAction[] {
+    return [];
   }
 }

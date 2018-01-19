@@ -4,7 +4,7 @@ import { Gamer } from "../../../gamer/gamer";
 import { UsableGamerItem } from "../../../Item/gameritem/usablegameritem";
 import { GAME_ACTION_TYPES, GameAction } from "../../gameaction";
 
-export class GameActionUseItem extends GameAction {
+export abstract class GameActionUseItem extends GameAction {
   public initiator: Gamer;
   public target: Gamer;
   public type: GAME_ACTION_TYPES.USE_ITEM;
@@ -18,7 +18,7 @@ export class GameActionUseItem extends GameAction {
   // TODO:
   public processGameStep(): Promise<GAME_STEP_RESULTS> {
     // // Now we are going to fill it with all related values. The Game decides which entities have influence on that. Also Game can involve it's own items.
-    // let alterables: IGameActionCastSpellValueAlterable[] = [];
+    // let alterables: IGameActionCastSpellMixedValuesAlterable[] = [];
     // // Get all items.
     // if (this.initiator !== null) {
     //   alterables = alterables.concat(this.initiator.items);
@@ -55,4 +55,6 @@ export class GameActionUseItem extends GameAction {
     // TODO:
     return Promise.resolve(GAME_STEP_RESULTS.ERROR);
   }
+
+  public abstract execute(): void;
 }

@@ -1,12 +1,8 @@
 import * as admin from "firebase-admin";
 import { Channel } from "../channel/channel";
-import { GAME_ACTION_TYPES, GameAction } from "../gameaction/gameaction";
-import { GameActionCastSpell } from "../gameaction/gameactions/gameactioncastspell/gameactioncastspell";
-import { GameActionUseItem } from "../gameaction/gameactions/gameactionuseitem/gameactionuseitem";
 import { getRecentAction } from "../gameactionrequest/gameactionrequestfactory";
 import { GamerFirebaseValue } from "../gamer/dbfirebase";
 import { Gamer } from "../gamer/gamer";
-import { IGameActionCastSpellValueAlterable } from "../gameaction/gameactions/gameactioncastspell/interfaces";
 import { SpellFirebaseValue } from "../spell/dbfirebase";
 import { getRandomSpellFirebaseValue as getRandomSpell } from "../spell/spellfactory";
 import { GameFirebaseValue, getDBGame, getDBGames, getNewGameDBRef, removeDBGame, setDBGame } from "./dbfirebase";

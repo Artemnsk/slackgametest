@@ -17,7 +17,7 @@ export abstract class GameAction {
   public initiator: Gamer;
   public target: Gamer;
   public created: number;
-  private game: Game;
+  protected game: Game;
 
   constructor(game: Game, gameActionRequest: GameActionRequest, initiator: Gamer, target: Gamer) {
     this.game = game;
@@ -47,4 +47,6 @@ export abstract class GameAction {
   }
 
   public abstract processGameStep(): Promise<GAME_STEP_RESULTS>;
+
+  public abstract execute(): void;
 }
