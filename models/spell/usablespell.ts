@@ -11,7 +11,7 @@ import { Gamer } from "../gamer/gamer";
 import { IUsableInGame } from "../iusable/iusable";
 import { Spell } from "./spell";
 
-export const enum PHASES_FOR_ALTERATION {
+export const enum CAST_SPELL_PHASES_FOR_ALTERATION {
   ACT = "ACT",
   ACT_FAILED = "ACT_FAILED",
   MISS = "MISS",
@@ -116,5 +116,5 @@ export abstract class UsableSpell extends Spell implements IUsableInGame {
 
   public abstract getInitialGameAction(game: Game, gameActionRequest: GameActionRequestCastSpell, initiator: Gamer, target: Gamer): GameActionCastSpell;
 
-  public abstract alterGameActionPhase(phase: PHASES_FOR_ALTERATION, gameAction: GameAction): GameAction[];
+  public abstract alterGameActionPhase(phase: CAST_SPELL_PHASES_FOR_ALTERATION, gameAction: GameAction): GameAction[];
 }

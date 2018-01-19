@@ -1,7 +1,7 @@
-import { ITEMS } from "../../item";
-import { ItemShieldFirebaseValue } from "./dbfirebase";
-import { UsablePlayerItem } from "../../playeritem/usableplayeritem";
 import { Player } from "../../../player/player";
+import { ITEMS } from "../../item";
+import { UsablePlayerItem } from "../../playeritem/usableplayeritem";
+import { ItemShieldFirebaseValue } from "./dbfirebase";
 
 export class PlayerItemShield extends UsablePlayerItem {
   public id: ITEMS = ITEMS.SHIELD;

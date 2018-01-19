@@ -1,13 +1,10 @@
-import { ITEMS } from "../../item";
-import { UsableGamerItem } from "../../gameritem/usablegameritem";
-import { ItemShieldFirebaseValue } from "./dbfirebase";
-import { Gamer } from "../../../gamer/gamer";
 import { GameAction } from "../../../gameaction/gameaction";
-import { GameActionRequestUseItem } from "../../../gameactionrequest/gameactionrequests/gameactionrequestuseitem/gameactionrequestuseitem";
-import { Game } from "../../../game/game";
-import { GameActionUseItemShield } from "./gameactionuseitemshield";
+import { Gamer } from "../../../gamer/gamer";
+import { GamerItem } from "../../gameritem/gameritem";
+import { ITEMS } from "../../item";
+import { ItemShieldFirebaseValue } from "./dbfirebase";
 
-export class GamerItemShield extends UsableGamerItem {
+export class GamerItemShield extends GamerItem {
   public id: ITEMS = ITEMS.SHIELD;
   public emoji: string = ":shield:";
   public label: string = "Steel shield";
@@ -28,10 +25,6 @@ export class GamerItemShield extends UsableGamerItem {
       id: ITEMS.SHIELD,
       label: this.label,
     };
-  }
-
-  public getInitialGameAction(game: Game, gameActionRequest: GameActionRequestUseItem /*TODO:*/, initiator: Gamer, target: Gamer): GameActionUseItemShield {
-    return new GameActionUseItemShield(game, gameActionRequest, initiator, target, this);
   }
 
   public alterGameActionPhase(phase: string, gameAction: GameAction): GameAction[] {

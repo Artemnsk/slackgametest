@@ -13,10 +13,10 @@ import { MixedValuePercent } from "../mixed/mixedvalue/mixedvalues/mixedvalueper
 const enum GAMER_DEFAULT_STATS {
   MAX_HEALTH = 100,
   MAX_MANA = 40,
-  HIT_POWER = 1,
-  HIT_EVASION = 5,
-  HIT_MISS = 5,
-  HIT_DEFENSE = 0,
+  ITEM_POWER = 1,
+  ITEM_EVASION = 5,
+  ITEM_MISS = 5,
+  ITEM_DEFENSE = 0,
   SPELL_POWER = 1,
   SPELL_EVASION = 5,
   SPELL_MISS = 5,
@@ -33,10 +33,10 @@ type GamerPrimaryStats = {
 type GamerSecondaryStats = {
   maxHealth: MixedValueNumber,
   maxMana: MixedValueNumber,
-  hitPower: MixedValueNumber,
-  hitEvasion: MixedValuePercent,
-  hitMiss: MixedValuePercent,
-  hitDefense: MixedValueNumber,
+  itemPower: MixedValueNumber,
+  itemEvasion: MixedValuePercent,
+  itemMiss: MixedValuePercent,
+  itemDefense: MixedValueNumber,
   spellPower: MixedValueNumber,
   spellEvasion: MixedValuePercent,
   spellMiss: MixedValuePercent,
@@ -177,10 +177,10 @@ export class Gamer {
     const intelligenceFinalValue = primaryStats.intelligence.isFinal() ? primaryStats.intelligence.getFinalValue() as number : 0;
     const strengthFinalValue = primaryStats.strength.isFinal() ? primaryStats.strength.getFinalValue() as number : 0;
     // Define secondary stats now.
-    const hitDefense = new MixedValueNumber(GAMER_DEFAULT_STATS.HIT_DEFENSE);
-    const hitEvasion = new MixedValuePercent(GAMER_DEFAULT_STATS.HIT_EVASION + agilityFinalValue);
-    const hitMiss = new MixedValuePercent(Math.max(GAMER_DEFAULT_STATS.HIT_MISS - agilityFinalValue, 0));
-    const hitPower = new MixedValueNumber(GAMER_DEFAULT_STATS.HIT_POWER + strengthFinalValue);
+    const itemDefense = new MixedValueNumber(GAMER_DEFAULT_STATS.ITEM_DEFENSE);
+    const itemEvasion = new MixedValuePercent(GAMER_DEFAULT_STATS.ITEM_EVASION + agilityFinalValue);
+    const itemMiss = new MixedValuePercent(Math.max(GAMER_DEFAULT_STATS.ITEM_MISS - agilityFinalValue, 0));
+    const itemPower = new MixedValueNumber(GAMER_DEFAULT_STATS.ITEM_POWER + strengthFinalValue);
     const maxHealth = new MixedValueNumber(GAMER_DEFAULT_STATS.MAX_HEALTH + strengthFinalValue);
     const maxMana = new MixedValueNumber(GAMER_DEFAULT_STATS.MAX_MANA + intelligenceFinalValue);
     const spellEvasion = new MixedValuePercent(GAMER_DEFAULT_STATS.SPELL_EVASION + agilityFinalValue);
@@ -190,19 +190,19 @@ export class Gamer {
     // TODO: interface IGamerSecondaryAlterable.
     // TODO: loop through all items which implements interface IGamerSecondaryAlterable. Items(equipped?), Buffs, Debuffs.
     // TODO: LOOP IS HERE...
-    hitEvasion.finalize();
-    hitMiss.finalize();
-    hitPower.finalize();
+    itemEvasion.finalize();
+    itemMiss.finalize();
+    itemPower.finalize();
     maxHealth.finalize();
     maxMana.finalize();
     spellEvasion.finalize();
     spellMiss.finalize();
     spellPower.finalize();
     return {
-      hitDefense,
-      hitEvasion,
-      hitMiss,
-      hitPower,
+      itemDefense,
+      itemEvasion,
+      itemMiss,
+      itemPower,
       maxHealth,
       maxMana,
       spellEvasion,

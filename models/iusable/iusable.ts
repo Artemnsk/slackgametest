@@ -4,6 +4,10 @@ import { GameAction } from "../gameaction/gameaction";
 import { GameActionRequest } from "../gameactionrequest/gameactionrequest";
 import { Gamer } from "../gamer/gamer";
 
+export interface IInspectable {
+  getSlackInfo(callbackId: string): SlackMessageAttachment[];
+}
+
 export interface IUsableInGame {
   validateGamerUsage(gamer: Gamer): true | string;
 

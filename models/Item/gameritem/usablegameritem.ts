@@ -9,7 +9,18 @@ import { IUsableInGame } from "../../iusable/iusable";
 import { GamerItem } from "./gameritem";
 import { GameAction } from "../../gameaction/gameaction";
 
+export const enum USE_ITEM_PHASES_FOR_ALTERATION {
+  ACT = "ACT",
+  ACT_FAILED = "ACT_FAILED",
+  MISS = "MISS",
+  MISS_FAILED = "MISS_FAILED",
+  EVASION = "EVASION",
+  EVASION_FAILED = "EVASION_FAILED",
+}
+
 export abstract class UsableGamerItem extends GamerItem implements IUsableInGame {
+  public power: number;
+
   /**
    * Validate: does gamer able to use item? Returns true if yes and string with error otherwise.
    */
@@ -84,26 +95,7 @@ export abstract class UsableGamerItem extends GamerItem implements IUsableInGame
     return Promise.resolve(false);
   }
 
-  /**
-   * Responds with array of attachments to display item info in Slack app message.
-   */
-  public getSlackInfo(callbackId: string): SlackMessageAttachment[] {
-    return [{
-      attachment_type: "default",
-      author_name: `${this.emoji}${this.label}`,
-      callback_id: callbackId,
-      color: "#3AA3E3",
-      fields: [
-        {
-          short: false,
-          title: "Description",
-          value: this.description,
-        },
-      ],
-    }];
-  }
-
   public abstract getInitialGameAction(game: Game, gameActionRequest: GameActionRequestUseItem, initiator: Gamer, target: Gamer): GameActionUseItem;
 
-  public abstract alterGameActionPhase(phase: string, gameAction: GameAction): GameAction[];
+  public abstract alterGameActionPhase(phase: USE_ITEM_PHASES_FOR_ALTERATION, gameAction: GameAction): GameAction[];
 }
