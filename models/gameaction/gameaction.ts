@@ -1,4 +1,3 @@
-import { setDBGame } from "../game/dbfirebase";
 import { Game, GAME_STEP_RESULTS } from "../game/game";
 import { GAME_ACTION_REQUEST_TYPES, GameActionRequest } from "../gameactionrequest/gameactionrequest";
 import { Gamer } from "../gamer/gamer";

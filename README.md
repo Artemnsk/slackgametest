@@ -18,7 +18,7 @@ Do the steps below in the Slack app settings.
  - `http://<YOUR_EXTERNAL_IP_ADDRESS>/slacktestgame/authorize/complete`
  - // TODO: maybe `http://localhost/slacktestgame/authorize/complete`. Better to add both for now :)
 4. Create a bot user under **Bot Users** tab.
-5. Add permissions at **OAuth And Permissions** > **Scopes** > **Select Permission Scopes**. List of required permissions is located in `/controllers/authorize/index.js:authorizeRequest()->'scope'`. If some settings/permissions change in the future you can keep reinstalling the app.
+5. Add permissions at **OAuth And Permissions** > **Scopes** > **Select Permission Scopes**. List of required permissions is located in `/controllers/authorize/apploop.js:authorizeRequest()->'scope'`. If some settings/permissions change in the future you can keep reinstalling the app.
 
 Go to your project app. Copy `private.ts` and `public.ts` from `/credentials/example` directory into `/credentials`.
 Set the following keys there:

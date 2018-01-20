@@ -1,3 +1,8 @@
+export class ChannelLoop {
+
+}
+
+/*
 import { Channel } from "../models/channel/channel";
 import { CHANNEL_PHASES } from "../models/channel/dbfirebase";
 import { Game, GAME_STEP_RESULTS } from "../models/game/game";
@@ -75,9 +80,9 @@ export class ChannelLoop {
     }
   }
 
-  /**
+  /!**
    * Repeats game loop if channel loop is in progress.
-   */
+   *!/
   private repeatGameLoop(game: Game, frequency: number): void {
     if (this.inProgress) {
       setTimeout(() => {
@@ -108,3 +113,4 @@ export class ChannelLoop {
     }
   }
 }
+*/
