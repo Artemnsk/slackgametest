@@ -89,10 +89,16 @@ export class ChannelLoop {
                 this.repeatGameLoop(game, ChannelLoop.CHANNEL_LOOP_FREQUENCY_IN_GAME);
                 break;
               case GAME_STEP_RESULTS.END:
-                this.repeatChannelLoop();
+                this.channel.overGame()
+                  .then(() => {
+                    this.repeatChannelLoop();
+                  }, () => {
+                    this.repeatChannelLoop();
+                  });
                 break;
               case GAME_STEP_RESULTS.ERROR:
                 // TODO:
+                this.repeatChannelLoop();
                 break;
             }
           }, () => {

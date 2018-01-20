@@ -1,9 +1,9 @@
+import { setDBGame } from "../game/dbfirebase";
 import { Game, GAME_STEP_RESULTS } from "../game/game";
 import { GAME_ACTION_REQUEST_TYPES, GameActionRequest } from "../gameactionrequest/gameactionrequest";
 import { Gamer } from "../gamer/gamer";
 import { IAlterableGameActionMixedValues } from "../iusable/ialterable";
 import { MixedValuePartial } from "../mixed/mixedvaluepartial/mixedvaluepartial";
-import { VALUES_FOR_ALTERATION } from "./gameactions/gameactioncastspell/gameactioncastspell";
 
 export const enum GAME_ACTION_TYPES {
   CAST_SPELL = "CAST_SPELL",
@@ -61,9 +61,19 @@ export abstract class GameAction {
     return this.game.getKey();
   }
 
-  public abstract processGameStep(): Promise<GAME_STEP_RESULTS>;
+  public processGameStep(): Promise<GAME_STEP_RESULTS> {
+    const alterables = this.getAlterablesWithType();
+    this.finalizeMixedValues(alterables);
+    const gameActions = this.calculateAndExecute(alterables);
+    // TODO: execute collected gameActions. Maybe some additional class for non-alterable game actions which contains of exact values?
+    return Promise.resolve(GAME_STEP_RESULTS.DEFAULT);
+  }
 
   public abstract execute(): void;
+
+  protected abstract calculateAndExecute(alterables: AlterableWithType[]): GameAction[];
+
+  protected abstract finalizeMixedValues(alterablesWithType: AlterableWithType[]): void;
 
   /**
    * That is a storage for each alterable item which can be used for sharing info between different phases.

@@ -1,4 +1,4 @@
-import { Game, GAME_STEP_RESULTS } from "../../../game/game";
+import { Game } from "../../../game/game";
 import { GameActionRequestUseItem } from "../../../gameactionrequest/gameactionrequests/gameactionrequestuseitem/gameactionrequestuseitem";
 import { Gamer } from "../../../gamer/gamer";
 import { UsableGamerItem, USE_ITEM_PHASES_FOR_ALTERATION } from "../../../Item/gameritem/usablegameritem";
@@ -30,7 +30,7 @@ export abstract class GameActionUseItem extends GameAction {
     super(game, gameActionRequest, initiator, target);
     this.item = item;
     // Initialize all these mixed values.
-    this.mixedCanAct = new MixedValueBoolean(true);
+    this.mixedCanAct = new MixedValueBoolean(initiator.dead === false);
     // We are sure all Gamer mixed values being finalized here. That actually must happen on Gamer initialization in it's constructor().
     const itemPowerInitialValue = this.initiator.stats.itemPower.getFinalValue() as number;
     this.mixedItemPower = new MixedValueNumber(itemPowerInitialValue + item.power);
@@ -42,16 +42,7 @@ export abstract class GameActionUseItem extends GameAction {
     this.mixedItemDefense = new MixedValueNumber(itemDefenseInitialValue);
   }
 
-  // TODO:
-  public processGameStep(): Promise<GAME_STEP_RESULTS> {
-    const alterables = this.getAlterablesWithType();
-    this.finalizeMixedValues(alterables);
-    const gameActions = this.useItemExecution(alterables);
-    // TODO: execute collected gameActions. Maybe some additional class for non-alterable game actions which contains of exact values?
-    return Promise.resolve(GAME_STEP_RESULTS.ERROR);
-  }
-
-  private useItemExecution(alterables: AlterableWithType[]): GameAction[] {
+  protected calculateAndExecute(alterables: AlterableWithType[]): GameAction[] {
     const gameActions: GameAction[] = [];
     // 1. Can Act.
     const alterCanActGameActions = this.callAlterationForUsedAlterables(alterables, this.mixedCanAct.partials, VALUES_FOR_ALTERATION.CAN_ACT);
@@ -76,6 +67,8 @@ export abstract class GameActionUseItem extends GameAction {
           gameActions.push(...alterItemDefenseGameActions);
           // Finally execute action.
           this.execute();
+        } else {
+          gameActions.push(...this.item.alterGameActionPhase(USE_ITEM_PHASES_FOR_ALTERATION.EVASION, this));
         }
       } else {
         gameActions.push(...this.item.alterGameActionPhase(USE_ITEM_PHASES_FOR_ALTERATION.MISS, this));
@@ -86,7 +79,7 @@ export abstract class GameActionUseItem extends GameAction {
     return gameActions;
   }
 
-  private finalizeMixedValues(alterablesWithType: AlterableWithType[]): void {
+  protected finalizeMixedValues(alterablesWithType: AlterableWithType[]): void {
     // Ability to make action? Not a simple validation.
     for (const alterableWithType of alterablesWithType) {
       if (this.mixedCanAct.isFinal() === false) {

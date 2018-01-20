@@ -1,9 +1,7 @@
 import { ParsedSlackActionPayload, SlackMessageAction, SlackMessageAttachment } from "../../helpers/slackmessage";
 import { Game } from "../game/game";
-import { ALTERATION_TYPES, GameAction } from "../gameaction/gameaction";
-import {
-  GameActionCastSpell
-} from "../gameaction/gameactions/gameactioncastspell/gameactioncastspell";
+import { GameAction } from "../gameaction/gameaction";
+import { GameActionCastSpell } from "../gameaction/gameactions/gameactioncastspell/gameactioncastspell";
 import { GAME_ACTION_REQUEST_TYPES, GameActionRequest } from "../gameactionrequest/gameactionrequest";
 import { GameActionRequestCastSpellFirebaseValue } from "../gameactionrequest/gameactionrequests/gameactionrequestcastspell/dbfirebase";
 import { GameActionRequestCastSpell } from "../gameactionrequest/gameactionrequests/gameactionrequestcastspell/gameactionrequestcastspell";

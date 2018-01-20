@@ -2,6 +2,7 @@ import { GameActionCastSpell } from "../../../gameaction/gameactions/gameactionc
 
 export class GameActionCastSpellFireball extends GameActionCastSpell {
   public execute(): void {
-    //
+    const spellPower = this.mixedSpellPower.getFinalValue() as number;
+    this.initiator.health -= spellPower;
   }
 }

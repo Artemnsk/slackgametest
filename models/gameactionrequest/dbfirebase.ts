@@ -7,8 +7,8 @@ export type GameActionRequestFirebaseValueRaw = GameActionRequestCastSpellFireba
 
 export type GameActionRequestFirebaseValue = GameActionRequestCastSpellFirebaseValue | GameActionRequestUseItemFirebaseValue;
 
-export function getRecentAction(): Promise<{ value: GameActionRequestFirebaseValueRaw, $key: string } | null> {
-  return firebaseApp.database().ref("/actionRequests").orderByChild("created").limitToFirst(1).once("value")
+export function getRecentAction(teamKey: string, channelKey: string, gameKey: string): Promise<{ value: GameActionRequestFirebaseValueRaw, $key: string } | null> {
+  return firebaseApp.database().ref(`/actionRequests/${teamKey}/${channelKey}/${gameKey}`).orderByChild("created").limitToFirst(1).once("value")
     .then((snapshot: admin.database.DataSnapshot): Promise<{ value: GameActionRequestFirebaseValueRaw, $key: string } | null> => {
       if (!snapshot.val()) {
         // No action found.

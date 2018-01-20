@@ -7,7 +7,7 @@ import { GameActionRequestUseItemFirebaseValueRaw, processFirebaseRawValues as p
 import { GameActionRequestUseItem } from "./gameactionrequests/gameactionrequestuseitem/gameactionrequestuseitem";
 
 export function getRecentAction(game: Game): Promise<GameActionRequest|null> {
-  return getRecentActionDB()
+  return getRecentActionDB(game.getTeamKey(), game.getChannelKey(), game.getKey())
     .then((recentAction): Promise<GameActionRequest|null> => {
       if (recentAction === null) {
         return Promise.resolve(null);

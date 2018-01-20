@@ -1,4 +1,4 @@
-import { Game, GAME_STEP_RESULTS } from "../../../game/game";
+import { Game } from "../../../game/game";
 import { GameActionRequestCastSpell } from "../../../gameactionrequest/gameactionrequests/gameactionrequestcastspell/gameactionrequestcastspell";
 import { Gamer } from "../../../gamer/gamer";
 import { MixedValueBoolean } from "../../../mixed/mixedvalue/mixedvalues/mixedvalueboolean";
@@ -30,7 +30,7 @@ export abstract class GameActionCastSpell extends GameAction {
     super(game, gameActionRequest, initiator, target);
     this.spell = spell;
     // Initialize all these mixed values.
-    this.mixedCanAct = new MixedValueBoolean(true);
+    this.mixedCanAct = new MixedValueBoolean(initiator.dead === false);
     // We are sure all Gamer mixed values being finalized here. That actually must happen on Gamer initialization in it's constructor().
     const spellPowerInitialValue = this.initiator.stats.spellPower.getFinalValue() as number;
     this.mixedSpellPower = new MixedValueNumber(spellPowerInitialValue + spell.power);
@@ -42,15 +42,7 @@ export abstract class GameActionCastSpell extends GameAction {
     this.mixedSpellResistance = new MixedValueNumber(spellResistanceInitialValue);
   }
 
-  public processGameStep(): Promise<GAME_STEP_RESULTS> {
-    const alterables = this.getAlterablesWithType();
-    this.finalizeMixedValues(alterables);
-    const gameActions = this.castSpellExecution(alterables);
-    // TODO: execute collected gameActions. Maybe some additional class for non-alterable game actions which contains of exact values?
-    return Promise.resolve(GAME_STEP_RESULTS.ERROR);
-  }
-
-  private castSpellExecution(alterables: AlterableWithType[]): GameAction[] {
+  protected calculateAndExecute(alterables: AlterableWithType[]): GameAction[] {
     const gameActions: GameAction[] = [];
     // 1. Can Act.
     const alterCanActGameActions = this.callAlterationForUsedAlterables(alterables, this.mixedCanAct.partials, VALUES_FOR_ALTERATION.CAN_ACT);
@@ -75,6 +67,8 @@ export abstract class GameActionCastSpell extends GameAction {
           gameActions.push(...alterSpellResistanceGameActions);
           // Finally execute action.
           this.execute();
+        } else {
+          gameActions.push(...this.spell.alterGameActionPhase(CAST_SPELL_PHASES_FOR_ALTERATION.EVASION, this));
         }
       } else {
         gameActions.push(...this.spell.alterGameActionPhase(CAST_SPELL_PHASES_FOR_ALTERATION.MISS, this));
@@ -85,7 +79,7 @@ export abstract class GameActionCastSpell extends GameAction {
     return gameActions;
   }
 
-  private finalizeMixedValues(alterablesWithType: AlterableWithType[]): void {
+  protected finalizeMixedValues(alterablesWithType: AlterableWithType[]): void {
     // Ability to make action? Not a simple validation.
     for (const alterableWithType of alterablesWithType) {
       if (this.mixedCanAct.isFinal() === false) {

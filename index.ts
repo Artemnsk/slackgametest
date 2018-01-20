@@ -5,6 +5,9 @@ import * as https from "https";
 import * as redirectHttps from "redirect-https";
 import { router as rootRoute } from "./controllers";
 import { credentials as publicCredentials } from "./credentials/public";
+import { gameLoop } from "./gameloop";
+
+gameLoop();
 
 const app = express();
 // Start game.

@@ -1,11 +1,11 @@
+import { SlackMessageAttachment } from "../../../helpers/slackmessage";
+import { GameAction } from "../../gameaction/gameaction";
 import { Gamer } from "../../gamer/gamer";
+import { IAlterableDefaultGameProcess, IAlterableGameActionMixedValues } from "../../iusable/ialterable";
 import { ItemFirebaseValue } from "../dbfirebase";
 import { Item } from "../item";
-import { IAlterableGameActionMixedValues } from "../../iusable/ialterable";
-import { GameAction } from "../../gameaction/gameaction";
-import { SlackMessageAttachment } from "../../../helpers/slackmessage";
 
-export abstract class GamerItem extends Item implements IAlterableGameActionMixedValues {
+export abstract class GamerItem extends Item implements IAlterableGameActionMixedValues, IAlterableDefaultGameProcess {
   private gamer: Gamer;
 
   constructor(gamer: Gamer, values: ItemFirebaseValue, itemKey: string) {
@@ -56,8 +56,13 @@ export abstract class GamerItem extends Item implements IAlterableGameActionMixe
     }];
   }
 
-  // TODO: abstract?
   public alterBeingUsedInGameActionMixedValue(valueName: string, gameAction: GameAction, alterationType: string): GameAction[] {
     return [];
+  }
+
+  // Could be overridden by children to involve some additional logic on game processing step.
+  // E.g. track ends of buffs/debuffs and so on.
+  public alterDefaultGameProcess(): boolean {
+    return false;
   }
 }
