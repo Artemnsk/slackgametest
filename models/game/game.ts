@@ -1,8 +1,5 @@
 import * as admin from "firebase-admin";
 import { Channel } from "../channel/channel";
-import { GameAction } from "../gameaction/gameaction";
-import { GameActionRequest } from "../gameactionrequest/gameactionrequest";
-import { getRecentAction } from "../gameactionrequest/gameactionrequestfactory";
 import { GamerFirebaseValue } from "../gamer/dbfirebase";
 import { Gamer } from "../gamer/gamer";
 import { SpellFirebaseValue } from "../spell/dbfirebase";
@@ -140,39 +137,7 @@ export class Game {
     });
   }
 
-  /**
-   * Handles game step for game.
-   */
-  public gameStep(): Promise<GAME_STEP_RESULTS> {
-    return getRecentAction(this)
-      .then((gameActionRequest): Promise<GAME_STEP_RESULTS> => {
-        if (gameActionRequest !== null) {
-          // At first we simply get GameAction object from request.
-          const gameAction = gameActionRequest.toGameAction();
-          if (gameAction !== null) {
-            return gameAction.processGameStep()
-              .then((gameStepResult) => {
-                return GameActionRequest.removeGameActionRequest(gameActionRequest.getTeamKey(), gameActionRequest.getChannelKey(), gameActionRequest.getGameKey(), gameActionRequest.getKey())
-                  .then(() => {
-                    return this.defaultGameProcessing();
-                  }, () => {
-                    return this.defaultGameProcessing();
-                  });
-              }, () => {
-                return Promise.resolve(GAME_STEP_RESULTS.ERROR);
-              });
-          } else {
-            return Promise.resolve(GAME_STEP_RESULTS.ERROR);
-          }
-        } else {
-          return this.defaultGameProcessing();
-        }
-      }, (err) => {
-        return Promise.resolve(GAME_STEP_RESULTS.ERROR);
-      });
-  }
-
-  private defaultGameProcessing(): Promise<GAME_STEP_RESULTS> {
+  public defaultGameProcessing(): Promise<GAME_STEP_RESULTS> {
     // Allow each entity to alter default calculation. E.g. calculate buffs/debuffs damage or their end.
     for (const gamer of this.gamers) {
       for (const item of gamer.items) {
@@ -185,14 +150,19 @@ export class Game {
         gamer.dead = true;
       }
     }
-    // TODO: somewhere in the beginning of loop Calculate game end.
-    const liveGamers = this.gamers.filter((gamer) => gamer.dead === false);
-    if (liveGamers.length <= 0) {
-      // TODO: somewhere in the beginning of loop Calculate game end.
-      return Promise.resolve(GAME_STEP_RESULTS.END);
-    }
     return Game.setGame(this.channel, this.getFirebaseValue(), this.getKey())
       .then(() => {
+        // TODO: somewhere in the beginning of loop Calculate game end.
+        const liveGamers = this.gamers.filter((gamer) => gamer.dead === false);
+        if (liveGamers.length <= 0) {
+          // TODO: somewhere in the beginning of loop Calculate game end.
+          return this.channel.overGame()
+            .then(() => {
+              return Promise.resolve(GAME_STEP_RESULTS.END);
+            }, (err) => {
+              return Promise.resolve(GAME_STEP_RESULTS.ERROR);
+            });
+        }
         return Promise.resolve(GAME_STEP_RESULTS.DEFAULT);
       }, () => {
         return Promise.resolve(GAME_STEP_RESULTS.ERROR);

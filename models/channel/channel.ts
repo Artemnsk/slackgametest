@@ -205,10 +205,22 @@ export class Channel {
                 return Promise.reject(error);
               });
           } else {
-            const error = {
-              message: `There is no game with '${GAME_PHASES.RUNNING}' status in this channel.`,
-            };
-            return Promise.reject(error);
+            // Anyway make this channel not in game.
+            this.nextGame = Date.now() + this.breakTime;
+            this.phase = CHANNEL_PHASES.BREAK;
+            this.currentGame = null;
+            return Channel.setChannel(this.team, this.getFirebaseValue(), this.getKey())
+              .then(() => {
+                const error = {
+                  message: `There is no game with '${GAME_PHASES.RUNNING}' status in this channel.`,
+                };
+                return Promise.reject(error);
+              }, () => {
+                const error = {
+                  message: `There is no game with '${GAME_PHASES.RUNNING}' status in this channel.`,
+                };
+                return Promise.reject(error);
+              });
           }
         });
     }

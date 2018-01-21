@@ -15,9 +15,9 @@ export class AppLoop {
   constructor() {
     this.teamLoops = [];
     this.ref = firebaseApp.database().ref("/teams");
-    this.ref.on("child_added", this.teamAdded);
-    this.ref.on("child_changed", this.teamChanged);
-    this.ref.on("child_removed", this.teamRemoved);
+    this.ref.on("child_added", this.teamAdded, this);
+    this.ref.on("child_changed", this.teamChanged, this);
+    this.ref.on("child_removed", this.teamRemoved, this);
   }
 
   // Handles destroying of object - needed to "off" Firebase listeners.
@@ -27,9 +27,9 @@ export class AppLoop {
       teamLoop.destroy();
     }
     // Then remove all "top-level" reference listeners.
-    this.ref.off("child_added", this.teamAdded);
-    this.ref.off("child_changed", this.teamChanged);
-    this.ref.off("child_removed", this.teamRemoved);
+    this.ref.off("child_added", this.teamAdded, this);
+    this.ref.off("child_changed", this.teamChanged, this);
+    this.ref.off("child_removed", this.teamRemoved, this);
   }
 
   private teamAdded(snapshot: admin.database.DataSnapshot): void {

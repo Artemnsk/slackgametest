@@ -22,23 +22,36 @@ export type ChannelFirebaseValue = {
   timeStep: number,
   breakTime: number,
   phase: CHANNEL_PHASES,
-  nextGame: number|null,
-  currentGame: string|null,
+  nextGame: number | null,
+  currentGame: string | null,
 };
 
-function processFirebaseRawValues(value: ChannelFirebaseValueRaw): ChannelFirebaseValue {
+export function processFirebaseRawValues(value: ChannelFirebaseValueRaw): ChannelFirebaseValue {
   return Object.assign(value, {
     currentGame: value.currentGame === undefined ? null : value.currentGame,
     nextGame: value.nextGame === undefined ? null : value.nextGame,
   });
 }
 
+export function validateChannelFirebaseValue(channelFirebaseValue: ChannelFirebaseValue): boolean {
+  const currentGameReferenceExists = channelFirebaseValue.currentGame !== null;
+  const nextGameTimerExists = channelFirebaseValue.nextGame !== null;
+  switch (channelFirebaseValue.phase) {
+    case CHANNEL_PHASES.IN_GAME:
+      return currentGameReferenceExists;
+    case CHANNEL_PHASES.BREAK:
+      return !currentGameReferenceExists && nextGameTimerExists;
+    default:
+      return false;
+  }
+}
+
 /**
  * Load channel from DB by channelId.
  */
-export function getDBChannel(teamId: string, channelId: string): Promise<ChannelFirebaseValue|null> {
+export function getDBChannel(teamId: string, channelId: string): Promise<ChannelFirebaseValue | null> {
   return firebaseApp.database().ref(`/channels/${teamId}/${channelId}`).once("value")
-    .then((snapshot: admin.database.DataSnapshot): Promise<ChannelFirebaseValue|null> => {
+    .then((snapshot: admin.database.DataSnapshot): Promise<ChannelFirebaseValue | null> => {
       if (!snapshot.val()) {
         // No channel found.
         return Promise.resolve(null);
@@ -52,19 +65,19 @@ export function getDBChannel(teamId: string, channelId: string): Promise<Channel
 /**
  * Respond with channels array from DB.
  */
-export function getDBChannels(teamId: string, active?: boolean): Promise<{[key: string]: ChannelFirebaseValue}> {
+export function getDBChannels(teamId: string, active?: boolean): Promise<{ [key: string]: ChannelFirebaseValue }> {
   let reference: admin.database.Reference | admin.database.Query = firebaseApp.database().ref(`/channels/${teamId}`);
   if (active !== undefined) {
     reference = reference.orderByChild("active").equalTo(active);
   }
   return reference.once("value")
-    .then((/** admin.database.DataSnapshot */ snapshot): Promise<{[key: string]: ChannelFirebaseValue}> => {
+    .then((/** admin.database.DataSnapshot */ snapshot): Promise<{ [key: string]: ChannelFirebaseValue }> => {
       if (!snapshot.val()) {
         // No channels found.
         return Promise.resolve({});
       } else {
-        const channelsFirebaseObjectRaw: {[key: string]: ChannelFirebaseValueRaw} = snapshot.val();
-        const channelsFirebaseObject: {[key: string]: ChannelFirebaseValue} = {};
+        const channelsFirebaseObjectRaw: { [key: string]: ChannelFirebaseValueRaw } = snapshot.val();
+        const channelsFirebaseObject: { [key: string]: ChannelFirebaseValue } = {};
         for (const key in channelsFirebaseObjectRaw) {
           if (channelsFirebaseObjectRaw.hasOwnProperty(key)) {
             channelsFirebaseObject[key] = processFirebaseRawValues(channelsFirebaseObjectRaw[key]);

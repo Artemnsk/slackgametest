@@ -8,15 +8,15 @@ export const enum GAME_ACTION_REQUEST_TYPES {
 }
 
 export abstract class GameActionRequest {
-  public static removeGameActionRequest(teamKey: string, channelKey: string, gameKey: string, gameActionRequestKey: string): Promise<void> {
-    return removeDBGameActionRequest(teamKey, channelKey, gameKey, gameActionRequestKey);
-  }
-
   /**
    * Adds new action into DB.
    */
   public static addGameActionRequest(game: Game, gameActionRequestFirebaseValue: GameActionRequestFirebaseValue): Promise<void> {
     return addDBGameActionRequest(gameActionRequestFirebaseValue, game.getTeamKey(), game.getChannelKey(), game.getKey());
+  }
+
+  public static removeGameActionRequest(game: Game, key: string): Promise<void> {
+    return removeDBGameActionRequest(game.getTeamKey(), game.getChannelKey(), game.getKey(), key);
   }
 
   public type: GAME_ACTION_REQUEST_TYPES;
