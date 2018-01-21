@@ -1,11 +1,11 @@
-import { SPELLS } from "../../spell";
-import { PHASES_FOR_ALTERATION, UsableSpell } from "../../usablespell";
-import { SpellFireballFirebaseValue } from "./dbfirebase";
-import { Gamer } from "../../../gamer/gamer";
-import { GameActionCastSpellFireball } from "./gameactioncastspellfireball";
+import { Game } from "../../../game/game";
 import { GameAction } from "../../../gameaction/gameaction";
 import { GameActionRequestCastSpell } from "../../../gameactionrequest/gameactionrequests/gameactionrequestcastspell/gameactionrequestcastspell";
-import { Game } from "../../../game/game";
+import { Gamer } from "../../../gamer/gamer";
+import { SPELLS } from "../../spell";
+import { CAST_SPELL_PHASES_FOR_ALTERATION, UsableSpell } from "../../usablespell";
+import { SpellFireballFirebaseValue } from "./dbfirebase";
+import { GameActionCastSpellFireball } from "./gameactioncastspellfireball";
 
 export class SpellFireball extends UsableSpell {
   public id: SPELLS = SPELLS.FIREBALL;
@@ -22,11 +22,11 @@ export class SpellFireball extends UsableSpell {
   public getFirebaseValues(): SpellFireballFirebaseValue {
     return {
       // todo:
-      power: this.power,
       description: this.description,
       emoji: this.emoji,
       id: SPELLS.FIREBALL,
       label: this.label,
+      power: this.power,
     };
   }
 
@@ -35,7 +35,7 @@ export class SpellFireball extends UsableSpell {
   }
 
   // TODO: abstract.
-  public alterGameActionPhase(phase: PHASES_FOR_ALTERATION, gameAction: GameAction): GameAction[] {
+  public alterGameActionPhase(phase: CAST_SPELL_PHASES_FOR_ALTERATION, gameAction: GameAction): GameAction[] {
     return [];
   }
 }

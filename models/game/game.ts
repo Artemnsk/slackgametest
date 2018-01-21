@@ -1,6 +1,5 @@
 import * as admin from "firebase-admin";
 import { Channel } from "../channel/channel";
-import { getRecentAction } from "../gameactionrequest/gameactionrequestfactory";
 import { GamerFirebaseValue } from "../gamer/dbfirebase";
 import { Gamer } from "../gamer/gamer";
 import { SpellFirebaseValue } from "../spell/dbfirebase";
@@ -138,27 +137,35 @@ export class Game {
     });
   }
 
-  /**
-   * Handles game step for game.
-   */
-  public gameStep(): Promise<GAME_STEP_RESULTS> {
-    getRecentAction(this)
-      .then((gameActionRequest): Promise<GAME_STEP_RESULTS> => {
-        if (gameActionRequest !== null) {
-          // At first we simply get GameAction object from request.
-          const gameAction = gameActionRequest.toGameAction();
-          if (gameAction !== null) {
-            return gameAction.processGameStep();
-          } else {
-            return Promise.resolve(GAME_STEP_RESULTS.ERROR);
-          }
-        } else {
-          // TODO: Make default game loop?
-          return Promise.resolve(GAME_STEP_RESULTS.ERROR);
+  public defaultGameProcessing(): Promise<GAME_STEP_RESULTS> {
+    // Allow each entity to alter default calculation. E.g. calculate buffs/debuffs damage or their end.
+    for (const gamer of this.gamers) {
+      for (const item of gamer.items) {
+        item.alterDefaultGameProcess();
+      }
+    }
+    // Calculate deaths.
+    for (const gamer of this.gamers) {
+      if (gamer.health <= 0) {
+        gamer.dead = true;
+      }
+    }
+    return Game.setGame(this.channel, this.getFirebaseValue(), this.getKey())
+      .then(() => {
+        // TODO: somewhere in the beginning of loop Calculate game end.
+        const liveGamers = this.gamers.filter((gamer) => gamer.dead === false);
+        if (liveGamers.length <= 0) {
+          // TODO: somewhere in the beginning of loop Calculate game end.
+          return this.channel.overGame()
+            .then(() => {
+              return Promise.resolve(GAME_STEP_RESULTS.END);
+            }, (err) => {
+              return Promise.resolve(GAME_STEP_RESULTS.ERROR);
+            });
         }
+        return Promise.resolve(GAME_STEP_RESULTS.DEFAULT);
       }, () => {
         return Promise.resolve(GAME_STEP_RESULTS.ERROR);
       });
-    return Promise.resolve(GAME_STEP_RESULTS.DEFAULT);
   }
 }

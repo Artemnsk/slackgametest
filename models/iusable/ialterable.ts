@@ -5,3 +5,7 @@ export interface IAlterableGameActionMixedValues {
 
   alterBeingUsedInGameActionMixedValue(valueName: string, gameAction: GameAction, alterationType: string, alterableData: object): GameAction[];
 }
+
+export interface IAlterableDefaultGameProcess {
+  alterDefaultGameProcess(): boolean;
+}

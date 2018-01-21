@@ -1,104 +1,171 @@
+import * as admin from "firebase-admin";
+import { firebaseApp } from "../helpers/firebaseapp";
 import { Channel } from "../models/channel/channel";
 import { CHANNEL_PHASES } from "../models/channel/dbfirebase";
-import { Game, GAME_STEP_RESULTS } from "../models/game/game";
+import { Game } from "../models/game/game";
+import { GameActionRequestFirebaseValueRaw } from "../models/gameactionrequest/dbfirebase";
+import { GameActionRequest } from "../models/gameactionrequest/gameactionrequest";
+import { buildGameActionRequest } from "../models/gameactionrequest/gameactionrequestfactory";
+
+type GameActionRequestData = {
+  request: GameActionRequestFirebaseValueRaw,
+  key: string,
+};
 
 export class ChannelLoop {
-  private static CHANNEL_LOOP_FREQUENCY_BREAK = 5000;
-  private static CHANNEL_LOOP_FREQUENCY_IN_GAME = 2000;
   private channel: Channel;
-  private inProgress: boolean = false;
+  private gameActionRequestsRef: admin.database.Reference | null = null;
+  private gameActionRequestsData: GameActionRequestData[] = [];
 
   constructor(channel: Channel) {
     this.channel = channel;
-  }
-
-  public start(): void {
-    this.inProgress = true;
-    this.loop();
-  }
-
-  public pause(): void {
-    this.inProgress = false;
-  }
-
-  private loop(): void {
-    switch (this.channel.phase) {
+    switch (channel.phase) {
       case CHANNEL_PHASES.BREAK:
-        this.breakStep();
+        // Waiting for game to start.
+        this.waitingForGameStart();
         break;
       case CHANNEL_PHASES.IN_GAME:
-        this.inGameStep();
+        this.gameActionRequestsRef = firebaseApp.database().ref(`/actionRequests/${channel.getTeamKey()}/${channel.getKey()}/${channel.currentGame}`);
+        this.gameActionRequestsRef.on("child_added", this.gameActionRequestAdded, this);
+        this.processGame();
         break;
     }
   }
 
-  private breakStep(): void {
-    if (this.channel.nextGame !== null) {
-      if (Date.now() > this.channel.nextGame) {
-        this.channel.startGame()
-          .then(() => {
-            this.repeatChannelLoop();
-          }, () => {
-            // TODO: error. Log it and retry. Maybe retry MUCH later?
-            this.repeatChannelLoop();
-          });
-      } else {
-        // OK. Wait for game time.
-        this.repeatChannelLoop();
+  public getChannelKey(): string {
+    return this.channel.getKey();
+  }
+
+  // Handles destroying of object - needed to "off" Firebase listeners.
+  public destroy(): void {
+    if (this.gameActionRequestsRef !== null) {
+      this.gameActionRequestsRef.off("child_added", this.gameActionRequestAdded, this);
+    }
+  }
+
+  private waitingForGameStart(): void {
+    setTimeout(() => {
+      const nextGame = this.channel.nextGame;
+      if (nextGame !== null) {
+        const now = Date.now();
+        if (nextGame <= now) {
+          // That will trigger channel change which triggers replacement/destroying of this channel in teamloop.
+          this.channel.startGame();
+        } else {
+          // Otherwise keep waiting.
+          this.waitingForGameStart();
+        }
       }
-    } else {
-      // TODO: error. Something went wrong actually. Do not even start loop again.
-    }
+    }, 2000);
   }
 
-  private inGameStep(): void {
-    if (this.channel.currentGame !== null) {
-      // Load game and delegate loop to it.
-      Game.getGame(this.channel, this.channel.currentGame)
-        .then((game) => {
-          if (game !== null) {
-            this.repeatGameLoop(game, ChannelLoop.CHANNEL_LOOP_FREQUENCY_IN_GAME);
-          } else {
-            // TODO: error - game not found.
-          }
-        }, () => {
-          // TODO: error - DB connection or something?
-        });
-    } else {
-      // That is actually error.
-    }
-  }
-
-  private repeatChannelLoop(): void {
-    if (this.inProgress) {
-      setTimeout(() => this.start(), ChannelLoop.CHANNEL_LOOP_FREQUENCY_BREAK);
-    }
-  }
-
-  /**
-   * Repeats game loop if channel loop is in progress.
-   */
-  private repeatGameLoop(game: Game, frequency: number): void {
-    if (this.inProgress) {
-      setTimeout(() => {
-        game.gameStep()
-          .then((result) => {
-            switch (result) {
-              case GAME_STEP_RESULTS.DEFAULT:
-                // Run game again later.
-                this.repeatGameLoop(game, ChannelLoop.CHANNEL_LOOP_FREQUENCY_IN_GAME);
-                break;
-              case GAME_STEP_RESULTS.END:
-                this.repeatChannelLoop();
-                break;
-              case GAME_STEP_RESULTS.ERROR:
-                // TODO:
-                break;
+  private processGame(): void {
+    setTimeout(() => {
+      if (this.channel.currentGame !== null) {
+        Game.getGame(this.channel, this.channel.currentGame)
+          .then((game) => {
+            if (game !== null) {
+              if (this.gameActionRequestsData.length > 0) {
+                const gameActionRequest = buildGameActionRequest(game, this.gameActionRequestsData[0].request, this.gameActionRequestsData[0].key);
+                if (gameActionRequest !== null) {
+                  const gameAction = gameActionRequest.toGameAction();
+                  if (gameAction !== null) {
+                    gameAction.processGameStep()
+                      .then(() => {
+                        // Remove this game action from array and run default game processing loop.
+                        const index = this.gameActionRequestsData.findIndex((item) => item.key === gameActionRequest.getKey());
+                        if (index !== -1) {
+                          this.gameActionRequestsData.splice(index, 1);
+                        }
+                        game.defaultGameProcessing()
+                          .then(() => {
+                            // Remove this game action from array and run default game processing loop.
+                            const index = this.gameActionRequestsData.findIndex((item) => item.key === gameActionRequest.getKey());
+                            if (index !== -1) {
+                              this.gameActionRequestsData.splice(index, 1);
+                            }
+                            GameActionRequest.removeGameActionRequest(game, gameActionRequest.getKey())
+                              .then(() => {
+                                this.processGame();
+                              }, () => {
+                                this.processGame();
+                              });
+                          }, () => {
+                            // TODO: that is actually bad because we cannot proceed. Maybe Pause/Over game?
+                            // Remove this game action from array and run default game processing loop.
+                            const index = this.gameActionRequestsData.findIndex((item) => item.key === gameActionRequest.getKey());
+                            if (index !== -1) {
+                              this.gameActionRequestsData.splice(index, 1);
+                            }
+                            GameActionRequest.removeGameActionRequest(game, gameActionRequest.getKey())
+                              .then(() => {
+                                this.processGame();
+                              }, () => {
+                                this.processGame();
+                              });
+                          });
+                      }, () => {
+                        // Remove this game action from array and proceed.
+                        const index = this.gameActionRequestsData.findIndex((item) => item.key === gameActionRequest.getKey());
+                        if (index !== -1) {
+                          this.gameActionRequestsData.splice(index, 1);
+                        }
+                        GameActionRequest.removeGameActionRequest(game, gameActionRequest.getKey())
+                          .then(() => {
+                            this.processGame();
+                          }, () => {
+                            this.processGame();
+                          });
+                      });
+                  } else {
+                    this.gameActionRequestsData.splice(0, 1);
+                    GameActionRequest.removeGameActionRequest(game, gameActionRequest.getKey())
+                      .then(() => {
+                        this.processGame();
+                      }, () => {
+                        this.processGame();
+                      });
+                  }
+                } else {
+                  this.gameActionRequestsData.splice(0, 1);
+                  GameActionRequest.removeGameActionRequest(game, this.gameActionRequestsData[0].key)
+                    .then(() => {
+                      this.processGame();
+                    }, () => {
+                      this.processGame();
+                    });
+                }
+              } else {
+                // Default gaem prrocessing.
+                game.defaultGameProcessing()
+                  .then(() => {
+                    this.processGame();
+                  }, () => {
+                    // TODO: that is actually bad because we cannot proceed. Maybe Pause/Over game?
+                  });
+              }
+            } else {
+              // TODO: definitely some error.. Maybe even over game?
             }
-          }, () => {
-            // TODO: is that some code error or something? Is that actually a reachable code?
+          }, (err) => {
+            // Proceed anyway.
+            // TODO: error log?
+            this.processGame();
           });
-      }, frequency);
+      }
+    }, 2000);
+  }
+
+  private gameActionRequestAdded(snapshot: admin.database.DataSnapshot): void {
+    if (this.channel.currentGame !== null) {
+      const gameActionRequestFirebaseValueRaw: GameActionRequestFirebaseValueRaw | null = snapshot.val();
+      if (gameActionRequestFirebaseValueRaw !== null && snapshot.key !== null) {
+        const gameActionRequestData: GameActionRequestData = {
+          key: snapshot.key,
+          request: gameActionRequestFirebaseValueRaw,
+        };
+        this.gameActionRequestsData.push(gameActionRequestData);
+      }
     }
   }
 }
