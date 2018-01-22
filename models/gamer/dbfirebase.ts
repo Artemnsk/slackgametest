@@ -5,6 +5,7 @@ export type GamerFirebaseValueRaw = {
   name: string,
   dead: boolean,
   health: number,
+  lastGameAction: number,
   mana: number,
   stats: {
     strength: number,
@@ -19,6 +20,7 @@ export type GamerFirebaseValue = {
   name: string,
   dead: boolean,
   health: number,
+  lastGameAction: number,
   mana: number,
   stats: {
     strength: number,

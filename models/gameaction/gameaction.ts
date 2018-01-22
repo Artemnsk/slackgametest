@@ -3,6 +3,9 @@ import { GAME_ACTION_REQUEST_TYPES, GameActionRequest } from "../gameactionreque
 import { Gamer } from "../gamer/gamer";
 import { IAlterableGameActionMixedValues } from "../iusable/ialterable";
 import { MixedValuePartial } from "../mixed/mixedvaluepartial/mixedvaluepartial";
+import { MixedValueBoolean } from "../mixed/mixedvalue/mixedvalues/mixedvalueboolean";
+import { VALUES_FOR_ALTERATION } from "./gameactions/gameactioncastspell/gameactioncastspell";
+import { MixedValue } from "../mixed/mixedvalue/mixedvalue";
 
 export const enum GAME_ACTION_TYPES {
   CAST_SPELL = "CAST_SPELL",
@@ -12,6 +15,7 @@ export const enum GAME_ACTION_TYPES {
 export const enum ALTERATION_TYPES {
   TARGET = "TARGET",
   INITIATOR = "INITIATOR",
+  OTHER = "OTHER",
 }
 
 export type AlterableWithType = {
@@ -24,11 +28,16 @@ type AlterableGAData = {
   data: object,
 };
 
+export const enum DEFAULT_VALUES_FOR_ALTERATION {
+  CAN_ACT = "CAN_ACT",
+}
+
 export abstract class GameAction {
   public type: GAME_ACTION_TYPES;
   public initiator: Gamer;
   public target: Gamer;
   public created: number;
+  protected mixedCanAct: MixedValueBoolean;
   protected game: Game;
   protected alterableGADataStorage: AlterableGAData[];
 
@@ -46,6 +55,10 @@ export abstract class GameAction {
     this.target = target;
     this.created = gameActionRequest.created;
     this.alterableGADataStorage = [];
+    // Initialize canAct mixed value.
+    this.mixedCanAct = new MixedValueBoolean(true);
+    // Loop through default game canActPartials.
+    game.alterGameActionMixedValue(DEFAULT_VALUES_FOR_ALTERATION.CAN_ACT, this.mixedCanAct, this, ALTERATION_TYPES.OTHER, this.getAlterableGAData(game));
   }
 
   public getTeamKey(): string {
@@ -89,12 +102,12 @@ export abstract class GameAction {
     return data;
   }
 
-  protected callAlterationForUsedAlterables(alterablesWithType: AlterableWithType[], partials: Array<MixedValuePartial<any>>, alteredValue: string): GameAction[] {
+  protected callAlterationForUsedAlterables(alterablesWithType: AlterableWithType[], mixedValue: MixedValue<any, any>, alteredValue: string): GameAction[] {
     const gameActions = [];
-    for (const partial of partials) {
+    for (const partial of mixedValue.partials) {
       const alterableWithType = alterablesWithType.find((item) => item.alterable === partial.getOwner());
       if (alterableWithType !== undefined) {
-        gameActions.push(...alterableWithType.alterable.alterBeingUsedInGameActionMixedValue(alteredValue, this, alterableWithType.type, this.getAlterableGAData(alterableWithType.alterable)));
+        gameActions.push(...alterableWithType.alterable.alterBeingUsedInGameActionMixedValue(alteredValue, mixedValue, this, alterableWithType.type, this.getAlterableGAData(alterableWithType.alterable)));
       }
     }
     return gameActions;

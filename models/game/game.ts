@@ -5,6 +5,11 @@ import { Gamer } from "../gamer/gamer";
 import { SpellFirebaseValue } from "../spell/dbfirebase";
 import { getRandomSpellFirebaseValue as getRandomSpell } from "../spell/spellfactory";
 import { GameFirebaseValue, getDBGame, getDBGames, getNewGameDBRef, removeDBGame, setDBGame } from "./dbfirebase";
+import { IAlterableGameActionMixedValues } from "../iusable/ialterable";
+import { ALTERATION_TYPES, DEFAULT_VALUES_FOR_ALTERATION, GameAction } from "../gameaction/gameaction";
+import { MixedValue } from "../mixed/mixedvalue/mixedvalue";
+import { MixedValueBoolean } from "../mixed/mixedvalue/mixedvalues/mixedvalueboolean";
+import { MixedValuePartialBoolean } from "../mixed/mixedvaluepartial/mixedvaluepartials/mixedvaluepartialboolean";
 
 export const enum GAME_PHASES {
   OVER = "OVER",
@@ -18,7 +23,7 @@ export const enum GAME_STEP_RESULTS {
   END = "END",
 }
 
-export class Game {
+export class Game implements IAlterableGameActionMixedValues {
   public static assignSpells(gamers: { [key: string]: GamerFirebaseValue }, quantity: number): { [key: string]: GamerFirebaseValue } {
     for (const gamerKey in gamers) {
       if (gamers.hasOwnProperty(gamerKey)) {
@@ -167,5 +172,57 @@ export class Game {
       }, () => {
         return Promise.resolve(GAME_STEP_RESULTS.ERROR);
       });
+  }
+
+  /**
+   * Alters CAN_ACT value only. Involves game specific logic which applicable to ALL possible game actions: death, time since last step, etc.
+   */
+  public alterGameActionMixedValue(valueName: string, mixedValue: MixedValue<any, any>, gameAction: GameAction, alterationType: string, alterableData: object): void {
+    if (alterationType === ALTERATION_TYPES.OTHER) {
+      switch (valueName) {
+        case DEFAULT_VALUES_FOR_ALTERATION.CAN_ACT:
+          const canActMixedValue = mixedValue as MixedValueBoolean;
+          // Is gamer dead?
+          if (gameAction.initiator.dead === false) {
+            // Was gamer's last game action long time ago enough?
+            const initiatorHaste = gameAction.initiator.stats.haste.getFinalValue();
+            if (initiatorHaste !== null) {
+              // Decrease time step with haste.
+              const timeStepWithHaste = Math.min(this.timeStep * (1 - initiatorHaste) / 100, 1);
+              if (gameAction.initiator.lastGameAction + timeStepWithHaste < Date.now()) {
+                // That important to add that. Later in alterBeingUsedInGameActionMixedValue we will change player lastActionTime value.
+                const partial = new MixedValuePartialBoolean(true, this);
+                canActMixedValue.addPartial(partial);
+              } else {
+                const partial = new MixedValuePartialBoolean(false, this);
+                canActMixedValue.addPartial(partial);
+                canActMixedValue.finalize();
+              }
+            } else {
+              // TODO: that is big error in workflow!!!
+            }
+          }
+          break;
+      }
+    }
+  }
+
+  public alterBeingUsedInGameActionMixedValue(valueName: string, mixedValue: MixedValue<any, any>, gameAction: GameAction, alterationType: string, alterableData: object): GameAction[] {
+    if (alterationType === ALTERATION_TYPES.OTHER) {
+      switch (valueName) {
+        case DEFAULT_VALUES_FOR_ALTERATION.CAN_ACT:
+          if (mixedValue.isFinal()) {
+            const canAct = mixedValue.getFinalValue() as boolean;
+            if (canAct) {
+              // That means that as result gamer could act and we must update his lastGameAction.
+              gameAction.initiator.updateLastGameAction();
+            }
+          } else {
+            // TODO: that actually means some error for sure.
+          }
+          break;
+      }
+    }
+    return [];
   }
 }

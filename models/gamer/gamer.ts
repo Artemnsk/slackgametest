@@ -11,6 +11,7 @@ import { MixedValueNumber } from "../mixed/mixedvalue/mixedvalues/mixedvaluenumb
 import { MixedValuePercent } from "../mixed/mixedvalue/mixedvalues/mixedvaluepercent";
 
 const enum GAMER_DEFAULT_STATS {
+  HASTE = 0,
   MAX_HEALTH = 100,
   MAX_MANA = 40,
   ITEM_POWER = 1,
@@ -33,6 +34,7 @@ type GamerPrimaryStats = {
 type GamerSecondaryStats = {
   maxHealth: MixedValueNumber,
   maxMana: MixedValueNumber,
+  haste: MixedValuePercent,
   itemPower: MixedValueNumber,
   itemEvasion: MixedValuePercent,
   itemMiss: MixedValuePercent,
@@ -49,6 +51,7 @@ export class Gamer {
   public name: string;
   public dead: boolean;
   public health: number;
+  public lastGameAction: number;
   public mana: number;
   public spells: Spell[];
   public items: GamerItem[];
@@ -59,6 +62,7 @@ export class Gamer {
   constructor(game: Game, values: GamerFirebaseValue, $key: string) {
     this.$key = $key;
     this.game = game;
+    this.lastGameAction = values.lastGameAction;
     this.name = values.name;
     this.dead = values.dead;
     this.health = values.health;
@@ -128,6 +132,10 @@ export class Gamer {
     }
   }
 
+  public updateLastGameAction(time?: number): void {
+    this.lastGameAction = time !== undefined ? time : Date.now();
+  }
+
   public getFirebaseValue(): GamerFirebaseValue {
     const items: { [key: string]: ItemFirebaseValue } = {};
     for (const item of this.items) {
@@ -141,6 +149,7 @@ export class Gamer {
       dead: this.dead,
       health: this.health,
       items,
+      lastGameAction: this.lastGameAction,
       mana: this.mana,
       name: this.name,
       spells,
@@ -177,6 +186,7 @@ export class Gamer {
     const intelligenceFinalValue = primaryStats.intelligence.isFinal() ? primaryStats.intelligence.getFinalValue() as number : 0;
     const strengthFinalValue = primaryStats.strength.isFinal() ? primaryStats.strength.getFinalValue() as number : 0;
     // Define secondary stats now.
+    const haste = new MixedValuePercent(GAMER_DEFAULT_STATS.HASTE + agilityFinalValue);
     const itemDefense = new MixedValueNumber(GAMER_DEFAULT_STATS.ITEM_DEFENSE);
     const itemEvasion = new MixedValuePercent(GAMER_DEFAULT_STATS.ITEM_EVASION + agilityFinalValue);
     const itemMiss = new MixedValuePercent(Math.max(GAMER_DEFAULT_STATS.ITEM_MISS - agilityFinalValue, 0));
@@ -190,6 +200,7 @@ export class Gamer {
     // TODO: interface IGamerSecondaryAlterable.
     // TODO: loop through all items which implements interface IGamerSecondaryAlterable. Items(equipped?), Buffs, Debuffs.
     // TODO: LOOP IS HERE...
+    haste.finalize();
     itemEvasion.finalize();
     itemMiss.finalize();
     itemPower.finalize();
@@ -199,6 +210,7 @@ export class Gamer {
     spellMiss.finalize();
     spellPower.finalize();
     return {
+      haste,
       itemDefense,
       itemEvasion,
       itemMiss,

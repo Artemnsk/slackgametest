@@ -7,6 +7,7 @@ import { MixedValueNumber } from "../../../mixed/mixedvalue/mixedvalues/mixedval
 import { MixedValuePercent } from "../../../mixed/mixedvalue/mixedvalues/mixedvaluepercent";
 import { AlterableWithType, GAME_ACTION_TYPES, GameAction } from "../../gameaction";
 
+// Notice that CAN_ACT (DEFAULT_VALUES_FOR_ALTERATION.CAN_ACT) is MUST HAVE!
 export const enum VALUES_FOR_ALTERATION {
   CAN_ACT = "CAN_ACT",
   ITEM_POWER = "ITEM_POWER",
@@ -20,7 +21,6 @@ export abstract class GameActionUseItem extends GameAction {
   public target: Gamer;
   public type: GAME_ACTION_TYPES.USE_ITEM;
   protected item: UsableGamerItem;
-  protected mixedCanAct: MixedValueBoolean;
   protected mixedItemPower: MixedValueNumber;
   protected mixedItemMiss: MixedValuePercent;
   protected mixedItemEvasion: MixedValuePercent;
@@ -29,8 +29,6 @@ export abstract class GameActionUseItem extends GameAction {
   constructor(game: Game, gameActionRequest: GameActionRequestUseItem, initiator: Gamer, target: Gamer, item: UsableGamerItem) {
     super(game, gameActionRequest, initiator, target);
     this.item = item;
-    // Initialize all these mixed values.
-    this.mixedCanAct = new MixedValueBoolean(initiator.dead === false);
     // We are sure all Gamer mixed values being finalized here. That actually must happen on Gamer initialization in it's constructor().
     const itemPowerInitialValue = this.initiator.stats.itemPower.getFinalValue() as number;
     this.mixedItemPower = new MixedValueNumber(itemPowerInitialValue + item.power);
@@ -45,25 +43,25 @@ export abstract class GameActionUseItem extends GameAction {
   protected calculateAndExecute(alterables: AlterableWithType[]): GameAction[] {
     const gameActions: GameAction[] = [];
     // 1. Can Act.
-    const alterCanActGameActions = this.callAlterationForUsedAlterables(alterables, this.mixedCanAct.partials, VALUES_FOR_ALTERATION.CAN_ACT);
+    const alterCanActGameActions = this.callAlterationForUsedAlterables(alterables, this.mixedCanAct, VALUES_FOR_ALTERATION.CAN_ACT);
     gameActions.push(...alterCanActGameActions);
     const initiatorCanAct: boolean = this.mixedCanAct.getFinalValue() as boolean;
     if (initiatorCanAct === true) {
       gameActions.push(...this.item.alterGameActionPhase(USE_ITEM_PHASES_FOR_ALTERATION.ACT, this));
       // 2. Miss.
-      const alterItemMissGameActions = this.callAlterationForUsedAlterables(alterables, this.mixedItemMiss.partials, VALUES_FOR_ALTERATION.ITEM_MISS);
+      const alterItemMissGameActions = this.callAlterationForUsedAlterables(alterables, this.mixedItemMiss, VALUES_FOR_ALTERATION.ITEM_MISS);
       gameActions.push(...alterItemMissGameActions);
       const initiatorMissed: boolean = Math.random() < (this.mixedItemMiss.getFinalValue() as number / 100);
       if (initiatorMissed === false) {
         gameActions.push(...this.item.alterGameActionPhase(USE_ITEM_PHASES_FOR_ALTERATION.MISS_FAILED, this));
         // 3. Evasion.
-        const alterItemEvasionGameActions = this.callAlterationForUsedAlterables(alterables, this.mixedItemEvasion.partials, VALUES_FOR_ALTERATION.ITEM_EVASION);
+        const alterItemEvasionGameActions = this.callAlterationForUsedAlterables(alterables, this.mixedItemEvasion, VALUES_FOR_ALTERATION.ITEM_EVASION);
         gameActions.push(...alterItemEvasionGameActions);
         const targetEvaded: boolean = Math.random() < (this.mixedItemEvasion.getFinalValue() as number / 100);
         if (targetEvaded === false) {
           gameActions.push(...this.item.alterGameActionPhase(USE_ITEM_PHASES_FOR_ALTERATION.EVASION_FAILED, this));
           // 4. Resistance.
-          const alterItemDefenseGameActions = this.callAlterationForUsedAlterables(alterables, this.mixedItemDefense.partials, VALUES_FOR_ALTERATION.ITEM_DEFENSE);
+          const alterItemDefenseGameActions = this.callAlterationForUsedAlterables(alterables, this.mixedItemDefense, VALUES_FOR_ALTERATION.ITEM_DEFENSE);
           gameActions.push(...alterItemDefenseGameActions);
           // Finally execute action.
           this.execute();
@@ -83,7 +81,7 @@ export abstract class GameActionUseItem extends GameAction {
     // Ability to make action? Not a simple validation.
     for (const alterableWithType of alterablesWithType) {
       if (this.mixedCanAct.isFinal() === false) {
-        alterableWithType.alterable.alterBeingUsedInGameActionMixedValue(VALUES_FOR_ALTERATION.CAN_ACT, this, alterableWithType.type, this.getAlterableGAData(alterableWithType.alterable));
+        alterableWithType.alterable.alterGameActionMixedValue(VALUES_FOR_ALTERATION.CAN_ACT, this.mixedCanAct, this, alterableWithType.type, this.getAlterableGAData(alterableWithType.alterable));
       }
     }
     // Finalize if not finalized yet.
@@ -93,7 +91,7 @@ export abstract class GameActionUseItem extends GameAction {
     // Collect power.
     for (const alterableWithType of alterablesWithType) {
       if (this.mixedItemPower.isFinal() === false) {
-        alterableWithType.alterable.alterBeingUsedInGameActionMixedValue(VALUES_FOR_ALTERATION.ITEM_POWER, this, alterableWithType.type, this.getAlterableGAData(alterableWithType.alterable));
+        alterableWithType.alterable.alterGameActionMixedValue(VALUES_FOR_ALTERATION.ITEM_POWER, this.mixedItemPower, this, alterableWithType.type, this.getAlterableGAData(alterableWithType.alterable));
       }
     }
     // Finalize if not finalized yet.
@@ -103,7 +101,7 @@ export abstract class GameActionUseItem extends GameAction {
     // Miss.
     for (const alterableWithType of alterablesWithType) {
       if (this.mixedItemMiss.isFinal() === false) {
-        alterableWithType.alterable.alterBeingUsedInGameActionMixedValue(VALUES_FOR_ALTERATION.ITEM_MISS, this, alterableWithType.type, this.getAlterableGAData(alterableWithType.alterable));
+        alterableWithType.alterable.alterGameActionMixedValue(VALUES_FOR_ALTERATION.ITEM_MISS, this.mixedItemMiss, this, alterableWithType.type, this.getAlterableGAData(alterableWithType.alterable));
       }
     }
     // Finalize if not finalized yet.
@@ -113,17 +111,17 @@ export abstract class GameActionUseItem extends GameAction {
     // Evasion.
     for (const alterableWithType of alterablesWithType) {
       if (this.mixedItemEvasion.isFinal() === false) {
-        alterableWithType.alterable.alterBeingUsedInGameActionMixedValue(VALUES_FOR_ALTERATION.ITEM_EVASION, this, alterableWithType.type, this.getAlterableGAData(alterableWithType.alterable));
+        alterableWithType.alterable.alterGameActionMixedValue(VALUES_FOR_ALTERATION.ITEM_EVASION, this.mixedItemEvasion, this, alterableWithType.type, this.getAlterableGAData(alterableWithType.alterable));
       }
     }
     // Finalize if not finalized yet.
     if (this.mixedItemEvasion.isFinal() === false) {
       this.mixedItemEvasion.finalize();
     }
-    // Resistance.
+    // Defense.
     for (const alterableWithType of alterablesWithType) {
       if (this.mixedItemDefense.isFinal() === false) {
-        alterableWithType.alterable.alterBeingUsedInGameActionMixedValue(VALUES_FOR_ALTERATION.ITEM_DEFENSE, this, alterableWithType.type, this.getAlterableGAData(alterableWithType.alterable));
+        alterableWithType.alterable.alterGameActionMixedValue(VALUES_FOR_ALTERATION.ITEM_DEFENSE, this.mixedItemDefense, this, alterableWithType.type, this.getAlterableGAData(alterableWithType.alterable));
       }
     }
     // Finalize if not finalized yet.

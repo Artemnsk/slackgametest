@@ -22,12 +22,14 @@ export abstract class UsableSpell extends Spell implements IUsableInGame {
   /**
    * Validate: does gamer able to use item? Returns true if yes and string with error otherwise.
    */
-  public validateGamerUsage(gamer: Gamer): true | string {
-    if (gamer.dead === true) {
+  public validateGamerUsage(/*game: Game, */initiator: Gamer): true | string {
+    // this.gamer.getAlterables();
+    // const gaCastSpell = new GameActionCastSpell()
+    if (initiator.dead === true) {
       return "You are dead.";
     } else {
       // TODO: there is first extension for mana and mana-free spells.
-      if (gamer.spells.some((item) => item === this)) {
+      if (initiator.spells.some((item) => item === this)) {
         // TODO:
         return true;
         // if (!this.params.manacost || gamer.mana >= this.params.manacost) {

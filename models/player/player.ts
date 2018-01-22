@@ -111,6 +111,7 @@ export class Player {
       // TODO: set somewhere? Maybe channel/game setting?
       health: 100,
       items,
+      lastGameAction: 0,
       // TODO: set somewhere? Maybe channel/game setting?
       mana: 40,
       name: this.name,

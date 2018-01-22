@@ -7,6 +7,7 @@ import { MixedValuePercent } from "../../../mixed/mixedvalue/mixedvalues/mixedva
 import { CAST_SPELL_PHASES_FOR_ALTERATION, UsableSpell } from "../../../spell/usablespell";
 import { AlterableWithType, GAME_ACTION_TYPES, GameAction } from "../../gameaction";
 
+// Notice that CAN_ACT (DEFAULT_VALUES_FOR_ALTERATION.CAN_ACT) is MUST HAVE!
 export const enum VALUES_FOR_ALTERATION {
   CAN_ACT = "CAN_ACT",
   SPELL_POWER = "SPELL_POWER",
@@ -20,7 +21,6 @@ export abstract class GameActionCastSpell extends GameAction {
   public target: Gamer;
   public type: GAME_ACTION_TYPES.CAST_SPELL;
   protected spell: UsableSpell;
-  protected mixedCanAct: MixedValueBoolean;
   protected mixedSpellPower: MixedValueNumber;
   protected mixedSpellMiss: MixedValuePercent;
   protected mixedSpellEvasion: MixedValuePercent;
@@ -29,8 +29,6 @@ export abstract class GameActionCastSpell extends GameAction {
   constructor(game: Game, gameActionRequest: GameActionRequestCastSpell, initiator: Gamer, target: Gamer, spell: UsableSpell) {
     super(game, gameActionRequest, initiator, target);
     this.spell = spell;
-    // Initialize all these mixed values.
-    this.mixedCanAct = new MixedValueBoolean(initiator.dead === false);
     // We are sure all Gamer mixed values being finalized here. That actually must happen on Gamer initialization in it's constructor().
     const spellPowerInitialValue = this.initiator.stats.spellPower.getFinalValue() as number;
     this.mixedSpellPower = new MixedValueNumber(spellPowerInitialValue + spell.power);
@@ -45,25 +43,25 @@ export abstract class GameActionCastSpell extends GameAction {
   protected calculateAndExecute(alterables: AlterableWithType[]): GameAction[] {
     const gameActions: GameAction[] = [];
     // 1. Can Act.
-    const alterCanActGameActions = this.callAlterationForUsedAlterables(alterables, this.mixedCanAct.partials, VALUES_FOR_ALTERATION.CAN_ACT);
+    const alterCanActGameActions = this.callAlterationForUsedAlterables(alterables, this.mixedCanAct, VALUES_FOR_ALTERATION.CAN_ACT);
     gameActions.push(...alterCanActGameActions);
     const initiatorCanAct: boolean = this.mixedCanAct.getFinalValue() as boolean;
     if (initiatorCanAct === true) {
       gameActions.push(...this.spell.alterGameActionPhase(CAST_SPELL_PHASES_FOR_ALTERATION.ACT, this));
       // 2. Miss.
-      const alterSpellMissGameActions = this.callAlterationForUsedAlterables(alterables, this.mixedSpellMiss.partials, VALUES_FOR_ALTERATION.SPELL_MISS);
+      const alterSpellMissGameActions = this.callAlterationForUsedAlterables(alterables, this.mixedSpellMiss, VALUES_FOR_ALTERATION.SPELL_MISS);
       gameActions.push(...alterSpellMissGameActions);
       const initiatorMissed: boolean = Math.random() < (this.mixedSpellMiss.getFinalValue() as number / 100);
       if (initiatorMissed === false) {
         gameActions.push(...this.spell.alterGameActionPhase(CAST_SPELL_PHASES_FOR_ALTERATION.MISS_FAILED, this));
         // 3. Evasion.
-        const alterSpellEvasionGameActions = this.callAlterationForUsedAlterables(alterables, this.mixedSpellEvasion.partials, VALUES_FOR_ALTERATION.SPELL_EVASION);
+        const alterSpellEvasionGameActions = this.callAlterationForUsedAlterables(alterables, this.mixedSpellEvasion, VALUES_FOR_ALTERATION.SPELL_EVASION);
         gameActions.push(...alterSpellEvasionGameActions);
         const targetEvaded: boolean = Math.random() < (this.mixedSpellEvasion.getFinalValue() as number / 100);
         if (targetEvaded === false) {
           gameActions.push(...this.spell.alterGameActionPhase(CAST_SPELL_PHASES_FOR_ALTERATION.EVASION_FAILED, this));
           // 4. Resistance.
-          const alterSpellResistanceGameActions = this.callAlterationForUsedAlterables(alterables, this.mixedSpellResistance.partials, VALUES_FOR_ALTERATION.SPELL_RESISTANCE);
+          const alterSpellResistanceGameActions = this.callAlterationForUsedAlterables(alterables, this.mixedSpellResistance, VALUES_FOR_ALTERATION.SPELL_RESISTANCE);
           gameActions.push(...alterSpellResistanceGameActions);
           // Finally execute action.
           this.execute();
@@ -83,7 +81,7 @@ export abstract class GameActionCastSpell extends GameAction {
     // Ability to make action? Not a simple validation.
     for (const alterableWithType of alterablesWithType) {
       if (this.mixedCanAct.isFinal() === false) {
-        alterableWithType.alterable.alterBeingUsedInGameActionMixedValue(VALUES_FOR_ALTERATION.CAN_ACT, this, alterableWithType.type, this.getAlterableGAData(alterableWithType.alterable));
+        alterableWithType.alterable.alterGameActionMixedValue(VALUES_FOR_ALTERATION.CAN_ACT, this.mixedCanAct, this, alterableWithType.type, this.getAlterableGAData(alterableWithType.alterable));
       }
     }
     // Finalize if not finalized yet.
@@ -93,7 +91,7 @@ export abstract class GameActionCastSpell extends GameAction {
     // Collect power.
     for (const alterableWithType of alterablesWithType) {
       if (this.mixedSpellPower.isFinal() === false) {
-        alterableWithType.alterable.alterBeingUsedInGameActionMixedValue(VALUES_FOR_ALTERATION.SPELL_POWER, this, alterableWithType.type, this.getAlterableGAData(alterableWithType.alterable));
+        alterableWithType.alterable.alterGameActionMixedValue(VALUES_FOR_ALTERATION.SPELL_POWER, this.mixedSpellPower, this, alterableWithType.type, this.getAlterableGAData(alterableWithType.alterable));
       }
     }
     // Finalize if not finalized yet.
@@ -103,7 +101,7 @@ export abstract class GameActionCastSpell extends GameAction {
     // Miss.
     for (const alterableWithType of alterablesWithType) {
       if (this.mixedSpellMiss.isFinal() === false) {
-        alterableWithType.alterable.alterBeingUsedInGameActionMixedValue(VALUES_FOR_ALTERATION.SPELL_MISS, this, alterableWithType.type, this.getAlterableGAData(alterableWithType.alterable));
+        alterableWithType.alterable.alterGameActionMixedValue(VALUES_FOR_ALTERATION.SPELL_MISS, this.mixedSpellMiss, this, alterableWithType.type, this.getAlterableGAData(alterableWithType.alterable));
       }
     }
     // Finalize if not finalized yet.
@@ -113,7 +111,7 @@ export abstract class GameActionCastSpell extends GameAction {
     // Evasion.
     for (const alterableWithType of alterablesWithType) {
       if (this.mixedSpellEvasion.isFinal() === false) {
-        alterableWithType.alterable.alterBeingUsedInGameActionMixedValue(VALUES_FOR_ALTERATION.SPELL_EVASION, this, alterableWithType.type, this.getAlterableGAData(alterableWithType.alterable));
+        alterableWithType.alterable.alterGameActionMixedValue(VALUES_FOR_ALTERATION.SPELL_EVASION, this.mixedSpellEvasion, this, alterableWithType.type, this.getAlterableGAData(alterableWithType.alterable));
       }
     }
     // Finalize if not finalized yet.
@@ -123,7 +121,7 @@ export abstract class GameActionCastSpell extends GameAction {
     // Resistance.
     for (const alterableWithType of alterablesWithType) {
       if (this.mixedSpellResistance.isFinal() === false) {
-        alterableWithType.alterable.alterBeingUsedInGameActionMixedValue(VALUES_FOR_ALTERATION.SPELL_RESISTANCE, this, alterableWithType.type, this.getAlterableGAData(alterableWithType.alterable));
+        alterableWithType.alterable.alterGameActionMixedValue(VALUES_FOR_ALTERATION.SPELL_RESISTANCE, this.mixedSpellResistance, this, alterableWithType.type, this.getAlterableGAData(alterableWithType.alterable));
       }
     }
     // Finalize if not finalized yet.

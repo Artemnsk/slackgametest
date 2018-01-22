@@ -4,6 +4,7 @@ import { Gamer } from "../../gamer/gamer";
 import { IAlterableDefaultGameProcess, IAlterableGameActionMixedValues } from "../../iusable/ialterable";
 import { ItemFirebaseValue } from "../dbfirebase";
 import { Item } from "../item";
+import { MixedValue } from "../../mixed/mixedvalue/mixedvalue";
 
 export abstract class GamerItem extends Item implements IAlterableGameActionMixedValues, IAlterableDefaultGameProcess {
   private gamer: Gamer;
@@ -33,7 +34,7 @@ export abstract class GamerItem extends Item implements IAlterableGameActionMixe
   public abstract getFirebaseValues(): ItemFirebaseValue;
 
   // TODO: abstract?
-  public alterGameActionMixedValue(valueName: string, gameAction: GameAction, alterationType: string): void {
+  public alterGameActionMixedValue(valueName: string, mixedValue: MixedValue<any, any>, gameAction: GameAction, alterationType: string): void {
     //
   }
 
@@ -56,7 +57,7 @@ export abstract class GamerItem extends Item implements IAlterableGameActionMixe
     }];
   }
 
-  public alterBeingUsedInGameActionMixedValue(valueName: string, gameAction: GameAction, alterationType: string): GameAction[] {
+  public alterBeingUsedInGameActionMixedValue(valueName: string, mixedValue: MixedValue<any, any>, gameAction: GameAction, alterationType: string): GameAction[] {
     return [];
   }
 
